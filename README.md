@@ -1,2 +1,86 @@
-# JTM
-Software Testmanagement plugin for Jenkins
+# Jenkins Test Management (JTM)
+
+**Repository:** [github.com/0if0/JTM](https://github.com/0if0/JTM)
+
+[![CI](https://github.com/0if0/JTM/actions/workflows/ci.yml/badge.svg)](https://github.com/0if0/JTM/actions/workflows/ci.yml)
+
+Lightweight **test management inside Jenkins**: test cases, suites, test runs, quality gates, pipeline steps, HTML/PDF exports, and optional JUnit import. Data lives under `$JENKINS_HOME/jtm/`.
+
+## Features
+
+- **Web UI** at `/jtm/` — dashboard, test cases, test runs, per-run detail and matrix
+- **Pipeline steps** — `publishResults`, `enforceQualityGate`, `updateTestCase`
+- **Imports** — CSV / structured text, JUnit XML (post-build recorder)
+- **Reports** — single-run and **multi-run flat export** (HTML + PDF) with optional branding
+- **Permissions** — View / Execute / Edit / Admin (matrix-friendly)
+- **REST-style API** for automation (see plugin UI and `JtmApiAction`)
+
+## Requirements
+
+- Jenkins **2.401.3** or compatible (see `jtm-plugin/pom.xml`)
+- **Java 11** for building the plugin (JDK 17 is fine as the compiler toolchain)
+
+## Quick start
+
+### Build the plugin
+
+```bash
+cd jtm-plugin
+mvn clean verify
+# HPI: target/jenkins-test-management.hpi
+```
+
+### Run Jenkins locally with the plugin
+
+```bash
+cd jtm-plugin
+mvn hpi:run
+# Open http://localhost:8080/jtm/
+```
+
+### Install on a real controller
+
+1. Build `jtm-plugin/target/jenkins-test-management.hpi`
+2. **Manage Jenkins → Plugins → Advanced** → upload the HPI → restart if prompted
+3. Grant **JTM** permissions under **Manage Jenkins → Security**
+
+More detail: **[jtm-plugin/BUILD.md](jtm-plugin/BUILD.md)** (permissions, pipeline example, data layout).
+
+## Repository layout
+
+| Path | Purpose |
+|------|---------|
+| `jtm-plugin/` | Maven module — Jenkins plugin (`.hpi`) |
+| `e2e/` | Playwright tests against a running Jenkins (optional CI) |
+| `scripts/` | Helper scripts used by GitLab deploy jobs (optional) |
+
+## End-to-end tests (`e2e/`)
+
+Optional. Requires a reachable Jenkins with JTM installed and credentials.
+
+```bash
+cd e2e
+npm ci
+npx playwright test
+```
+
+Set `JENKINS_BASE_URL` (and optionally `JENKINS_USER` / `JENKINS_PASSWORD`) as in `e2e/playwright.config.ts`.
+
+## Continuous integration
+
+- **GitHub Actions:** [.github/workflows/ci.yml](.github/workflows/ci.yml) — `mvn verify` on `jtm-plugin` (uploads the `.hpi` as a workflow artifact)
+- **GitLab CI:** [.gitlab-ci.yml](.gitlab-ci.yml) — build, optional deploy to Jenkins, optional Playwright (if you still use GitLab)
+
+`mvn verify` runs SpotBugs from the Jenkins plugin parent. This repository sets `spotbugs.failOnError` to `false` in `jtm-plugin/pom.xml` until legacy findings are cleared; the report is still printed in the log.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+[MIT](LICENSE) (see also `jtm-plugin/pom.xml`).
+
+## Publishing metadata
+
+`jtm-plugin/pom.xml` lists this repository as **home** (`<url>` and `<scm>`). If you fork to another GitHub org or user, update those entries and the CI badge above to match.

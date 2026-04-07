@@ -1,0 +1,62 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:h="/lib/hudson">
+  <l:layout title="Export branding — JTM">
+    <l:side-panel>
+      <l:tasks>
+        <l:task icon="symbol-bar-chart-outline plugin-ionicons-api" href="${request.contextPath}/jtm${it.projectUrlQuery}" title="Dashboard"/>
+        <l:task icon="symbol-checkbox-outline plugin-ionicons-api" href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}" title="Test Cases"/>
+        <l:task icon="symbol-play-circle-outline plugin-ionicons-api" href="${request.contextPath}/jtm/runs${it.projectUrlQuery}" title="Test Runs"/>
+      </l:tasks>
+    </l:side-panel>
+    <l:main-panel>
+      <div id="breadcrumbBar">
+        <a href="${request.contextPath}/">Jenkins</a> &#187;
+        <a href="${request.contextPath}/jtm/">JTM</a> &#187; Export branding
+      </div>
+      <h1>Export branding</h1>
+      <p class="jenkins-description" style="max-width:52rem">
+        Upload your company logo once. It is stored on the controller under
+        <code>$JENKINS_HOME/jtm/branding/</code> and reused for every
+        <strong>HTML</strong> and <strong>PDF</strong> export from a test run detail page.
+        For PDF, use <strong>PNG</strong>, <strong>JPEG</strong>, or <strong>GIF</strong> (vector SVG appears in HTML only).
+      </p>
+
+      <j:if test="${it.exportBrandingMessage != ''}">
+        <j:choose>
+          <j:when test="${it.exportBrandingMessage == 'saved'}">
+            <div class="jenkins-alert jenkins-alert--success" style="margin:12px 0">Logo saved.</div>
+          </j:when>
+          <j:when test="${it.exportBrandingMessage == 'cleared'}">
+            <div class="jenkins-alert jenkins-alert--success" style="margin:12px 0">Logo removed.</div>
+          </j:when>
+          <j:when test="${it.exportBrandingMessage == 'empty'}">
+            <div class="jenkins-alert jenkins-alert--warning" style="margin:12px 0">No file selected.</div>
+          </j:when>
+          <j:when test="${it.exportBrandingMessage == 'error'}">
+            <div class="jenkins-alert jenkins-alert--error" style="margin:12px 0">Could not save logo (size or format).</div>
+          </j:when>
+        </j:choose>
+      </j:if>
+
+      <j:if test="${it.exportBrandingLogoPresent}">
+        <p style="margin:16px 0"><span class="jenkins-badge">Logo on file</span></p>
+      </j:if>
+
+      <form method="POST" action="${request.contextPath}/jtm/exportBrandingSave" enctype="multipart/form-data" style="margin:20px 0;max-width:36rem">
+        <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
+        <div class="jenkins-form-item">
+          <label class="jenkins-label" for="logoFile">Logo image</label>
+          <input type="file" id="logoFile" name="logoFile" accept="image/png,image/jpeg,image/jpg,image/gif,image/svg+xml,image/webp" class="jenkins-input"/>
+        </div>
+        <button type="submit" class="jenkins-button jenkins-button--primary">Save logo</button>
+      </form>
+
+      <j:if test="${it.exportBrandingLogoPresent}">
+        <form method="POST" action="${request.contextPath}/jtm/exportBrandingClear" style="margin-top:8px">
+          <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
+          <button type="submit" class="jenkins-button jenkins-button--secondary">Remove logo</button>
+        </form>
+      </j:if>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>

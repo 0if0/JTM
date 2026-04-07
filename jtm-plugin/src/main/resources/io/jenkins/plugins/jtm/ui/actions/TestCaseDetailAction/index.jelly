@@ -1,0 +1,298 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout"
+         xmlns:f="/lib/hudson/form" xmlns:i="jelly:fmt" xmlns:h="/lib/hudson">
+  <l:layout title="${it.testCase.title} — JTM">
+    <l:side-panel>
+      <l:tasks>
+        <l:task icon="symbol-list-outline plugin-ionicons-api"
+                href="${request.contextPath}/jtm${it.projectUrlQuery}" title="Dashboard"/>
+        <l:task icon="symbol-checkbox-outline plugin-ionicons-api"
+                href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}" title="Test Cases"/>
+        <l:task icon="symbol-play-circle-outline plugin-ionicons-api"
+                href="${request.contextPath}/jtm/runs${it.projectUrlQuery}" title="Test Runs"/>
+        <l:task icon="symbol-flash-outline plugin-ionicons-api"
+                href="${request.contextPath}/jtm/runs/newrun${it.projectUrlQuery}" title="New Test Run"/>
+        <l:task icon="symbol-add-circle-outline plugin-ionicons-api"
+                href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}" title="New Test Case"/>
+        <l:task icon="symbol-create-outline plugin-ionicons-api"
+                href="${request.contextPath}/jtm/testcases/${it.testCase.id}/edit" title="Edit test case"/>
+      </l:tasks>
+    </l:side-panel>
+
+    <l:main-panel>
+      <div id="breadcrumbBar" class="jtm-tcd-bc">
+        <a href="${request.contextPath}/">Jenkins</a>
+        <span class="jtm-tcd-bc__sep" aria-hidden="true">/</span>
+        <a href="${request.contextPath}/jtm/">JTM Testmanagement</a>
+        <span class="jtm-tcd-bc__sep" aria-hidden="true">/</span>
+        <a href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}">Test Cases</a>
+        <span class="jtm-tcd-bc__sep" aria-hidden="true">/</span>
+        <span class="jtm-mono jtm-tcd-bc__id">${it.testCase.id}</span>
+        <span class="jtm-tcd-bc__title"> — ${it.testCase.title}</span>
+      </div>
+
+      <j:set var="tc" value="${it.testCase}"/>
+
+      <!-- Title row + primary actions (always visible when permitted) -->
+      <header class="jtm-page-head">
+        <div class="jtm-page-head__titles">
+          <p class="jtm-page-head__eyebrow">Test case</p>
+          <span class="jtm-mono jtm-id-badge">${tc.id}</span>
+          <h1 class="jtm-page-head__h1">${tc.title}</h1>
+          <div class="jtm-detail-meta">
+            <span class="jtm-meta-label">Last run</span>
+            <span class="jtm-muted-small">—</span>
+            <j:if test="${tc.createdBy != null and tc.createdBy != ''}">
+              <span class="jtm-meta-label">Created by <strong>${tc.createdBy}</strong></span>
+            </j:if>
+            <span class="jtm-badge jtm-badge--type">${tc.type.name()}</span>
+            <span class="jtm-prio jtm-prio--${tc.priority}">${tc.priority.name()}</span>
+            <span class="jtm-lifecycle jtm-lifecycle--${tc.lifecycleStatus}">${tc.lifecycleStatus.name()}</span>
+            <j:if test="${tc.flaky}">
+              <span class="jtm-badge jtm-badge--flaky">Flaky (${tc.flakyScore})</span>
+            </j:if>
+          </div>
+        </div>
+        <div class="jtm-page-head__actions">
+          <a href="${request.contextPath}/jtm/testcases/${tc.id}/edit" class="jenkins-button jenkins-button--primary jtm-btn-lg">
+            Edit test case
+          </a>
+          <j:if test="${it.canDelete()}">
+            <form method="POST" action="${request.contextPath}/jtm/testcases/${tc.id}/delete" class="jtm-inline-form"
+                  onsubmit="return confirm('Delete test case ${tc.id} permanently? This cannot be undone.');">
+              <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
+              <button type="submit" class="jenkins-button jenkins-button--destructive">Delete</button>
+            </form>
+          </j:if>
+        </div>
+      </header>
+
+      <div class="jtm-two-col">
+
+        <div>
+
+          <j:if test="${tc.description != null and tc.description != ''}">
+            <div class="jtm-section">
+              <h3 class="jtm-section-title">Description</h3>
+              <div class="jtm-markdown">${tc.description}</div>
+            </div>
+          </j:if>
+
+          <j:if test="${tc.preconditions != null and tc.preconditions != ''}">
+            <div class="jtm-section">
+              <h3 class="jtm-section-title">Preconditions</h3>
+              <p>${tc.preconditions}</p>
+            </div>
+          </j:if>
+
+          <!-- Test steps: always show section; steps are edited on /edit -->
+          <div class="jtm-section jtm-section--steps">
+            <div class="jtm-section-head">
+              <h3 class="jtm-section-title">Test steps</h3>
+              <a href="${request.contextPath}/jtm/testcases/${tc.id}/edit#steps" class="jenkins-button jenkins-button--primary jtm-btn-sm">
+                Manage steps
+              </a>
+            </div>
+
+            <j:choose>
+              <j:when test="${tc.steps.isEmpty()}">
+                <div class="jtm-empty-inline">
+                  <p>No steps yet. Use <strong>Edit test case</strong> to add, reorder, or remove steps.</p>
+                  <a href="${request.contextPath}/jtm/testcases/${tc.id}/edit" class="jenkins-button">Open editor</a>
+                </div>
+              </j:when>
+              <j:otherwise>
+                <table class="jenkins-table jtm-steps-table">
+                  <thead>
+                    <tr><th>#</th><th>Action</th><th>Expected result</th></tr>
+                  </thead>
+                  <tbody>
+                    <j:forEach var="step" items="${tc.steps}">
+                      <tr>
+                        <td class="jtm-center jtm-mono">${step.orderIndex}</td>
+                        <td>${step.action}</td>
+                        <td>${step.expectedResult}</td>
+                      </tr>
+                    </j:forEach>
+                  </tbody>
+                </table>
+                <p class="jtm-hint-below">To change steps, use <a href="${request.contextPath}/jtm/testcases/${tc.id}/edit">Edit test case</a>.</p>
+              </j:otherwise>
+            </j:choose>
+          </div>
+
+          <j:if test="${tc.expectedResult != null and tc.expectedResult != ''}">
+            <div class="jtm-section">
+              <h3 class="jtm-section-title">Overall expected result</h3>
+              <p>${tc.expectedResult}</p>
+            </div>
+          </j:if>
+
+        </div>
+
+        <div>
+          <div class="jtm-meta-card">
+            <h3 class="jtm-section-title">Details</h3>
+            <dl class="jtm-dl">
+              <dt>ID</dt><dd class="jtm-mono">${tc.id}</dd>
+              <dt>Version</dt><dd>v${tc.version}</dd>
+              <dt>Type</dt><dd>${tc.type.name()}</dd>
+              <dt>Priority</dt><dd>${tc.priority.name()}</dd>
+              <dt>Risk</dt><dd>${tc.risk.name()}</dd>
+              <dt>Lifecycle</dt><dd>${tc.lifecycleStatus.name()}</dd>
+              <j:if test="${tc.requirementId != null and tc.requirementId != ''}">
+                <dt>Requirement</dt><dd class="jtm-mono">${tc.requirementId}</dd>
+              </j:if>
+              <j:if test="${tc.jiraTicket != null and tc.jiraTicket != ''}">
+                <dt>Jira</dt><dd class="jtm-mono">${tc.jiraTicket}</dd>
+              </j:if>
+              <j:if test="${tc.linkedJob != null and tc.linkedJob != ''}">
+                <dt>Linked job</dt>
+                <dd><a href="${request.contextPath}/job/${tc.linkedJob}">${tc.linkedJob}</a></dd>
+              </j:if>
+            </dl>
+          </div>
+
+          <div class="jtm-meta-card jtm-meta-card--stack">
+            <h3 class="jtm-section-title">Last execution</h3>
+            <dl class="jtm-dl">
+              <dt>Status</dt>
+              <dd>
+                <span class="jtm-muted-small">—</span>
+              </dd>
+              <j:if test="${tc.lastBuildNumber != null}">
+                <dt>Build</dt><dd>#${tc.lastBuildNumber}</dd>
+              </j:if>
+              <j:if test="${tc.lastRunBy != null and tc.lastRunBy != ''}">
+                <dt>By</dt><dd>${tc.lastRunBy}</dd>
+              </j:if>
+              <dt>Flaky score</dt>
+              <dd>
+                <span class="jtm-flaky-score">${tc.flakyScore}/100</span>
+                <j:if test="${tc.flaky}"> <span class="jtm-flaky-inline">Flaky</span></j:if>
+              </dd>
+            </dl>
+          </div>
+
+          <div class="jtm-meta-card jtm-meta-card--stack">
+            <h3 class="jtm-section-title">Tags</h3>
+            <j:choose>
+              <j:when test="${tc.tags.size() == 0}">
+                <p class="jtm-muted-small">None — add tags in <a href="${request.contextPath}/jtm/testcases/${tc.id}/edit">edit</a>.</p>
+              </j:when>
+              <j:otherwise>
+                <div class="jtm-tags">
+                  <j:forEach var="tag" items="${tc.tags}">
+                    <span class="jtm-tag">${tag}</span>
+                  </j:forEach>
+                </div>
+              </j:otherwise>
+            </j:choose>
+          </div>
+
+          <div class="jtm-meta-card jtm-meta-card--stack">
+            <h3 class="jtm-section-title">Audit</h3>
+            <dl class="jtm-dl">
+              <dt>Created</dt><dd class="jtm-small">${tc.createdBy != null ? tc.createdBy : '—'}</dd>
+              <dt>Modified</dt><dd class="jtm-small">${tc.updatedBy != null ? tc.updatedBy : '—'}</dd>
+            </dl>
+          </div>
+        </div>
+
+      </div>
+
+      <style>
+        .jtm-tcd-bc { font-size: 12px; color: var(--text-color-secondary); margin-bottom: 8px; line-height: 1.4; }
+        .jtm-tcd-bc__sep { margin: 0 6px; opacity: 0.55; }
+        .jtm-tcd-bc__id { font-weight: 600; color: var(--text-color); }
+        .jtm-tcd-bc__title { font-size: 13px; font-weight: 600; color: var(--text-color); }
+
+        .jtm-page-head {
+          display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between;
+          gap: 16px; margin-bottom: 22px; padding: 18px 20px; border-radius: 12px;
+          border: 1px solid var(--medium-grey);
+          background: linear-gradient(135deg, var(--panel-header-bg-dark) 0%, var(--background) 50%, var(--background) 100%);
+          box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .jtm-page-head__eyebrow { margin: 0 0 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-color-secondary); }
+        .jtm-page-head__titles { flex: 1; min-width: 200px; }
+        .jtm-page-head__h1 { margin: 8px 0 0 0; font-size: 1.45rem; font-weight: 750; line-height: 1.25; letter-spacing: -0.02em; color: var(--text-color); }
+        .jtm-page-head__actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .jtm-inline-form { display: inline; margin: 0; }
+        .jtm-btn-lg { padding: 0.5rem 1rem; font-weight: 600; border-radius: 8px; text-decoration: none; }
+        .jtm-btn-sm { padding: 0.25rem 0.6rem; font-size: 12px; border-radius: 8px; }
+        .jtm-meta-label { font-size: 12px; color: var(--text-color-secondary); margin-right: 4px; }
+        .jtm-flaky-inline { font-size: 11px; font-weight: 700; color: #b45309; }
+        .jtm-callout--info {
+          background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.35);
+          border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px;
+        }
+        .jtm-section-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+        .jtm-section-head .jtm-section-title { margin: 0; border: none; padding: 0; }
+        .jtm-section--steps { background: var(--background); border: 1px solid var(--medium-grey); border-radius: 12px; padding: 16px 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+        .jtm-empty-inline { padding: 12px 0; color: var(--text-color-secondary); font-size: 14px; }
+        .jtm-empty-inline p { margin: 0 0 10px 0; }
+        .jtm-hint-below { font-size: 12px; color: var(--text-color-secondary); margin: 10px 0 0 0; }
+        .jtm-muted-small { font-size: 12px; color: var(--text-color-secondary); margin: 0; }
+        .jtm-steps-table { margin-top: 4px; }
+        .jtm-detail-meta   { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .jtm-id-badge {
+          display: inline-block;
+          background: var(--panel-header-bg-dark); border: 1px solid var(--medium-grey);
+          padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600;
+        }
+        .jtm-two-col { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; margin-top: 8px; }
+        .jtm-section { margin-bottom: 20px; }
+        .jtm-section-title {
+          font-size: 13px; font-weight: 600; color: var(--text-color-secondary);
+          text-transform: uppercase; letter-spacing: 0.5px;
+          margin: 0 0 8px 0; padding-bottom: 4px;
+          border-bottom: 1px solid var(--medium-grey);
+        }
+        .jtm-meta-card {
+          background: var(--background); border: 1px solid var(--medium-grey);
+          border-radius: 12px; padding: 14px 16px;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+        .jtm-meta-card--stack { margin-top: 12px; }
+        .jtm-meta-card .jtm-section-title { margin-top: 0; }
+        .jtm-dl { margin: 0; display: grid; grid-template-columns: minmax(88px,auto) 1fr; gap: 6px 12px; }
+        .jtm-dl dt { font-size: 12px; color: var(--text-color-secondary); font-weight: 600; }
+        .jtm-dl dd { margin: 0; font-size: 13px; word-break: break-word; }
+        .jtm-form-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .jtm-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+        .jtm-tag {
+          background: rgba(59,130,246,0.12); color: #2563eb;
+          padding: 2px 8px; border-radius: 12px; font-size: 12px;
+        }
+        .jtm-badge--step--NOT_RUN { background: rgba(107,114,128,0.12); color: #6b7280; font-size:11px; }
+        .jtm-badge--step--PASSED  { background: rgba(34,197,94,0.15);   color: #16a34a; font-size:11px; }
+        .jtm-badge--step--FAILED  { background: rgba(239,68,68,0.15);   color: #dc2626; font-size:11px; }
+        .jtm-badge--step--BLOCKED { background: rgba(245,158,11,0.15); color: #d97706; font-size:11px; }
+        .jtm-muted { color: var(--text-color-secondary); font-size: 13px; }
+        .jtm-markdown { font-size: 14px; line-height: 1.6; }
+        .jtm-mono  { font-family: var(--font-family-mono); }
+        .jtm-small { font-size: 12px; }
+        .jtm-center { text-align: center; }
+        .jtm-badge { display:inline-block; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:600; }
+        .jtm-badge--PASSED  { background: rgba(34,197,94,0.15);  color: #16a34a; }
+        .jtm-badge--FAILED  { background: rgba(239,68,68,0.15);  color: #dc2626; }
+        .jtm-badge--BLOCKED { background: rgba(245,158,11,0.15); color: #d97706; }
+        .jtm-badge--SKIPPED { background: rgba(107,114,128,0.12);color: #6b7280; }
+        .jtm-badge--PENDING { background: rgba(107,114,128,0.12);color: #6b7280; }
+        .jtm-badge--type    { background: rgba(59,130,246,0.12);  color: #2563eb; }
+        .jtm-badge--flaky   { background: rgba(245,158,11,0.15);  color: #b45309; font-size:10px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
+        .jtm-prio--CRITICAL { color:#dc2626; font-weight:700; font-size:12px; }
+        .jtm-prio--HIGH     { color:#d97706; font-weight:600; font-size:12px; }
+        .jtm-prio--MEDIUM   { color:#6b7280; font-size:12px; }
+        .jtm-prio--LOW      { color:#9ca3af; font-size:12px; }
+        .jtm-lifecycle--READY { color:#16a34a; font-size:12px; font-weight:600; }
+        .jtm-lifecycle--DRAFT { color:#6b7280; font-size:12px; }
+        .jtm-lifecycle--BLOCKED    { color:#d97706; font-size:12px; }
+        .jtm-lifecycle--DEPRECATED { color:#9ca3af; font-size:12px; text-decoration:line-through; }
+        .jtm-flaky-score { background:rgba(245,158,11,0.15);color:#d97706;padding:2px 7px;border-radius:12px;font-size:11px; }
+        @media(max-width:900px) { .jtm-two-col { grid-template-columns: 1fr; } }
+      </style>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>

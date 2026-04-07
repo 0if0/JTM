@@ -1,0 +1,85 @@
+# GitLab CI — Jenkins plugin (HPI) build
+# Maven module: jtm-plugin/
+#
+# E2E (Playwright): set CI/CD variables so the runner can reach your test Jenkins:
+#   JENKINS_E2E_URL      — full base URL incl. context path (e.g. http://jenkins:8080 or https://host/ci)
+#   JENKINS_E2E_USER     — optional (default in tests: testtest)
+#   JENKINS_E2E_PASSWORD — optional
+# Without JENKINS_E2E_URL the e2e job is skipped.
+# Pipeline order: build → deploy-jenkins → e2e-playwright (e2e needs deploy-jenkins so the
+# fresh HPI is on the server first). If deploy-jenkins is not in the pipeline (missing
+# JENKINS_URL / token vars), e2e is omitted too.
+
+stages:
+  - build
+  - deploy
+  - test
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  # Shell executor: default `git clean` removes Playwright output under e2e/test-results/; if a
+  # prior run created files as root, clean fails with "Permission denied" and checkout aborts.
+  # `none` skips that step; use `mvn clean` / remove artifacts in scripts where needed.
+  GIT_CLEAN_FLAGS: none
+
+cache:
+  key: maven-${CI_COMMIT_REF_SLUG}
+  paths:
+    - .m2/repository
+
+build-job:
+  stage: build
+  image: maven:3.9.6-eclipse-temurin-17
+  script:
+    - cd jtm-plugin && mvn --batch-mode --no-transfer-progress clean package
+  artifacts:
+    name: "jenkins-test-management-$CI_COMMIT_SHORT_SHA"
+    expire_in: 30 days
+    paths:
+      - jtm-plugin/target/*.hpi
+
+# Deploy to test Jenkins (http://192.168.188.146:8080/ or your JENKINS_URL).
+# GitLab CI/CD variables (masked): JENKINS_URL, JENKINS_USER, JENKINS_TOKEN
+# Optional: JENKINS_PLUGIN_ID (default jenkins-test-management)
+#
+# Runner must reach Jenkins (same LAN/VPN). On main: automatic when vars set;
+# other branches: manual job in pipeline.
+
+deploy-jenkins:
+  stage: deploy
+  # Deps: scripts/ci-ensure-deploy-deps.sh installs curl/jq/bash when missing.
+  # - Docker/Kubernetes executor: use `image:` below — container runs as root, no sudo password.
+  # - Shell executor: install curl, jq, bash on the host once, or configure passwordless sudo for the runner user.
+  #   (Bare `sudo` fails in CI — the script uses `sudo -n` only.)
+  image: debian:bookworm-slim
+  needs:
+    - build-job
+  before_script:
+    - bash scripts/ci-ensure-deploy-deps.sh
+  rules:
+    - if: '$JENKINS_URL && $JENKINS_USER && $JENKINS_TOKEN && ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master")'
+      when: on_success
+    - if: '$JENKINS_URL && $JENKINS_USER && $JENKINS_TOKEN'
+      when: manual
+    - when: never
+  script:
+    - bash scripts/deploy-jenkins-plugin.sh
+
+e2e-playwright:
+  stage: test
+  needs:
+    - job: build-job
+    - job: deploy-jenkins
+  # With Docker/Kubernetes executor, this image includes browsers. Shell executors ignore
+  # `image:` — then the script must run `playwright install` (see below).
+  image: mcr.microsoft.com/playwright:v1.49.1-jammy
+  variables:
+    JENKINS_BASE_URL: $JENKINS_E2E_URL
+    JENKINS_USER: $JENKINS_E2E_USER
+    JENKINS_PASSWORD: $JENKINS_E2E_PASSWORD
+  rules:
+    - if: '$JENKINS_E2E_URL'
+      when: on_success
+    - when: never
+  script:
+    - cd e2e && npm ci && npx playwright install chromium && npx playwright test

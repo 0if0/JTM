@@ -1,0 +1,421 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { test, expect, type Page } from '@playwright/test';
+
+const user = process.env.JENKINS_USER || 'testtest';
+const password = process.env.JENKINS_PASSWORD || 'testtest';
+
+/** Same default as playwright.config.ts — must include Jenkins context path (e.g. …/jenkins). */
+function jenkinsBase(): string {
+  return (process.env.JENKINS_BASE_URL || 'http://127.0.0.1:8080').replace(/\/$/, '');
+}
+
+async function jenkinsLogin(page: Page) {
+  await page.goto('/login');
+  const loginField = page.locator('input[name="j_username"], input[name="username"]').first();
+  await loginField.waitFor({ state: 'attached', timeout: 30_000 });
+  await loginField.fill(user);
+  await page.locator('input[name="j_password"], input[name="password"]').first().fill(password);
+  const submit = page
+    .locator('input[type="submit"][name="Submit"], button[type="submit"], button[name="Submit"]')
+    .first();
+  await submit.click();
+  await page.waitForLoadState('domcontentloaded');
+  await page.goto('/jtm/');
+  await page.waitForLoadState('domcontentloaded');
+}
+
+/** Reads Jenkins CSRF field from the current page (any form that includes the crumb). */
+async function crumbPair(page: Page): Promise<Record<string, string>> {
+  const input = page.locator('input[name="Jenkins-Crumb"], input[name=".crumb"], input[name="crumb"]').first();
+  const attached = await input.count();
+  if (attached > 0) {
+    const name = await input.getAttribute('name');
+    const value = await input.inputValue();
+    if (name) {
+      return { [name]: value };
+    }
+  }
+  // Fallback for pages without forms: query Jenkins crumb API using current session cookies.
+  const resp = await page.request.get('/crumbIssuer/api/json');
+  if (!resp.ok()) {
+    throw new Error(`Could not obtain crumb from page or API (HTTP ${resp.status()})`);
+  }
+  const data = (await resp.json()) as { crumbRequestField?: string; crumb?: string };
+  if (!data.crumbRequestField || !data.crumb) {
+    throw new Error('Crumb API response missing crumbRequestField or crumb');
+  }
+  return { [data.crumbRequestField]: data.crumb };
+}
+
+/**
+ * Reset via in-page fetch so the browser session (incl. context path) matches navigation.
+ * Tries canonical Stapler URL first, then legacy name.
+ * Loads /jtm/ first: the post-login landing page often has no form with a crumb, so crumbPair would time out.
+ */
+async function postJtmReset(page: Page): Promise<{ status: number; ok: boolean; tried: string }> {
+  await page.goto('/jtm/');
+  await page.waitForLoadState('domcontentloaded');
+  const crumb = await crumbPair(page);
+  const name = Object.keys(crumb)[0];
+  const value = crumb[name];
+  const base = jenkinsBase();
+  const candidates = [`${base}/jtm/resetJtmData`, `${base}/jtm/resetjtmdata`];
+  const status = await page.evaluate(
+    async ({ urls, crumbName, crumbValue }) => {
+      const body = new URLSearchParams();
+      body.set(crumbName, crumbValue);
+      for (const url of urls) {
+        const r = await fetch(url, {
+          method: 'POST',
+          body,
+          credentials: 'include',
+          // `manual` + redirect yields status 0 (opaque-redirect) in Chromium — not a real failure.
+          redirect: 'follow',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        });
+        if (r.status === 404) {
+          continue;
+        }
+        return { status: r.status, ok: r.ok, tried: url };
+      }
+      return { status: 404, ok: false, tried: urls[0] };
+    },
+    { urls: candidates, crumbName: name, crumbValue: value }
+  );
+  return { status: status.status, ok: status.ok, tried: status.tried };
+}
+
+async function importBundleViaFormPost(page: Page, content: string, fileName: string) {
+  // Clear project scope so list queries are not filtered by saved user preference (JtmProjectFilter).
+  await page.goto('/jtm/testcases/?project=');
+  // Import UI lives inside a <details> so it is not always visible.
+  // Expand it for the upload + submit flow used in this test helper.
+  const importSummary = page.getByText('Import test cases', { exact: true });
+  await importSummary.click();
+  const fileInput = page.locator('#jtm-import-file');
+  await fileInput.setInputFiles({
+    name: fileName,
+    mimeType: fileName.endsWith('.json')
+      ? 'application/json'
+      : fileName.endsWith('.csv')
+        ? 'text/csv'
+        : fileName.endsWith('.xml')
+          ? 'application/xml'
+          : 'text/plain',
+    buffer: Buffer.from(content, 'utf8'),
+  });
+  const submit = page.locator('#jtm-import-form button[type="submit"]').first();
+  await submit.waitFor({ state: 'visible', timeout: 30_000 });
+  const [resp] = await Promise.all([
+    page.waitForResponse(
+      (r) => r.url().includes('/jtm/importcases') && r.request().method() === 'POST',
+      { timeout: 120_000 }
+    ),
+    submit.click(),
+  ]);
+  return { status: resp.status(), loc: resp.headers()['location'] ?? '' };
+}
+
+test.describe('JTM UI', () => {
+  test.beforeEach(async ({ page }) => {
+    test.skip(!!process.env.JENKINS_SKIP_E2E, 'JENKINS_SKIP_E2E is set');
+  });
+
+  test('reset data, create cases, linked run appears and status can be set', async ({ page }) => {
+    await jenkinsLogin(page);
+
+    await page.goto('/jtm/testcases/newcase');
+    await expect(page.getByRole('heading', { name: 'New Test Case' })).toBeVisible();
+
+    if (!process.env.JTM_E2E_NO_RESET) {
+      const reset = await postJtmReset(page);
+      expect(
+        reset.ok,
+        `JTM reset failed (HTTP ${reset.status}) at ${reset.tried}. Deploy a plugin build with resetJtmData, ` +
+          `use Overall/Administer, set JENKINS_BASE_URL to the full Jenkins root (incl. context path), ` +
+          `or set JTM_E2E_NO_RESET=1 to skip reset.`
+      ).toBeTruthy();
+    }
+
+    await page.goto('/jtm/testcases/newcase');
+    await page.locator('#title').fill('E2E Alpha');
+    await page.getByRole('button', { name: 'Create Test Case' }).click();
+    await expect(page).toHaveURL(/\/jtm\/testcases\/TC-/);
+    const alphaUrl = page.url();
+    const alphaIdMatch = alphaUrl.match(/\/jtm\/testcases\/(TC-[^/]+)\//);
+    expect(alphaIdMatch, `Could not parse test case id from URL: ${alphaUrl}`).toBeTruthy();
+    const alphaId = alphaIdMatch![1];
+
+    await page.goto('/jtm/testcases/newcase');
+    await page.locator('#title').fill('E2E Beta');
+    await page.getByRole('button', { name: 'Create Test Case' }).click();
+    await expect(page).toHaveURL(/\/jtm\/testcases\/TC-/);
+    const betaUrl = page.url();
+    const betaIdMatch = betaUrl.match(/\/jtm\/testcases\/(TC-[^/]+)\//);
+    expect(betaIdMatch, `Could not parse test case id from URL: ${betaUrl}`).toBeTruthy();
+    const betaId = betaIdMatch![1];
+
+    await page.goto('/jtm/testcases/');
+    await expect(page.getByRole('link', { name: 'E2E Alpha' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'E2E Beta' })).toBeVisible();
+
+    await page.goto('/jtm/runs/newrun');
+    await expect(page.getByRole('heading', { name: 'New Test Run' })).toBeVisible();
+    await page.locator('#name').fill('Release123 E2E');
+    const linkedPickers = page.locator('input[name="linkedTestCaseId"]');
+    const pickerCount = await linkedPickers.count();
+    if (pickerCount >= 2) {
+      await linkedPickers.first().check();
+      await linkedPickers.nth(1).check();
+    } else {
+      // Older/partially deployed UI variants may render no picker.
+      // Continue and link cases right after run creation through /addLinked.
+      // This keeps the core run flow covered in CI.
+      // eslint-disable-next-line no-console
+      console.warn(
+        `No linkedTestCaseId picker on /jtm/runs/newrun (count=${pickerCount}); linking cases after run creation.`
+      );
+    }
+    await page.getByRole('button', { name: 'Create test run' }).click();
+
+    await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
+    const runUrl = page.url();
+    const runIdMatch = runUrl.match(/\/jtm\/runs\/(RUN-[^/]+)\//);
+    expect(runIdMatch, `Could not parse run id from URL: ${runUrl}`).toBeTruthy();
+    const runId = runIdMatch![1];
+
+    if (pickerCount < 2) {
+      const crumb = await crumbPair(page);
+      const crumbName = Object.keys(crumb)[0];
+      const crumbValue = crumb[crumbName];
+      const linkedResult = await page.evaluate(
+        async ({ rid, a, b, cName, cValue }) => {
+          const body = new URLSearchParams();
+          body.set(cName, cValue);
+          body.append('linkedTestCaseId', a);
+          body.append('linkedTestCaseId', b);
+          const r = await fetch(`/jtm/runs/${rid}/addLinked`, {
+            method: 'POST',
+            body,
+            credentials: 'include',
+            redirect: 'follow',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          });
+          return { ok: r.ok, status: r.status };
+        },
+        { rid: runId, a: alphaId, b: betaId, cName: crumbName, cValue: crumbValue }
+      );
+      expect(
+        linkedResult.ok,
+        `Fallback addLinked failed for ${runId} (HTTP ${linkedResult.status})`
+      ).toBeTruthy();
+      await page.goto(`/jtm/runs/${runId}/`);
+    }
+
+    await page.goto('/jtm/runs/');
+    await expect(page.getByRole('link', { name: /Release123 E2E/i })).toBeVisible();
+
+    await page.getByRole('link', { name: /Release123 E2E/i }).first().click();
+    await expect(page.getByRole('heading', { name: /Release123 E2E/i })).toBeVisible();
+    await expect(page.getByText('E2E Alpha', { exact: false })).toBeVisible();
+    await expect(page.getByText('E2E Beta', { exact: false })).toBeVisible();
+
+    const matrix = page.locator('.jtm-linked-matrix table.jenkins-table');
+    const firstRow = matrix.locator('tbody tr').first();
+    await firstRow.locator('select[name="resultStatus"]').selectOption('PASSED');
+    await expect(matrix.locator('tbody tr').first().locator('td').nth(1)).toContainText('PASSED');
+  });
+
+  test('run detail: save step status persists after reload', async ({ page }) => {
+    await jenkinsLogin(page);
+
+    if (!process.env.JTM_E2E_NO_RESET) {
+      const reset = await postJtmReset(page);
+      expect(reset.ok, `JTM reset failed (HTTP ${reset.status})`).toBeTruthy();
+    }
+
+    await page.goto('/jtm/testcases/newcase');
+    await page.locator('#title').fill('E2E Steps Save');
+    await page.locator('input[name="stepAction"]').first().fill('Do the thing');
+    await page.getByRole('button', { name: 'Create Test Case' }).click();
+    await expect(page).toHaveURL(/\/jtm\/testcases\/TC-/);
+    const caseUrl = page.url();
+    const caseIdMatch = caseUrl.match(/\/jtm\/testcases\/(TC-[^/]+)\//);
+    expect(caseIdMatch).toBeTruthy();
+    const caseId = caseIdMatch![1];
+
+    await page.goto('/jtm/runs/newrun');
+    await page.locator('#name').fill('E2E Step Run');
+    await page.locator(`input[name="linkedTestCaseId"][value="${caseId}"]`).check();
+    await page.getByRole('button', { name: 'Create test run' }).click();
+    await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
+
+    const caseRow = page.locator(`tr.jtm-case-row[data-case-id="${caseId}"]`);
+    await caseRow.locator('details.jtm-step-details summary').click();
+    const stepSelect = caseRow.locator('details.jtm-step-details select[name="stepStatus"]').first();
+    const stepSave = page.waitForResponse(
+      (r) => {
+        if (
+          !r.url().includes('/setStepStatus') ||
+          r.request().method() !== 'POST' ||
+          r.status() !== 200
+        ) {
+          return false;
+        }
+        const body = r.request().postData() ?? '';
+        return body.includes(`testCaseId=${caseId}`) || body.includes(`testCaseId=${encodeURIComponent(caseId)}`);
+      },
+      { timeout: 60_000 }
+    );
+    await stepSelect.selectOption('PASSED');
+    const stepSaveResp = await stepSave;
+    const stepSaveBody = await stepSaveResp.text();
+    const stepSaveJson = JSON.parse(stepSaveBody) as { ok?: boolean; savedCount?: number; at?: string };
+    expect(stepSaveJson.ok, `setStepStatus JSON: ${stepSaveBody}`).toBe(true);
+    expect(stepSaveJson.savedCount ?? 0, `setStepStatus JSON: ${stepSaveBody}`).toBeGreaterThan(0);
+    await expect(stepSelect).toHaveValue('PASSED');
+    await expect(caseRow.locator('td').nth(1)).toContainText('PASSED');
+    await caseRow.locator('details.jtm-step-details summary').click();
+    await expect(caseRow.locator('details.jtm-step-details select[name="stepStatus"]').first()).toHaveValue(
+      'PASSED'
+    );
+
+    // Fresh GET (no browser disk cache): server-rendered HTML must already show PASSED for the step.
+    const serverHtmlResp = await page.request.get(page.url());
+    expect(serverHtmlResp.ok(), `GET run detail after save HTTP ${serverHtmlResp.status()}`).toBeTruthy();
+    const serverHtml = await serverHtmlResp.text();
+    expect(
+      serverHtml,
+      'server HTML after save should mark step PASSED in jtm-step-details'
+    ).toMatch(
+      new RegExp(
+        `data-case-id="${caseId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[\\s\\S]*?jtm-step-details[\\s\\S]*?<option value="PASSED" selected="selected">`,
+        'i'
+      )
+    );
+
+    const reloadUrl = new URL(page.url());
+    reloadUrl.searchParams.set('_', String(Date.now()));
+    await page.goto(reloadUrl.toString(), { waitUntil: 'networkidle' });
+    const caseRowReloaded = page.locator(`tr.jtm-case-row[data-case-id="${caseId}"]`);
+    await caseRowReloaded.locator('details.jtm-step-details summary').click();
+    await expect(
+      caseRowReloaded.locator('details.jtm-step-details select[name="stepStatus"]').first()
+    ).toHaveValue('PASSED');
+  });
+
+  test('run detail: delete run returns to list', async ({ page }) => {
+    await jenkinsLogin(page);
+
+    if (!process.env.JTM_E2E_NO_RESET) {
+      const reset = await postJtmReset(page);
+      expect(reset.ok, `JTM reset failed (HTTP ${reset.status})`).toBeTruthy();
+    }
+
+    await page.goto('/jtm/runs/newrun');
+    await page.locator('#name').fill('E2E Delete Me');
+    await page.getByRole('button', { name: 'Create test run' }).click();
+    await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
+    const runUrl = page.url();
+    const runName = 'E2E Delete Me';
+
+    await page.goto(runUrl);
+    page.once('dialog', (d) => d.accept());
+    await page.getByRole('button', { name: 'Delete run' }).click();
+    await expect(page).toHaveURL(/\/jtm\/runs\/?/);
+
+    await page.goto('/jtm/runs/');
+    await expect(page.getByRole('link', { name: runName })).toHaveCount(0);
+  });
+
+  test('run detail: remove from run unlinks case', async ({ page }) => {
+    await jenkinsLogin(page);
+
+    if (!process.env.JTM_E2E_NO_RESET) {
+      const reset = await postJtmReset(page);
+      expect(reset.ok, `JTM reset failed (HTTP ${reset.status})`).toBeTruthy();
+    }
+
+    await page.goto('/jtm/testcases/newcase');
+    await page.locator('#title').fill('E2E Unlink A');
+    await page.getByRole('button', { name: 'Create Test Case' }).click();
+    await expect(page).toHaveURL(/\/jtm\/testcases\/TC-/);
+    const aMatch = page.url().match(/\/jtm\/testcases\/(TC-[^/]+)\//);
+    expect(aMatch).toBeTruthy();
+    const idA = aMatch![1];
+
+    await page.goto('/jtm/testcases/newcase');
+    await page.locator('#title').fill('E2E Unlink B');
+    await page.getByRole('button', { name: 'Create Test Case' }).click();
+    await expect(page).toHaveURL(/\/jtm\/testcases\/TC-/);
+    const bMatch = page.url().match(/\/jtm\/testcases\/(TC-[^/]+)\//);
+    expect(bMatch).toBeTruthy();
+    const idB = bMatch![1];
+
+    await page.goto('/jtm/runs/newrun');
+    await page.locator('#name').fill('E2E Unlink Run');
+    await page.locator(`input[name="linkedTestCaseId"][value="${idA}"]`).check();
+    await page.locator(`input[name="linkedTestCaseId"][value="${idB}"]`).check();
+    await page.getByRole('button', { name: 'Create test run' }).click();
+    await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
+
+    await expect(page.locator('.jtm-linked-matrix tbody tr')).toHaveCount(2);
+
+    page.once('dialog', (d) => d.accept());
+    await page.getByRole('button', { name: 'Remove from run' }).first().click();
+    await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
+
+    await expect(page.locator('.jtm-linked-matrix tbody tr')).toHaveCount(1);
+  });
+
+  test('import JSON seed populates many test cases', async ({ page }) => {
+    await jenkinsLogin(page);
+    if (!process.env.JTM_E2E_NO_RESET) {
+      const reset = await postJtmReset(page);
+      expect(reset.ok, `JTM reset failed (HTTP ${reset.status})`).toBeTruthy();
+    }
+    await page.goto('/jtm/');
+    const json = readFileSync(join(__dirname, '../fixtures/jtm-seed-import.json'), 'utf8');
+    const res = await importBundleViaFormPost(page, json, 'jtm-seed-import.json');
+    expect([200, 302]).toContain(res.status);
+    await page.goto('/jtm/testcases/?project=E2E-Seed&q=TC-SEED-001');
+    await expect(page.getByRole('link', { name: 'TC-SEED-001' })).toBeVisible();
+    await page.goto('/jtm/testcases/?project=E2E-Seed&q=TC-SEED-030');
+    await expect(page.getByRole('link', { name: 'TC-SEED-030' })).toBeVisible();
+  });
+
+  test('import CSV seed populates many test cases', async ({ page }) => {
+    await jenkinsLogin(page);
+    if (!process.env.JTM_E2E_NO_RESET) {
+      const reset = await postJtmReset(page);
+      expect(reset.ok, `JTM reset failed (HTTP ${reset.status})`).toBeTruthy();
+    }
+    await page.goto('/jtm/');
+    const csv = readFileSync(join(__dirname, '../fixtures/jtm-demo.csv'), 'utf8');
+    const res = await importBundleViaFormPost(page, csv, 'jtm-demo.csv');
+    expect([200, 302]).toContain(res.status);
+    await page.goto('/jtm/testcases/?project=WebApp&q=TC-CSV-001');
+    await expect(page.getByRole('link', { name: 'TC-001' })).toBeVisible();
+    await page.goto('/jtm/testcases/?project=WebApp&q=TC-CSV-029');
+    await expect(page.getByRole('link', { name: 'TC-029' })).toBeVisible();
+  });
+
+  test('dashboard: project apply keeps scope in navigation', async ({ page }) => {
+    await jenkinsLogin(page);
+
+    await page.goto('/jtm/');
+    const projectSelect = page.locator('#jtm-dash-project');
+    await expect(projectSelect).toBeVisible();
+    const opt = projectSelect.locator('option[value]').filter({ hasNotText: 'All projects' }).first();
+    if ((await opt.count()) === 0) {
+      test.skip();
+    }
+    const val = await opt.getAttribute('value');
+    expect(val).toBeTruthy();
+    await Promise.all([
+      page.waitForURL(new RegExp(`[?&]project=${encodeURIComponent(val!)}`)),
+      projectSelect.selectOption(val!),
+    ]);
+  });
+});

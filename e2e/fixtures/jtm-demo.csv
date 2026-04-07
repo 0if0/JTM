@@ -1,0 +1,31 @@
+id,title,description,type,priority,risk,lifecycleStatus,projectKey,tags,steps
+TC-001,Login with valid credentials,User can log in with correct credentials,AUTOMATED,MEDIUM,MEDIUM,READY,WebApp,login;auth,Open login page=>Form visible|Enter email=>Accepted|Enter password=>Accepted|Click login=>Dashboard loads|Check session=>User logged in
+TC-002,Login with incorrect password,Error message appears for invalid credentials,EXPLORATORY,HIGH,HIGH,BLOCKED,WebApp,login;negative,Open login page=>Form visible|Enter email=>OK|Enter wrong password=>Input accepted|Click login=>Error message appears|Check text=>Correct
+TC-003,Logout functionality,User can log out,AUTOMATED,LOW,MEDIUM,READY,WebApp,logout;auth,Be logged in=>Session active|Click logout=>Action executed|Redirect=>Login page|Check session=>Terminated|Click back=>No access
+TC-004,Register new user,New account can be created,MANUAL,CRITICAL,LOW,DRAFT,WebApp,registration;user,Open registration page=>Form visible|Enter data=>OK|Accept terms=>Checkbox active|Click register=>Account created|Check confirmation=>Success
+TC-005,Load product list,Category displays products correctly,AUTOMATED,MEDIUM,LOW,READY,WebApp,catalog;ui,Open category=>Page loads|Check products=>List visible|Check images=>Loaded|Check prices=>Correct|Scroll=>More products load
+TC-006,Product search,Search returns relevant results,EXPLORATORY,HIGH,MEDIUM,BLOCKED,WebApp,search;catalog,Open homepage=>OK|Enter search term=>Text visible|Start search=>Results|Check results=>Relevant|Open product=>Detail page
+TC-007,View product details,Detail page shows all information,MANUAL,MEDIUM,LOW,DRAFT,WebApp,product;ui,Open product=>Page loads|Check title=>Correct|Check price=>Correct|Check description=>Available|Check image=>Visible
+TC-008,Add to cart,Product is added,AUTOMATED,HIGH,MEDIUM,READY,WebApp,cart,Cart empty=>Initial state|Open product=>OK|Click add=>Action|Open cart=>Product present|Check quantity=>1
+TC-009,Edit cart,Quantity can be changed,MANUAL,MEDIUM,LOW,DRAFT,WebApp,cart,Open cart=>Product present|Increase quantity=>Value changed|Save=>Update applied|Check price=>Updated|Reload page=>Persisted
+TC-010,Remove product,Product can be removed,EXPLORATORY,LOW,LOW,READY,WebApp,cart;negative,Open cart=>Product present|Click remove=>Action|Check cart=>Empty|Check price=>0|Check UI=>Message visible
+TC-011,Start checkout,User can initiate checkout,AUTOMATED,HIGH,MEDIUM,READY,WebApp,checkout,Cart filled=>OK|Click checkout=>Checkout|Check page=>Form visible|Check steps=>Available|Click next=>Next step
+TC-012,Enter address,Shipping address can be saved,MANUAL,MEDIUM,LOW,DRAFT,WebApp,checkout;address,Open checkout=>Form|Enter address=>OK|Save=>Saved|Check validation=>No errors|Next=>Next step
+TC-013,Process payment,Payment with valid data,CRITICAL,HIGH,MEDIUM,READY,WebApp,payment;checkout,Select payment=>Method active|Enter data=>OK|Click order=>Processing|Confirmation=>Success|Order number=>Displayed
+TC-014,Payment declined,Error occurs for invalid payment,EXPLORATORY,HIGH,HIGH,BLOCKED,WebApp,payment;negative,Select payment=>OK|Invalid data=>Input|Order=>Error|Error message=>Visible|Retry=>Possible
+TC-015,Display order confirmation,Order is confirmed,AUTOMATED,MEDIUM,LOW,READY,WebApp,order,Complete checkout=>OK|Load page=>Confirmation|Order number=>Present|Check email=>Sent|Status=>Correct
+TC-016,View order history,User sees past orders,MANUAL,LOW,LOW,DRAFT,WebApp,order;profile,Open profile=>OK|Orders=>List|Check entry=>Present|Open details=>Correct|Check date=>Correct
+TC-017,Edit profile,User can update data,EXPLORATORY,MEDIUM,LOW,READY,WebApp,profile,Open profile=>Data visible|Edit=>Input|Save=>Success|Reload=>Persisted|Message=>Visible
+TC-018,Change password,User can change password,AUTOMATED,HIGH,MEDIUM,READY,WebApp,security;password,Open settings=>OK|Old password=>Input|New password=>Input|Save=>Success|Test login=>Works
+TC-019,Forgot password,Reset process works,MANUAL,HIGH,LOW,DRAFT,WebApp,password;reset,Open login=>OK|Click link=>Reset|Enter email=>Sent|Open link=>Form|New password=>Set
+TC-020,Session timeout,Automatic logout after inactivity,EXPLORATORY,CRITICAL,HIGH,BLOCKED,WebApp,session;security,Logged in=>OK|Wait=>Timeout|Action=>Error|Redirect=>Login|Login=>Possible again
+TC-021,Responsive design,UI works on mobile,AUTOMATED,LOW,MEDIUM,READY,WebApp,ui;mobile,Open page=>Mobile view|Check layout=>Correct|Navigation=>Works|Scroll=>OK|Buttons=>Clickable
+TC-022,Browser compatibility,App runs in multiple browsers,MANUAL,MEDIUM,LOW,DRAFT,WebApp,ui;browser,Open Chrome=>OK|Open Firefox=>OK|Open Edge=>OK|Check UI=>Consistent|Function=>Same
+TC-023,Homepage performance,Load time is acceptable,EXPLORATORY,MEDIUM,HIGH,READY,WebApp,performance,Load homepage=>Measure time|Check threshold=>OK|Check assets=>Loaded|Caching=>Active|Reload=>Faster
+TC-024,Display error page,404 page is shown correctly,MANUAL,LOW,LOW,DRAFT,WebApp,error;ui,Open invalid URL=>Access|Page=>404|Check text=>Correct|Navigation=>Back possible|Design=>Consistent
+TC-025,Use search filters,Filters refine results,AUTOMATED,MEDIUM,MEDIUM,READY,WebApp,search;filter,Start search=>Results|Select filter=>Active|List=>Filtered|Remove filter=>Reset|Result=>Reset
+TC-026,Sort products,Sorting by price works,EXPLORATORY,LOW,LOW,READY,WebApp,sorting;catalog,Open category=>List|Select sorting=>Price|Check list=>Sorted|Change order=>Reversed|Check=>Correct
+TC-027,Add to wishlist,Add product to wishlist,MANUAL,MEDIUM,LOW,DRAFT,WebApp,wishlist,Open product=>OK|Click wishlist=>Action|Open list=>Product present|Reload=>Persisted|Remove=>Works
+TC-028,Email validation,Invalid email is detected,AUTOMATED,HIGH,MEDIUM,READY,WebApp,validation;auth,Open form=>OK|Invalid email=>Input|Submit=>Error|Message=>Visible|Correction=>Accepted
+TC-029,Login security check,Multiple failed attempts block login,EXPLORATORY,CRITICAL,HIGH,BLOCKED,WebApp,security;auth,Open login=>OK|Multiple wrong attempts=>Tries|Reach limit=>Blocked|Message=>Visible|Timeout=>Reset
+TC-030,API response time,Backend responds quickly,AUTOMATED,HIGH,MEDIUM,READY,WebApp,api;performance,Send request=>API call|Measure time=>Below limit|Check response=>200 OK|Check data=>Correct|Load test=>Stable

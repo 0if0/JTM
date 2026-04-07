@@ -1,0 +1,219 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:h="/lib/hudson">
+  <l:layout title="New Test Case — JTM">
+    <l:side-panel>
+      <l:tasks>
+        <l:task icon="symbol-list-outline plugin-ionicons-api" href="${request.contextPath}/jtm${it.projectUrlQuery}" title="Dashboard"/>
+        <l:task icon="symbol-checkbox-outline plugin-ionicons-api" href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}" title="Test Cases"/>
+        <l:task icon="symbol-play-circle-outline plugin-ionicons-api" href="${request.contextPath}/jtm/runs${it.projectUrlQuery}" title="Test Runs"/>
+        <l:task icon="symbol-flash-outline plugin-ionicons-api" href="${request.contextPath}/jtm/runs/newrun${it.projectUrlQuery}" title="New Test Run"/>
+        <l:task icon="symbol-add-circle-outline plugin-ionicons-api" href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}" title="New Test Case"/>
+      </l:tasks>
+    </l:side-panel>
+    <l:main-panel>
+
+      <div id="breadcrumbBar" class="jtm-nc-bc">
+        <a href="${request.contextPath}/">Jenkins</a>
+        <span class="jtm-nc-bc__sep" aria-hidden="true">/</span>
+        <a href="${request.contextPath}/jtm/">JTM Testmanagement</a>
+        <span class="jtm-nc-bc__sep" aria-hidden="true">/</span>
+        <a href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}">Test Cases</a>
+        <span class="jtm-nc-bc__sep" aria-hidden="true">/</span>
+        <span class="jtm-nc-bc__here">New case</span>
+      </div>
+
+      <header class="jtm-nc-hero">
+        <p class="jtm-nc-hero__eyebrow">Catalog</p>
+        <h1 class="jtm-nc-hero__title">New test case</h1>
+        <p class="jtm-nc-hero__lead">Define title, classification, and optional steps. You can refine everything later.</p>
+      </header>
+
+      <j:if test="${request.getParameter('error') == 'title_required'}">
+        <div class="jtm-nc-alert" role="alert">
+          <span class="jtm-nc-alert__icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          </span>
+          <p>Title is required.</p>
+        </div>
+      </j:if>
+
+      <div class="jtm-nc-panel">
+        <form method="POST" action="${request.contextPath}/jtm/savecase" class="jtm-nc-form">
+          <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
+
+          <div class="jtm-nc-field">
+            <label for="title">Title <span class="jtm-nc-req" aria-hidden="true">*</span></label>
+            <input type="text" id="title" name="title" required="required" autofocus="autofocus"
+                   class="jenkins-input" placeholder="e.g. User can log in with valid credentials"/>
+            <span class="jtm-nc-hint">Short, descriptive name for this test case.</span>
+          </div>
+
+          <div class="jtm-nc-row">
+            <div class="jtm-nc-field">
+              <label for="type">Type</label>
+              <select id="type" name="type" class="jenkins-select jtm-nc-select">
+                <option value="MANUAL" selected="selected">Manual</option>
+                <option value="AUTOMATED">Automated</option>
+                <option value="EXPLORATORY">Exploratory</option>
+              </select>
+            </div>
+            <div class="jtm-nc-field">
+              <label for="priority">Priority</label>
+              <select id="priority" name="priority" class="jenkins-select jtm-nc-select">
+                <option value="LOW">Low</option>
+                <option value="MEDIUM" selected="selected">Medium</option>
+                <option value="HIGH">High</option>
+                <option value="CRITICAL">Critical</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="jtm-nc-field">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="4" class="jenkins-input"
+                      placeholder="Optional: describe what this test case verifies…"></textarea>
+          </div>
+
+          <div class="jtm-nc-field">
+            <label for="tags">Tags</label>
+            <input type="text" id="tags" name="tags" class="jenkins-input"
+                   placeholder="e.g. login, auth, smoke (comma-separated)"/>
+          </div>
+
+          <div class="jtm-nc-field">
+            <label for="projectKey">Project</label>
+            <select id="projectKey" name="projectKey" class="jenkins-select jtm-nc-select">
+              <j:choose>
+                <j:when test="${it.projectKeySelection == ''}">
+                  <option value="" selected="selected">— None —</option>
+                </j:when>
+                <j:otherwise>
+                  <option value="">— None —</option>
+                </j:otherwise>
+              </j:choose>
+              <j:forEach var="pk" items="${it.projectKeySelectOptions}">
+                <j:choose>
+                  <j:when test="${it.projectKeySelection == pk}">
+                    <option value="${pk}" selected="selected">${pk}</option>
+                  </j:when>
+                  <j:otherwise>
+                    <option value="${pk}">${pk}</option>
+                  </j:otherwise>
+                </j:choose>
+              </j:forEach>
+            </select>
+            <span class="jtm-nc-hint">Weitere Projekte legst du auf dem <a href="${request.contextPath}/jtm/">Dashboard</a> an.</span>
+          </div>
+
+          <div class="jtm-nc-steps" id="steps">
+            <h2 class="jtm-nc-steps__title">Test steps</h2>
+            <p class="jtm-nc-hint jtm-nc-steps__intro">Optional. Add rows with <strong>Add step</strong>. Empty rows are ignored on save.</p>
+            <div class="jtm-nc-steps-table-wrap">
+              <table class="jenkins-table jtm-nc-steps-table">
+                <thead>
+                  <tr>
+                    <th scope="col" class="jtm-nc-steps-col-num">#</th>
+                    <th scope="col">Action</th>
+                    <th scope="col">Expected result</th>
+                    <th scope="col" class="jtm-nc-steps-col-actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="jtm-step-rows">
+                  <tr class="jtm-step-row">
+                    <td class="jtm-nc-mono jtm-step-num">1</td>
+                    <td><input type="text" name="stepAction" class="jenkins-input jtm-nc-step-input" placeholder="e.g. Open login page"/></td>
+                    <td><input type="text" name="stepExpected" class="jenkins-input jtm-nc-step-input" placeholder="e.g. Form is visible"/></td>
+                    <td class="jtm-step-actions-cell">
+                      <button type="button" class="jenkins-button jtm-nc-step-btn jtm-step-del" title="Remove step">Delete</button>
+                      <button type="button" class="jenkins-button jtm-nc-step-btn jtm-step-add-btn" title="Add step">+ Add</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="jtm-nc-actions">
+            <button type="submit" class="jenkins-button jenkins-button--primary jtm-nc-submit">Create test case</button>
+            <a href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}" class="jenkins-button">Cancel</a>
+          </div>
+        </form>
+      </div>
+
+      <style>
+        .jtm-nc-bc { font-size: 12px; color: var(--text-color-secondary); margin-bottom: 8px; }
+        .jtm-nc-bc__sep { margin: 0 6px; opacity: 0.55; }
+        .jtm-nc-bc__here { color: var(--text-color); font-weight: 600; }
+        .jtm-nc-hero { margin-bottom: 16px; }
+        .jtm-nc-hero__eyebrow { margin: 0 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-color-secondary); }
+        .jtm-nc-hero__title { margin: 0; font-size: 1.55rem; font-weight: 750; letter-spacing: -0.02em; color: var(--text-color); }
+        .jtm-nc-hero__lead { margin: 8px 0 0; max-width: 42rem; font-size: 14px; line-height: 1.45; color: var(--text-color-secondary); }
+        .jtm-nc-alert {
+          display: flex; gap: 12px; align-items: flex-start; max-width: 720px; margin-bottom: 16px;
+          padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(220, 38, 38, 0.45);
+          background: rgba(220, 38, 38, 0.08); color: #b91c1c; font-size: 13px; font-weight: 600;
+        }
+        .jtm-nc-alert p { margin: 0; }
+        .jtm-nc-alert__icon { flex-shrink: 0; margin-top: 1px; }
+        .jtm-nc-panel {
+          max-width: 900px; border-radius: 12px; border: 1px solid var(--medium-grey);
+          background: var(--background); box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 40px; overflow: hidden;
+        }
+        .jtm-nc-form { padding: 22px 24px 24px; }
+        .jtm-nc-field { margin-bottom: 18px; }
+        .jtm-nc-field label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; color: var(--text-color); }
+        .jtm-nc-req { color: #dc2626; font-weight: 700; }
+        .jtm-nc-hint { display: block; font-size: 12px; color: var(--text-color-secondary); margin-top: 6px; line-height: 1.35; }
+        .jtm-nc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 560px) { .jtm-nc-row { grid-template-columns: 1fr; } }
+        .jtm-nc-select, .jtm-nc-form .jenkins-input { width: 100%; box-sizing: border-box; border-radius: 8px; }
+        textarea.jenkins-input { font-family: inherit; resize: vertical; min-height: 5rem; }
+        .jtm-nc-steps { margin-top: 8px; padding-top: 20px; border-top: 1px solid var(--medium-grey); }
+        .jtm-nc-steps__title { margin: 0 0 6px; font-size: 15px; font-weight: 700; color: var(--text-color); }
+        .jtm-nc-steps__intro { margin-bottom: 12px; }
+        .jtm-nc-steps-table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--medium-grey); background: var(--panel-header-bg-dark); }
+        .jtm-nc-steps-table { width: 100%; margin: 0; }
+        .jtm-nc-steps-col-num { width: 3rem; }
+        .jtm-nc-steps-col-actions { width: 11rem; white-space: nowrap; }
+        .jtm-nc-mono { font-family: var(--font-family-mono); font-size: 12px; color: var(--text-color-secondary); }
+        .jtm-nc-step-input { width: 100%; min-width: 8rem; }
+        .jtm-step-actions-cell { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+        .jtm-nc-step-btn { padding: 0.28rem 0.5rem; font-size: 12px; border-radius: 6px; }
+        .jtm-nc-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--medium-grey); }
+        .jtm-nc-submit { border-radius: 8px; font-weight: 600; }
+      </style>
+
+      <script><![CDATA[
+(function () {
+  var tb = document.getElementById('jtm-step-rows');
+  if (!tb) return;
+  function renumber() {
+    var rows = tb.querySelectorAll('.jtm-step-row');
+    for (var i = 0; i < rows.length; i++) {
+      var num = rows[i].querySelector('.jtm-step-num');
+      if (num) num.textContent = String(i + 1);
+    }
+  }
+  tb.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest && e.target.closest('.jtm-step-del');
+    if (!btn) return;
+    var tr = btn.closest('.jtm-step-row');
+    if (!tr || tb.querySelectorAll('.jtm-step-row').length <= 1) return;
+    tr.remove();
+    renumber();
+  });
+  tb.addEventListener('click', function (e) {
+    var addBtn = e.target && e.target.closest && e.target.closest('.jtm-step-add-btn');
+    if (!addBtn) return;
+    var first = tb.querySelector('.jtm-step-row');
+    if (!first) return;
+    var clone = first.cloneNode(true);
+    clone.querySelectorAll('input').forEach(function (inp) { inp.value = ''; });
+    tb.appendChild(clone);
+    renumber();
+  });
+})();
+      ]]></script>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>

@@ -1,0 +1,28 @@
+# Maven (plugin)
+jtm-plugin/target/
+jtm-plugin/.flattened-pom.xml
+jtm-plugin/hpi-temp/
+jtm-plugin/work/
+
+# IDE
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# E2E (also see e2e/.gitignore)
+e2e/node_modules/
+
+# Local Maven repo override (some CI setups)
+.m2/

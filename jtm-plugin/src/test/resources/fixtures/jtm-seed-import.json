@@ -1,0 +1,1715 @@
+{
+  "version": 1,
+  "testCases": [
+    {
+      "id": "TC-SEED-001",
+      "title": "Seed scenario 1 — Checkout",
+      "description": "Imported demo case 1 for manual and E2E testing.",
+      "type": "AUTOMATED",
+      "priority": "MEDIUM",
+      "risk": "MEDIUM",
+      "lifecycleStatus": "READY",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch2",
+        "prio-medium"
+      ],
+      "steps": [
+        {
+          "action": "Case 1 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 1 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 1 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 1 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 1 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 1 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 1 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 1 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 1 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 1 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-002",
+      "title": "Seed scenario 2 — API",
+      "description": "Imported demo case 2 for manual and E2E testing.",
+      "type": "EXPLORATORY",
+      "priority": "HIGH",
+      "risk": "HIGH",
+      "lifecycleStatus": "BLOCKED",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch3",
+        "prio-high"
+      ],
+      "steps": [
+        {
+          "action": "Case 2 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 2 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 2 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 2 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 2 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 2 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 2 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 2 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 2 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 2 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-003",
+      "title": "Seed scenario 3 — Report",
+      "description": "Imported demo case 3 for manual and E2E testing.",
+      "type": "MANUAL",
+      "priority": "CRITICAL",
+      "risk": "LOW",
+      "lifecycleStatus": "DRAFT",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch1",
+        "prio-critical"
+      ],
+      "steps": [
+        {
+          "action": "Case 3 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 3 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 3 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 3 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 3 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 3 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 3 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 3 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 3 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 3 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-004",
+      "title": "Seed scenario 4 — Search",
+      "description": "Imported demo case 4 for manual and E2E testing.",
+      "type": "AUTOMATED",
+      "priority": "LOW",
+      "risk": "MEDIUM",
+      "lifecycleStatus": "READY",
+      "projectKey": "",
+      "tags": [
+        "seed",
+        "batch2",
+        "prio-low"
+      ],
+      "steps": [
+        {
+          "action": "Case 4 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 4 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 4 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 4 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 4 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 4 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 4 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 4 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 4 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 4 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-005",
+      "title": "Seed scenario 5 — Login",
+      "description": "Imported demo case 5 for manual and E2E testing.",
+      "type": "EXPLORATORY",
+      "priority": "MEDIUM",
+      "risk": "HIGH",
+      "lifecycleStatus": "BLOCKED",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch3",
+        "prio-medium"
+      ],
+      "steps": [
+        {
+          "action": "Case 5 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 5 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 5 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 5 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 5 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 5 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 5 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 5 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 5 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 5 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-006",
+      "title": "Seed scenario 6 — Checkout",
+      "description": "Imported demo case 6 for manual and E2E testing.",
+      "type": "MANUAL",
+      "priority": "HIGH",
+      "risk": "LOW",
+      "lifecycleStatus": "DRAFT",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch1",
+        "prio-high"
+      ],
+      "steps": [
+        {
+          "action": "Case 6 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 6 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 6 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 6 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 6 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 6 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 6 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 6 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 6 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 6 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-007",
+      "title": "Seed scenario 7 — API",
+      "description": "Imported demo case 7 for manual and E2E testing.",
+      "type": "AUTOMATED",
+      "priority": "CRITICAL",
+      "risk": "MEDIUM",
+      "lifecycleStatus": "READY",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch2",
+        "prio-critical"
+      ],
+      "steps": [
+        {
+          "action": "Case 7 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 7 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 7 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 7 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 7 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 7 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 7 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 7 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 7 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 7 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-008",
+      "title": "Seed scenario 8 — Report",
+      "description": "Imported demo case 8 for manual and E2E testing.",
+      "type": "EXPLORATORY",
+      "priority": "LOW",
+      "risk": "HIGH",
+      "lifecycleStatus": "BLOCKED",
+      "projectKey": "",
+      "tags": [
+        "seed",
+        "batch3",
+        "prio-low"
+      ],
+      "steps": [
+        {
+          "action": "Case 8 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 8 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 8 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 8 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 8 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 8 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 8 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 8 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 8 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 8 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-009",
+      "title": "Seed scenario 9 — Search",
+      "description": "Imported demo case 9 for manual and E2E testing.",
+      "type": "MANUAL",
+      "priority": "MEDIUM",
+      "risk": "LOW",
+      "lifecycleStatus": "DRAFT",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch1",
+        "prio-medium"
+      ],
+      "steps": [
+        {
+          "action": "Case 9 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 9 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 9 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 9 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 9 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 9 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 9 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 9 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 9 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 9 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-010",
+      "title": "Seed scenario 10 — Login",
+      "description": "Imported demo case 10 for manual and E2E testing.",
+      "type": "AUTOMATED",
+      "priority": "HIGH",
+      "risk": "MEDIUM",
+      "lifecycleStatus": "READY",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch2",
+        "prio-high"
+      ],
+      "steps": [
+        {
+          "action": "Case 10 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 10 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 10 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 10 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 10 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 10 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 10 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 10 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 10 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 10 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-011",
+      "title": "Seed scenario 11 — Checkout",
+      "description": "Imported demo case 11 for manual and E2E testing.",
+      "type": "EXPLORATORY",
+      "priority": "CRITICAL",
+      "risk": "HIGH",
+      "lifecycleStatus": "BLOCKED",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch3",
+        "prio-critical"
+      ],
+      "steps": [
+        {
+          "action": "Case 11 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 11 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 11 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 11 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 11 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 11 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 11 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 11 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 11 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 11 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-012",
+      "title": "Seed scenario 12 — API",
+      "description": "Imported demo case 12 for manual and E2E testing.",
+      "type": "MANUAL",
+      "priority": "LOW",
+      "risk": "LOW",
+      "lifecycleStatus": "DRAFT",
+      "projectKey": "",
+      "tags": [
+        "seed",
+        "batch1",
+        "prio-low"
+      ],
+      "steps": [
+        {
+          "action": "Case 12 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 12 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 12 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 12 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 12 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 12 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 12 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 12 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 12 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 12 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-013",
+      "title": "Seed scenario 13 — Report",
+      "description": "Imported demo case 13 for manual and E2E testing.",
+      "type": "AUTOMATED",
+      "priority": "MEDIUM",
+      "risk": "MEDIUM",
+      "lifecycleStatus": "READY",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch2",
+        "prio-medium"
+      ],
+      "steps": [
+        {
+          "action": "Case 13 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 13 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 13 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 13 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 13 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 13 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 13 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 13 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 13 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 13 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-014",
+      "title": "Seed scenario 14 — Search",
+      "description": "Imported demo case 14 for manual and E2E testing.",
+      "type": "EXPLORATORY",
+      "priority": "HIGH",
+      "risk": "HIGH",
+      "lifecycleStatus": "BLOCKED",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch3",
+        "prio-high"
+      ],
+      "steps": [
+        {
+          "action": "Case 14 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 14 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 14 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 14 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 14 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 14 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 14 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 14 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 14 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 14 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-015",
+      "title": "Seed scenario 15 — Login",
+      "description": "Imported demo case 15 for manual and E2E testing.",
+      "type": "MANUAL",
+      "priority": "CRITICAL",
+      "risk": "LOW",
+      "lifecycleStatus": "DRAFT",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch1",
+        "prio-critical"
+      ],
+      "steps": [
+        {
+          "action": "Case 15 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 15 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 15 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 15 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 15 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 15 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 15 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 15 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 15 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 15 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-016",
+      "title": "Seed scenario 16 — Checkout",
+      "description": "Imported demo case 16 for manual and E2E testing.",
+      "type": "AUTOMATED",
+      "priority": "LOW",
+      "risk": "MEDIUM",
+      "lifecycleStatus": "READY",
+      "projectKey": "",
+      "tags": [
+        "seed",
+        "batch2",
+        "prio-low"
+      ],
+      "steps": [
+        {
+          "action": "Case 16 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 16 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 16 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 16 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 16 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 16 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 16 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 16 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 16 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 16 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-017",
+      "title": "Seed scenario 17 — API",
+      "description": "Imported demo case 17 for manual and E2E testing.",
+      "type": "EXPLORATORY",
+      "priority": "MEDIUM",
+      "risk": "HIGH",
+      "lifecycleStatus": "BLOCKED",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch3",
+        "prio-medium"
+      ],
+      "steps": [
+        {
+          "action": "Case 17 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 17 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 17 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 17 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 17 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 17 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 17 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 17 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 17 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 17 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-018",
+      "title": "Seed scenario 18 — Report",
+      "description": "Imported demo case 18 for manual and E2E testing.",
+      "type": "MANUAL",
+      "priority": "HIGH",
+      "risk": "LOW",
+      "lifecycleStatus": "DRAFT",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch1",
+        "prio-high"
+      ],
+      "steps": [
+        {
+          "action": "Case 18 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 18 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 18 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 18 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 18 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 18 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 18 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 18 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 18 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 18 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-019",
+      "title": "Seed scenario 19 — Search",
+      "description": "Imported demo case 19 for manual and E2E testing.",
+      "type": "AUTOMATED",
+      "priority": "CRITICAL",
+      "risk": "MEDIUM",
+      "lifecycleStatus": "READY",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch2",
+        "prio-critical"
+      ],
+      "steps": [
+        {
+          "action": "Case 19 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 19 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 19 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 19 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 19 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 19 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 19 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 19 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 19 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 19 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-020",
+      "title": "Seed scenario 20 — Login",
+      "description": "Imported demo case 20 for manual and E2E testing.",
+      "type": "EXPLORATORY",
+      "priority": "LOW",
+      "risk": "HIGH",
+      "lifecycleStatus": "BLOCKED",
+      "projectKey": "",
+      "tags": [
+        "seed",
+        "batch3",
+        "prio-low"
+      ],
+      "steps": [
+        {
+          "action": "Case 20 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 20 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 20 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 20 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 20 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 20 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 20 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 20 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 20 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 20 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-021",
+      "title": "Seed scenario 21 — Checkout",
+      "description": "Imported demo case 21 for manual and E2E testing.",
+      "type": "MANUAL",
+      "priority": "MEDIUM",
+      "risk": "LOW",
+      "lifecycleStatus": "DRAFT",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch1",
+        "prio-medium"
+      ],
+      "steps": [
+        {
+          "action": "Case 21 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 21 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 21 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 21 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 21 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 21 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 21 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 21 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 21 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 21 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-022",
+      "title": "Seed scenario 22 — API",
+      "description": "Imported demo case 22 for manual and E2E testing.",
+      "type": "AUTOMATED",
+      "priority": "HIGH",
+      "risk": "MEDIUM",
+      "lifecycleStatus": "READY",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch2",
+        "prio-high"
+      ],
+      "steps": [
+        {
+          "action": "Case 22 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 22 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 22 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 22 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 22 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 22 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 22 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 22 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 22 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 22 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-023",
+      "title": "Seed scenario 23 — Report",
+      "description": "Imported demo case 23 for manual and E2E testing.",
+      "type": "EXPLORATORY",
+      "priority": "CRITICAL",
+      "risk": "HIGH",
+      "lifecycleStatus": "BLOCKED",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch3",
+        "prio-critical"
+      ],
+      "steps": [
+        {
+          "action": "Case 23 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 23 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 23 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 23 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 23 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 23 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 23 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 23 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 23 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 23 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-024",
+      "title": "Seed scenario 24 — Search",
+      "description": "Imported demo case 24 for manual and E2E testing.",
+      "type": "MANUAL",
+      "priority": "LOW",
+      "risk": "LOW",
+      "lifecycleStatus": "DRAFT",
+      "projectKey": "",
+      "tags": [
+        "seed",
+        "batch1",
+        "prio-low"
+      ],
+      "steps": [
+        {
+          "action": "Case 24 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 24 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 24 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 24 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 24 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 24 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 24 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 24 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 24 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 24 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-025",
+      "title": "Seed scenario 25 — Login",
+      "description": "Imported demo case 25 for manual and E2E testing.",
+      "type": "AUTOMATED",
+      "priority": "MEDIUM",
+      "risk": "MEDIUM",
+      "lifecycleStatus": "READY",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch2",
+        "prio-medium"
+      ],
+      "steps": [
+        {
+          "action": "Case 25 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 25 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 25 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 25 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 25 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 25 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 25 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 25 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 25 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 25 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-026",
+      "title": "Seed scenario 26 — Checkout",
+      "description": "Imported demo case 26 for manual and E2E testing.",
+      "type": "EXPLORATORY",
+      "priority": "HIGH",
+      "risk": "HIGH",
+      "lifecycleStatus": "BLOCKED",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch3",
+        "prio-high"
+      ],
+      "steps": [
+        {
+          "action": "Case 26 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 26 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 26 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 26 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 26 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 26 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 26 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 26 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 26 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 26 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-027",
+      "title": "Seed scenario 27 — API",
+      "description": "Imported demo case 27 for manual and E2E testing.",
+      "type": "MANUAL",
+      "priority": "CRITICAL",
+      "risk": "LOW",
+      "lifecycleStatus": "DRAFT",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch1",
+        "prio-critical"
+      ],
+      "steps": [
+        {
+          "action": "Case 27 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 27 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 27 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 27 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 27 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 27 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 27 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 27 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 27 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 27 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-028",
+      "title": "Seed scenario 28 — Report",
+      "description": "Imported demo case 28 for manual and E2E testing.",
+      "type": "AUTOMATED",
+      "priority": "LOW",
+      "risk": "MEDIUM",
+      "lifecycleStatus": "READY",
+      "projectKey": "",
+      "tags": [
+        "seed",
+        "batch2",
+        "prio-low"
+      ],
+      "steps": [
+        {
+          "action": "Case 28 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 28 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 28 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 28 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 28 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 28 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 28 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 28 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 28 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 28 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-029",
+      "title": "Seed scenario 29 — Search",
+      "description": "Imported demo case 29 for manual and E2E testing.",
+      "type": "EXPLORATORY",
+      "priority": "MEDIUM",
+      "risk": "HIGH",
+      "lifecycleStatus": "BLOCKED",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch3",
+        "prio-medium"
+      ],
+      "steps": [
+        {
+          "action": "Case 29 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 29 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 29 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 29 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 29 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 29 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 29 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 29 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 29 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 29 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    },
+    {
+      "id": "TC-SEED-030",
+      "title": "Seed scenario 30 — Login",
+      "description": "Imported demo case 30 for manual and E2E testing.",
+      "type": "MANUAL",
+      "priority": "HIGH",
+      "risk": "LOW",
+      "lifecycleStatus": "DRAFT",
+      "projectKey": "E2E-Seed",
+      "tags": [
+        "seed",
+        "batch1",
+        "prio-high"
+      ],
+      "steps": [
+        {
+          "action": "Case 30 — Step 1: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 30 — Step 2: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 30 — Step 3: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 30 — Step 4: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 30 — Step 5: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 30 — Step 6: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 30 — Step 7: perform action",
+          "expectedResult": "Success state"
+        },
+        {
+          "action": "Case 30 — Step 8: perform action",
+          "expectedResult": "UI updates"
+        },
+        {
+          "action": "Case 30 — Step 9: perform action",
+          "expectedResult": "System shows warning"
+        },
+        {
+          "action": "Case 30 — Step 10: perform action",
+          "expectedResult": "UI updates"
+        }
+      ]
+    }
+  ]
+}

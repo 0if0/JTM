@@ -1,0 +1,260 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:h="/lib/hudson">
+  <l:layout title="New Test Run — JTM">
+    <l:side-panel>
+      <l:tasks>
+        <l:task icon="symbol-list-outline plugin-ionicons-api" href="${request.contextPath}/jtm${it.projectUrlQuery}" title="Dashboard"/>
+        <l:task icon="symbol-checkbox-outline plugin-ionicons-api" href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}" title="Test Cases"/>
+        <l:task icon="symbol-play-circle-outline plugin-ionicons-api" href="${request.contextPath}/jtm/runs${it.projectUrlQuery}" title="Test Runs"/>
+        <l:task icon="symbol-flash-outline plugin-ionicons-api" href="${request.contextPath}/jtm/runs/newrun${it.projectUrlQuery}" title="New Test Run"/>
+        <l:task icon="symbol-add-circle-outline plugin-ionicons-api" href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}" title="New Test Case"/>
+      </l:tasks>
+    </l:side-panel>
+    <l:main-panel>
+
+      <div id="breadcrumbBar" class="jtm-newrun-bc">
+        <a href="${request.contextPath}/">Jenkins</a>
+        <span class="jtm-newrun-bc__sep" aria-hidden="true">/</span>
+        <a href="${request.contextPath}/jtm/">JTM Testmanagement</a>
+        <span class="jtm-newrun-bc__sep" aria-hidden="true">/</span>
+        <a href="${request.contextPath}/jtm/runs${it.projectUrlQuery}">Test Runs</a>
+        <span class="jtm-newrun-bc__sep" aria-hidden="true">/</span>
+        <span class="jtm-newrun-bc__here">New run</span>
+      </div>
+
+      <header class="jtm-newrun-hero">
+        <p class="jtm-newrun-hero__eyebrow">Ad-hoc execution</p>
+        <h1 class="jtm-newrun-hero__title">New test run</h1>
+        <p class="jtm-newrun-hero__lead">Record manual or exploratory work. Attach results later via API or pipeline.</p>
+      </header>
+
+      <div class="jtm-newrun-callout" role="note">
+        <span class="jtm-newrun-callout__icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        <p>Status is <strong>PARTIAL</strong> until results are published.</p>
+      </div>
+
+      <div class="jtm-newrun-panel">
+        <form method="POST" action="${request.contextPath}/jtm/saverun" class="jtm-newrun-form">
+          <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
+
+          <div class="jtm-newrun-field">
+            <label for="name">Display name <span class="jtm-newrun-optional">(optional)</span></label>
+            <input type="text" id="name" name="name" class="jenkins-input"
+                   placeholder="e.g. Smoke on staging — 2026-03-28"/>
+            <span class="jtm-newrun-hint">Defaults to “Job name #build” if left empty.</span>
+          </div>
+
+          <div class="jtm-newrun-row">
+            <div class="jtm-newrun-field">
+              <label for="jobName">Job name</label>
+              <input type="text" id="jobName" name="jobName" class="jenkins-input"
+                     placeholder="manual" value="manual"/>
+              <span class="jtm-newrun-hint">Logical Jenkins job or team label.</span>
+            </div>
+            <div class="jtm-newrun-field jtm-newrun-field--narrow">
+              <label for="buildNumber">Build #</label>
+              <input type="number" id="buildNumber" name="buildNumber" class="jenkins-input" min="1" value="1"/>
+            </div>
+          </div>
+
+          <div class="jtm-newrun-field">
+            <label for="branch">Branch / ref <span class="jtm-newrun-optional">(optional)</span></label>
+            <input type="text" id="branch" name="branch" class="jenkins-input" placeholder="e.g. main"/>
+          </div>
+
+          <div class="jtm-newrun-field">
+            <label for="notes">Notes <span class="jtm-newrun-optional">(optional)</span></label>
+            <textarea id="notes" name="notes" rows="3" class="jenkins-input"
+                      placeholder="What was executed, environment, link to ticket…"></textarea>
+          </div>
+
+          <div class="jtm-newrun-field">
+            <label for="projectKey">Project</label>
+            <select id="projectKey" name="projectKey" class="jenkins-select jtm-newrun-select">
+              <j:choose>
+                <j:when test="${it.projectKeySelection == ''}">
+                  <option value="" selected="selected">— None —</option>
+                </j:when>
+                <j:otherwise>
+                  <option value="">— None —</option>
+                </j:otherwise>
+              </j:choose>
+              <j:forEach var="pk" items="${it.projectKeySelectOptions}">
+                <j:choose>
+                  <j:when test="${it.projectKeySelection == pk}">
+                    <option value="${pk}" selected="selected">${pk}</option>
+                  </j:when>
+                  <j:otherwise>
+                    <option value="${pk}">${pk}</option>
+                  </j:otherwise>
+                </j:choose>
+              </j:forEach>
+            </select>
+            <span class="jtm-newrun-hint">Weitere Projekte legst du auf dem <a href="${request.contextPath}/jtm/">Dashboard</a> an.</span>
+          </div>
+
+          <div class="jtm-newrun-field jtm-newrun-field--picker">
+            <span class="jtm-newrun-label">Test cases in this run</span>
+            <p class="jtm-newrun-picker-intro">Select cases for this run (e.g. release regression). Testers set status on the run detail page.</p>
+            <div class="jtm-newrun-picker-toolbar">
+              <div class="jtm-newrun-picker-filter">
+                <label for="jtm-newrun-type-filter">Show</label>
+                <select id="jtm-newrun-type-filter" class="jenkins-select jtm-newrun-type-filter" title="Filter by test case type">
+                  <option value="all">All types</option>
+                  <option value="manual">Manual only</option>
+                  <option value="automated">Automated only</option>
+                </select>
+              </div>
+              <label class="jtm-newrun-pick-all">
+                <input type="checkbox" id="jtm-newrun-linked-all"/>
+                <span>Select all visible</span>
+              </label>
+            </div>
+            <div class="jtm-newrun-pick">
+              <j:forEach var="tc" items="${it.testCasesForPicker}">
+                <label class="jtm-newrun-pick__row" data-jtm-type="${tc.type.name()}">
+                  <input type="checkbox" name="linkedTestCaseId" value="${tc.id}"/>
+                  <span class="jtm-newrun-mono">${tc.id}</span>
+                  <span class="jtm-newrun-pick__title">${tc.title}</span>
+                  <span class="jtm-newrun-pick__type">${tc.type}</span>
+                </label>
+              </j:forEach>
+            </div>
+          </div>
+
+          <div class="jtm-newrun-actions">
+            <button type="submit" class="jenkins-button jenkins-button--primary jtm-newrun-submit">Create test run</button>
+            <a href="${request.contextPath}/jtm/runs${it.projectUrlQuery}" class="jenkins-button">Cancel</a>
+          </div>
+        </form>
+      </div>
+
+      <style>
+        .jtm-newrun-bc { font-size: 12px; color: var(--text-color-secondary); margin-bottom: 8px; }
+        .jtm-newrun-bc__sep { margin: 0 6px; opacity: 0.55; }
+        .jtm-newrun-bc__here { color: var(--text-color); font-weight: 600; }
+
+        .jtm-newrun-hero {
+          margin-bottom: 14px; padding-bottom: 4px;
+        }
+        .jtm-newrun-hero__eyebrow { margin: 0 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-color-secondary); }
+        .jtm-newrun-hero__title { margin: 0; font-size: 1.55rem; font-weight: 750; letter-spacing: -0.02em; color: var(--text-color); }
+        .jtm-newrun-hero__lead { margin: 8px 0 0; max-width: 40rem; font-size: 14px; line-height: 1.45; color: var(--text-color-secondary); }
+
+        .jtm-newrun-callout {
+          display: flex; gap: 12px; align-items: flex-start; max-width: 720px; margin-bottom: 18px;
+          padding: 12px 14px; border-radius: 10px; border: 1px solid var(--medium-grey); border-left-width: 3px;
+          border-left-color: #2563eb;
+          background: linear-gradient(90deg, rgba(37, 99, 235, 0.08), transparent 45%);
+          font-size: 13px; line-height: 1.45; color: var(--text-color-secondary);
+        }
+        .jtm-newrun-callout p { margin: 0; }
+        .jtm-newrun-callout strong { color: var(--text-color); }
+        .jtm-newrun-callout__icon { flex-shrink: 0; margin-top: 1px; color: #2563eb; }
+
+        .jtm-newrun-panel {
+          max-width: 720px; border-radius: 12px; border: 1px solid var(--medium-grey);
+          background: var(--background); box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 40px;
+        }
+        .jtm-newrun-form { padding: 20px 22px 22px; }
+        .jtm-newrun-field { margin-bottom: 18px; }
+        .jtm-newrun-field--picker { margin-bottom: 0; padding-top: 4px; border-top: 1px solid var(--medium-grey); margin-top: 4px; padding-top: 18px; }
+        .jtm-newrun-label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 6px; color: var(--text-color); }
+        .jtm-newrun-field label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; color: var(--text-color); }
+        .jtm-newrun-optional { font-weight: 400; color: var(--text-color-secondary); font-size: 12px; }
+        .jtm-newrun-hint { display: block; font-size: 12px; color: var(--text-color-secondary); margin-top: 6px; line-height: 1.35; }
+        .jtm-newrun-form .jenkins-input { width: 100%; box-sizing: border-box; border-radius: 8px; }
+        textarea.jenkins-input { font-family: inherit; resize: vertical; min-height: 4.5rem; }
+        .jtm-newrun-select { width: 100%; max-width: 100%; border-radius: 8px; }
+        .jtm-newrun-row { display: grid; grid-template-columns: 1fr minmax(7rem, 9rem); gap: 16px; align-items: end; }
+        @media (max-width: 520px) {
+          .jtm-newrun-row { grid-template-columns: 1fr; }
+        }
+        .jtm-newrun-field--narrow .jenkins-input { text-align: left; font-variant-numeric: tabular-nums; }
+
+        .jtm-newrun-picker-intro { margin: 0 0 10px; font-size: 12px; color: var(--text-color-secondary); line-height: 1.4; }
+        .jtm-newrun-picker-toolbar {
+          display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 16px;
+          margin-bottom: 10px;
+        }
+        .jtm-newrun-picker-filter {
+          display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+        }
+        .jtm-newrun-picker-filter label { font-size: 12px; font-weight: 600; color: var(--text-color-secondary); margin: 0; }
+        .jtm-newrun-type-filter { min-width: 11rem; max-width: 100%; border-radius: 8px; }
+        .jtm-newrun-pick-all {
+          display: inline-flex; gap: 8px; align-items: center; font-size: 12px; font-weight: 600; margin: 0; cursor: pointer; user-select: none;
+        }
+        .jtm-newrun-pick {
+          max-height: 280px; overflow: auto; padding: 4px 4px 4px 0;
+          border-radius: 10px; border: 1px solid var(--medium-grey);
+          background: var(--panel-header-bg-dark);
+        }
+        .jtm-newrun-pick__row {
+          display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px;
+          padding: 10px 12px; border-bottom: 1px solid var(--medium-grey); cursor: pointer;
+        }
+        .jtm-newrun-pick__row:last-child { border-bottom: none; }
+        .jtm-newrun-pick__row input { flex-shrink: 0; margin: 0; align-self: center; }
+        .jtm-newrun-mono { font-family: var(--font-family-mono); font-size: 11px; color: var(--text-color-secondary); }
+        .jtm-newrun-pick__title { flex: 1 1 12rem; font-size: 13px; color: var(--text-color); line-height: 1.35; min-width: 0; }
+        .jtm-newrun-pick__type {
+          flex: 0 0 auto; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+          color: var(--text-color-secondary); padding: 2px 6px; border-radius: 4px; background: var(--background);
+          border: 1px solid var(--medium-grey);
+        }
+
+        .jtm-newrun-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--medium-grey); }
+        .jtm-newrun-submit { border-radius: 8px; font-weight: 600; }
+      </style>
+      <script><![CDATA[
+(function () {
+  var all = document.getElementById('jtm-newrun-linked-all');
+  var filterSel = document.getElementById('jtm-newrun-type-filter');
+
+  function rowVisible(row, mode) {
+    var t = (row.getAttribute('data-jtm-type') || '').toUpperCase();
+    if (mode === 'manual') {
+      return t === 'MANUAL' || t === 'EXPLORATORY';
+    }
+    if (mode === 'automated') {
+      return t === 'AUTOMATED';
+    }
+    return true;
+  }
+
+  function applyTypeFilter() {
+    var mode = filterSel && filterSel.value ? filterSel.value : 'all';
+    var rows = document.querySelectorAll('.jtm-newrun-pick__row');
+    rows.forEach(function (row) {
+      var show = rowVisible(row, mode);
+      row.style.display = show ? '' : 'none';
+      if (!show) {
+        var cb = row.querySelector('input[type="checkbox"]');
+        if (cb) cb.checked = false;
+      }
+    });
+    if (all) all.checked = false;
+  }
+
+  if (filterSel) {
+    filterSel.addEventListener('change', applyTypeFilter);
+  }
+
+  if (all) {
+    all.addEventListener('change', function () {
+      var rows = document.querySelectorAll('.jtm-newrun-pick__row');
+      rows.forEach(function (row) {
+        if (row.style.display === 'none') return;
+        var cb = row.querySelector('input[type="checkbox"]');
+        if (cb) cb.checked = all.checked;
+      });
+    });
+  }
+})();
+]]></script>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>

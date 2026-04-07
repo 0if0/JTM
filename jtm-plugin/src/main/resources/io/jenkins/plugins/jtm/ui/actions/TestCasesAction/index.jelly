@@ -1,0 +1,408 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/hudson/form" xmlns:i="jelly:fmt" xmlns:h="/lib/hudson">
+  <l:layout title="Test Cases — JTM">
+    <l:side-panel>
+      <l:tasks>
+        <l:task icon="symbol-list-outline plugin-ionicons-api"
+                href="${request.contextPath}/jtm${it.projectUrlQuery}" title="Dashboard"/>
+        <l:task icon="symbol-checkbox-outline plugin-ionicons-api"
+                href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}" title="Test Cases"/>
+        <l:task icon="symbol-play-circle-outline plugin-ionicons-api"
+                href="${request.contextPath}/jtm/runs${it.projectUrlQuery}" title="Test Runs"/>
+        <l:task icon="symbol-flash-outline plugin-ionicons-api"
+                href="${request.contextPath}/jtm/runs/newrun${it.projectUrlQuery}" title="New Test Run"/>
+        <l:task icon="symbol-add-circle-outline plugin-ionicons-api"
+                href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}" title="New Test Case"/>
+      </l:tasks>
+    </l:side-panel>
+
+    <l:main-panel>
+      <j:set var="fq" value="${request.getParameter('q')}"/>
+      <j:set var="fStatus" value="${request.getParameter('status')}"/>
+      <j:set var="fType" value="${request.getParameter('type')}"/>
+
+      <div id="breadcrumbBar" class="jtm-tc-bc">
+        <a href="${request.contextPath}/">Jenkins</a>
+        <span class="jtm-tc-bc__sep" aria-hidden="true">/</span>
+        <a href="${request.contextPath}/jtm/">JTM Testmanagement</a>
+        <span class="jtm-tc-bc__sep" aria-hidden="true">/</span>
+        <span class="jtm-tc-bc__here">Test Cases</span>
+      </div>
+
+      <header class="jtm-tc-hero">
+        <div class="jtm-tc-hero__text">
+          <p class="jtm-tc-hero__eyebrow">Catalog</p>
+          <h1 class="jtm-tc-hero__title">Test cases</h1>
+          <p class="jtm-tc-hero__lead">Search, filter by status and type, and open or edit cases.</p>
+        </div>
+        <div class="jtm-tc-hero__aside">
+          <div class="jtm-tc-hero__pill">
+            <span class="jtm-tc-hero__pill-label">Listed</span>
+            <span class="jtm-tc-hero__pill-value">
+              <j:choose>
+                <j:when test="${it.testCasesEmpty}">0 cases</j:when>
+                <j:otherwise>${it.testCasesCount} cases</j:otherwise>
+              </j:choose>
+            </span>
+          </div>
+          <a href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}"
+             class="jenkins-button jenkins-button--primary jtm-tc-hero__cta">New test case</a>
+        </div>
+      </header>
+
+      <section class="jtm-tc-section" aria-labelledby="jtm-tc-filter-h">
+        <h2 id="jtm-tc-filter-h" class="jtm-tc-section__title">Search &amp; filters</h2>
+        <form method="GET" class="jtm-tc-filter" action="${request.contextPath}/jtm/testcases/">
+          <div class="jtm-tc-filter__row jtm-tc-filter__row--search">
+            <label class="jtm-tc-filter__label" for="jtm-tc-q">Search</label>
+            <input type="text" id="jtm-tc-q" name="q" value="${fq}"
+                   placeholder="ID, title, tags…" class="jenkins-input jtm-tc-filter__search"/>
+          </div>
+          <div class="jtm-tc-filter__row jtm-tc-filter__row--selects">
+            <div class="jtm-tc-filter__field">
+              <label for="jtm-tc-status">Status</label>
+              <select name="status" id="jtm-tc-status" class="jenkins-select jtm-tc-select">
+                <j:choose>
+                  <j:when test="${fStatus == null || fStatus == ''}">
+                    <option value="" selected="selected">All statuses</option>
+                  </j:when>
+                  <j:otherwise>
+                    <option value="">All statuses</option>
+                  </j:otherwise>
+                </j:choose>
+                <j:choose>
+                  <j:when test="${fStatus == 'PASSED'}"><option value="PASSED" selected="selected">Passed</option></j:when>
+                  <j:otherwise><option value="PASSED">Passed</option></j:otherwise>
+                </j:choose>
+                <j:choose>
+                  <j:when test="${fStatus == 'FAILED'}"><option value="FAILED" selected="selected">Failed</option></j:when>
+                  <j:otherwise><option value="FAILED">Failed</option></j:otherwise>
+                </j:choose>
+                <j:choose>
+                  <j:when test="${fStatus == 'BLOCKED'}"><option value="BLOCKED" selected="selected">Blocked</option></j:when>
+                  <j:otherwise><option value="BLOCKED">Blocked</option></j:otherwise>
+                </j:choose>
+                <j:choose>
+                  <j:when test="${fStatus == 'SKIPPED'}"><option value="SKIPPED" selected="selected">Skipped</option></j:when>
+                  <j:otherwise><option value="SKIPPED">Skipped</option></j:otherwise>
+                </j:choose>
+                <j:choose>
+                  <j:when test="${fStatus == 'FALSE_POSITIVE'}"><option value="FALSE_POSITIVE" selected="selected">False positive</option></j:when>
+                  <j:otherwise><option value="FALSE_POSITIVE">False positive</option></j:otherwise>
+                </j:choose>
+                <j:choose>
+                  <j:when test="${fStatus == 'PENDING'}"><option value="PENDING" selected="selected">Pending</option></j:when>
+                  <j:otherwise><option value="PENDING">Pending</option></j:otherwise>
+                </j:choose>
+              </select>
+            </div>
+            <div class="jtm-tc-filter__field">
+              <label for="jtm-tc-type">Type</label>
+              <select name="type" id="jtm-tc-type" class="jenkins-select jtm-tc-select">
+                <j:choose>
+                  <j:when test="${fType == null || fType == ''}">
+                    <option value="" selected="selected">All types</option>
+                  </j:when>
+                  <j:otherwise>
+                    <option value="">All types</option>
+                  </j:otherwise>
+                </j:choose>
+                <j:choose>
+                  <j:when test="${fType == 'MANUAL'}"><option value="MANUAL" selected="selected">Manual</option></j:when>
+                  <j:otherwise><option value="MANUAL">Manual</option></j:otherwise>
+                </j:choose>
+                <j:choose>
+                  <j:when test="${fType == 'AUTOMATED'}"><option value="AUTOMATED" selected="selected">Automated</option></j:when>
+                  <j:otherwise><option value="AUTOMATED">Automated</option></j:otherwise>
+                </j:choose>
+                <j:choose>
+                  <j:when test="${fType == 'EXPLORATORY'}"><option value="EXPLORATORY" selected="selected">Exploratory</option></j:when>
+                  <j:otherwise><option value="EXPLORATORY">Exploratory</option></j:otherwise>
+                </j:choose>
+              </select>
+            </div>
+            <div class="jtm-tc-filter__field">
+              <label for="jtm-filter-project">Project</label>
+              <select name="project" id="jtm-filter-project" class="jenkins-select jtm-tc-select" aria-describedby="jtm-tc-proj-hint">
+                <j:choose>
+                  <j:when test="${it.selectedProject == ''}">
+                    <option value="" selected="selected">All projects</option>
+                  </j:when>
+                  <j:otherwise>
+                    <option value="">All projects</option>
+                  </j:otherwise>
+                </j:choose>
+                <j:forEach var="pk" items="${it.projectOptions}">
+                  <j:choose>
+                    <j:when test="${it.selectedProject == pk}">
+                      <option value="${pk}" selected="selected">${pk}</option>
+                    </j:when>
+                    <j:otherwise>
+                      <option value="${pk}">${pk}</option>
+                    </j:otherwise>
+                  </j:choose>
+                </j:forEach>
+              </select>
+            </div>
+          </div>
+          <p class="jtm-tc-filter__hint" id="jtm-tc-proj-hint">Project change reloads the list with the same search filters.</p>
+          <div class="jtm-tc-filter__actions">
+            <button type="submit" class="jenkins-button jenkins-button--primary">Apply filters</button>
+            <a href="${request.contextPath}/jtm/testcases/" class="jenkins-button">Reset</a>
+          </div>
+        </form>
+      </section>
+
+      <j:if test="${request.getParameter('importOk') == '1'}">
+        <div class="jtm-tc-feedback jtm-tc-feedback--ok" role="status">
+          Import finished: <strong>${request.getParameter('importCreated')}</strong> created,
+          <strong>${request.getParameter('importSkipped')}</strong> skipped (existing ids).
+        </div>
+      </j:if>
+      <j:if test="${request.getParameter('importErr') == 'empty'}">
+        <div class="jtm-tc-feedback jtm-tc-feedback--err" role="alert">Import failed: no file/payload provided.</div>
+      </j:if>
+      <j:if test="${request.getParameter('importErr') == 'parse'}">
+        <div class="jtm-tc-feedback jtm-tc-feedback--err" role="alert">Import failed: invalid JSON/CSV/TXT format.</div>
+      </j:if>
+
+      <j:if test="${it.canEdit()}">
+        <details class="jtm-tc-import">
+          <summary class="jtm-tc-import__summary">Import test cases</summary>
+          <div class="jtm-tc-import__body">
+            <form method="POST" action="${request.contextPath}/jtm/importcases" class="jtm-tc-import-form" id="jtm-import-form" enctype="multipart/form-data">
+              <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
+              <input type="hidden" name="importJson" id="jtm-import-json" value=""/>
+              <input type="hidden" name="importFileName" id="jtm-import-file-name" value=""/>
+              <label for="jtm-import-file">File (.json, .csv, .txt, .xml)</label>
+              <div class="jtm-tc-import-form__row">
+                <input type="file" id="jtm-import-file" name="importFile" accept=".json,.csv,.txt,.xml,application/json,text/csv,text/plain,application/xml,text/xml"/>
+                <button type="submit" class="jenkins-button jenkins-button--primary">Import</button>
+              </div>
+            </form>
+          </div>
+        </details>
+      </j:if>
+
+      <j:set var="paged" value="${it.testCases}"/>
+
+      <j:choose>
+        <j:when test="${it.testCasesEmpty}">
+          <div class="jtm-tc-empty">
+            <div class="jtm-tc-empty__icon" aria-hidden="true">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h4"/><path d="M15 7V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v14"/><path d="M15 11h4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-4"/></svg>
+            </div>
+            <p class="jtm-tc-empty__title">No test cases match</p>
+            <p class="jtm-tc-empty__text">Adjust filters or add your first case.</p>
+            <a href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}" class="jenkins-button jenkins-button--primary">Create test case</a>
+          </div>
+        </j:when>
+        <j:otherwise>
+          <section class="jtm-tc-panel" aria-labelledby="jtm-tc-table-h">
+            <div class="jtm-tc-panel__head">
+              <div>
+                <h2 id="jtm-tc-table-h" class="jtm-tc-panel__title">Catalog</h2>
+                <p class="jtm-tc-panel__desc">Lifecycle and links — status is set per test run</p>
+              </div>
+            </div>
+            <div class="jtm-tc-table-wrap">
+              <table class="jenkins-table sortable jtm-tc-table">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Project</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Priority</th>
+                    <th scope="col"></th>
+                    <th scope="col">Lifecycle</th>
+                    <th scope="col">Flaky</th>
+                    <th scope="col">Last run</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <j:forEach var="tc" items="${paged}">
+                    <tr>
+                      <td>
+                        <a href="${request.contextPath}/jtm/testcases/${tc.id}/" class="jtm-tc-mono">${tc.id}</a>
+                      </td>
+                      <td>
+                        <a href="${request.contextPath}/jtm/testcases/${tc.id}/" class="jtm-tc-table__primary">${tc.title}</a>
+                        <j:if test="${tc.flaky}">
+                          <span class="jtm-tc-badge-flaky" title="Flaky (score: ${tc.flakyScore})">Flaky</span>
+                        </j:if>
+                      </td>
+                      <td class="jtm-tc-muted jtm-tc-small">${tc.projectKey}</td>
+                      <td><span class="jtm-tc-badge jtm-tc-badge--type">${tc.type}</span></td>
+                      <td><span class="jtm-tc-prio jtm-tc-prio--${tc.priority}">${tc.priority}</span></td>
+                      <td></td>
+                      <td><span class="jtm-tc-lifecycle jtm-tc-lifecycle--${tc.lifecycleStatus}">${tc.lifecycleStatus}</span></td>
+                      <td class="jtm-tc-center">
+                        <j:if test="${tc.flakyScore > 0}">
+                          <span class="jtm-tc-flaky-score">${tc.flakyScore}</span>
+                        </j:if>
+                      </td>
+                      <td class="jtm-tc-muted jtm-tc-small">
+                        <j:if test="${tc.lastBuildNumber != null}">
+                          #${tc.lastBuildNumber}
+                          <j:if test="${tc.linkedJob != null}">
+                            (<a href="${request.contextPath}/job/${tc.linkedJob}">${tc.linkedJob}</a>)
+                          </j:if>
+                        </j:if>
+                      </td>
+                      <td class="jtm-tc-row-actions">
+                        <a href="${request.contextPath}/jtm/testcases/${tc.id}/edit" class="jenkins-button jenkins-button--primary jtm-tc-btn-edit">Edit</a>
+                      </td>
+                    </tr>
+                  </j:forEach>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </j:otherwise>
+      </j:choose>
+
+      <style>
+        .jtm-tc-bc { font-size: 12px; color: var(--text-color-secondary); margin-bottom: 8px; }
+        .jtm-tc-bc__sep { margin: 0 6px; opacity: 0.55; }
+        .jtm-tc-bc__here { color: var(--text-color); font-weight: 600; }
+
+        .jtm-tc-hero {
+          display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;
+          margin-bottom: 20px; padding: 18px 20px; border-radius: 12px;
+          border: 1px solid var(--medium-grey);
+          background: linear-gradient(135deg, var(--panel-header-bg-dark) 0%, var(--background) 55%, var(--background) 100%);
+          box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .jtm-tc-hero__eyebrow { margin: 0 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-color-secondary); }
+        .jtm-tc-hero__title { margin: 0; font-size: 1.55rem; font-weight: 750; letter-spacing: -0.02em; color: var(--text-color); }
+        .jtm-tc-hero__lead { margin: 8px 0 0; max-width: 36rem; font-size: 14px; line-height: 1.45; color: var(--text-color-secondary); }
+        .jtm-tc-hero__aside { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+        .jtm-tc-hero__pill { padding: 10px 14px; border-radius: 10px; border: 1px solid var(--medium-grey); background: var(--background); min-width: 120px; }
+        .jtm-tc-hero__pill-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-color-secondary); margin-bottom: 4px; }
+        .jtm-tc-hero__pill-value { font-size: 14px; font-weight: 600; color: var(--text-color); }
+        .jtm-tc-hero__cta { border-radius: 8px; font-weight: 600; text-decoration: none; }
+
+        .jtm-tc-section { margin-bottom: 16px; }
+        .jtm-tc-section__title { margin: 0 0 10px; font-size: 13px; font-weight: 700; color: var(--text-color); }
+
+        .jtm-tc-filter {
+          padding: 16px 18px; border-radius: 12px; border: 1px solid var(--medium-grey);
+          background: var(--background); box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .jtm-tc-filter__row { margin-bottom: 12px; }
+        .jtm-tc-filter__row:last-of-type { margin-bottom: 0; }
+        .jtm-tc-filter__label { display: block; font-size: 12px; font-weight: 600; color: var(--text-color-secondary); margin-bottom: 6px; }
+        .jtm-tc-filter__search { width: 100%; max-width: 520px; border-radius: 8px; }
+        .jtm-tc-filter__row--selects { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px 16px; }
+        .jtm-tc-filter__field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-color-secondary); margin-bottom: 6px; }
+        .jtm-tc-select { width: 100%; border-radius: 8px; }
+        .jtm-tc-filter__hint { margin: 10px 0 12px; font-size: 11px; color: var(--text-color-secondary); }
+        .jtm-tc-filter__actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+        .jtm-tc-feedback { margin: 0 0 14px; padding: 11px 14px; border-radius: 10px; font-size: 13px; }
+        .jtm-tc-feedback--ok { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.35); color: #166534; }
+        .jtm-tc-feedback--err { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.35); color: #b91c1c; }
+
+        .jtm-tc-import { margin: 0 0 18px; border-radius: 12px; border: 1px dashed var(--medium-grey); background: var(--panel-header-bg-dark); overflow: hidden; }
+        .jtm-tc-import__summary { padding: 12px 16px; cursor: pointer; font-weight: 700; font-size: 13px; color: var(--text-color); list-style: none; }
+        .jtm-tc-import__summary::-webkit-details-marker { display: none; }
+        .jtm-tc-import__body { padding: 0 16px 16px; border-top: 1px solid var(--medium-grey); }
+        .jtm-tc-import-form label { display: block; font-size: 12px; font-weight: 600; color: var(--text-color-secondary); margin-bottom: 8px; }
+        .jtm-tc-import-form__row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+        .jtm-tc-empty {
+          text-align: center; padding: 40px 24px; margin: 8px 0 24px;
+          border-radius: 12px; border: 2px dashed var(--medium-grey); background: var(--panel-header-bg-dark);
+        }
+        .jtm-tc-empty__icon { margin: 0 auto 14px; color: var(--text-color-secondary); opacity: 0.55; }
+        .jtm-tc-empty__title { margin: 0 0 8px; font-size: 16px; font-weight: 700; color: var(--text-color); }
+        .jtm-tc-empty__text { margin: 0 0 16px; font-size: 14px; color: var(--text-color-secondary); }
+
+        .jtm-tc-panel {
+          border-radius: 12px; border: 1px solid var(--medium-grey); background: var(--background);
+          box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 24px;
+        }
+        .jtm-tc-panel__head { padding: 14px 16px; border-bottom: 1px solid var(--medium-grey); background: var(--panel-header-bg-dark); }
+        .jtm-tc-panel__title { margin: 0; font-size: 14px; font-weight: 700; color: var(--text-color); }
+        .jtm-tc-panel__desc { margin: 4px 0 0; font-size: 12px; color: var(--text-color-secondary); }
+        .jtm-tc-table-wrap { overflow-x: auto; }
+        .jtm-tc-table th {
+          font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-color-secondary); white-space: nowrap;
+        }
+        .jtm-tc-table td { vertical-align: middle; font-size: 13px; }
+        .jtm-tc-mono { font-family: var(--font-family-mono); font-size: 11px; }
+        .jtm-tc-muted { color: var(--text-color-secondary); }
+        .jtm-tc-small { font-size: 12px; }
+        .jtm-tc-center { text-align: center; }
+        .jtm-tc-table__primary { font-weight: 600; }
+        .jtm-tc-row-actions { display: flex; justify-content: flex-end; min-width: 5rem; }
+        .jtm-tc-btn-edit { padding: 0.35rem 0.65rem; font-size: 12px; font-weight: 600; border-radius: 8px; text-decoration: none; }
+        .jtm-tc-badge {
+          display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 10px; font-weight: 700;
+          letter-spacing: 0.03em; text-transform: uppercase;
+        }
+        .jtm-tc-badge--type { background: rgba(59,130,246,0.12); color: #1d4ed8; }
+        .jtm-tc-badge-flaky {
+          display: inline-block; margin-left: 6px; padding: 2px 7px; border-radius: 999px;
+          font-size: 9px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
+          background: rgba(245,158,11,0.15); color: #b45309; vertical-align: middle;
+        }
+        .jtm-tc-prio--CRITICAL { color: #b91c1c; font-weight: 800; font-size: 12px; }
+        .jtm-tc-prio--HIGH     { color: #c2410c; font-weight: 700; font-size: 12px; }
+        .jtm-tc-prio--MEDIUM   { color: #6b7280; font-size: 12px; font-weight: 600; }
+        .jtm-tc-prio--LOW      { color: #9ca3af; font-size: 12px; }
+        .jtm-tc-lifecycle--DRAFT      { color: #6b7280; font-size: 12px; }
+        .jtm-tc-lifecycle--READY      { color: #15803d; font-size: 12px; font-weight: 700; }
+        .jtm-tc-lifecycle--BLOCKED    { color: #c2410c; font-size: 12px; font-weight: 600; }
+        .jtm-tc-lifecycle--DEPRECATED { color: #9ca3af; font-size: 12px; text-decoration: line-through; }
+        .jtm-tc-flaky-score {
+          display: inline-block; padding: 2px 8px; background: rgba(245,158,11,0.12); color: #c2410c;
+          border-radius: 999px; font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
+        }
+      </style>
+      <script><![CDATA[
+(function () {
+  var form = document.getElementById('jtm-import-form');
+  var input = document.getElementById('jtm-import-file');
+  var payload = document.getElementById('jtm-import-json');
+  var name = document.getElementById('jtm-import-file-name');
+  if (!form || !input || !payload || !name) return;
+  form.addEventListener('submit', function (e) {
+    var file = input.files && input.files[0];
+    if (!file) return;
+    if (payload.value && payload.value.length > 0) return;
+    e.preventDefault();
+    var r = new FileReader();
+    r.onload = function () {
+      try {
+        var bytes = new Uint8Array(r.result);
+        var decoded = '';
+        try {
+          decoded = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+        } catch (utfErr) {
+          decoded = new TextDecoder('windows-1252').decode(bytes);
+        }
+        payload.value = decoded;
+        name.value = file.name || '';
+        form.submit();
+      } catch (err) {
+        alert('Could not decode file for import.');
+      }
+    };
+    r.onerror = function () {
+      alert('Could not read file for import.');
+    };
+    r.readAsArrayBuffer(file);
+  });
+  var proj = document.getElementById('jtm-filter-project');
+  if (proj && proj.form) {
+    proj.addEventListener('change', function () { proj.form.submit(); });
+  }
+})();
+]]></script>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>
