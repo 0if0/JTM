@@ -6,8 +6,8 @@
 set -euo pipefail
 
 JENKINS_URL="${JENKINS_URL%/}"
-PLUGIN_ID="${JENKINS_PLUGIN_ID:-jenkins-test-management}"
-HPI_GLOB="${JENKINS_HPI_GLOB:-jtm-plugin/target/*.hpi}"
+PLUGIN_ID="${JENKINS_PLUGIN_ID:-jtm-test-management}"
+HPI_GLOB="${JENKINS_HPI_GLOB:-target/*.hpi}"
 
 if [[ -z "${JENKINS_USER:-}" || -z "${JENKINS_TOKEN:-}" ]]; then
   echo "ERROR: JENKINS_USER and JENKINS_TOKEN must be set (use a Jenkins API token as password)." >&2

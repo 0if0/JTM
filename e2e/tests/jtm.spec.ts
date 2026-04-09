@@ -395,9 +395,10 @@ test.describe('JTM UI', () => {
     const csv = readFileSync(join(__dirname, '../fixtures/jtm-demo.csv'), 'utf8');
     const res = await importBundleViaFormPost(page, csv, 'jtm-demo.csv');
     expect([200, 302]).toContain(res.status);
-    await page.goto('/jtm/testcases/?project=WebApp&q=TC-CSV-001');
+    // jtm-demo.csv uses TC-001 … TC-030 (WebApp), not TC-CSV-* (see jtm-seed-import.csv)
+    await page.goto('/jtm/testcases/?project=WebApp&q=TC-001');
     await expect(page.getByRole('link', { name: 'TC-001' })).toBeVisible();
-    await page.goto('/jtm/testcases/?project=WebApp&q=TC-CSV-029');
+    await page.goto('/jtm/testcases/?project=WebApp&q=TC-029');
     await expect(page.getByRole('link', { name: 'TC-029' })).toBeVisible();
   });
 

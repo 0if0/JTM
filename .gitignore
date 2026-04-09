@@ -1,8 +1,10 @@
-# Maven (plugin)
-jtm-plugin/target/
-jtm-plugin/.flattened-pom.xml
-jtm-plugin/hpi-temp/
-jtm-plugin/work/
+# Maven / Jenkins plugin build output (do not commit)
+target
+target/
+.flattened-pom.xml
+hpi-temp/
+work
+work/
 
 # IDE
 .idea/

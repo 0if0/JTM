@@ -17,7 +17,7 @@ Lightweight **test management inside Jenkins**: test cases, suites, test runs, q
 
 ## Requirements
 
-- Jenkins **2.401.3** or compatible (see `jtm-plugin/pom.xml`)
+- Jenkins **2.401.3** or compatible (see `pom.xml`)
 - **Java 11** for building the plugin (JDK 17 is fine as the compiler toolchain)
 
 ## Quick start
@@ -25,32 +25,30 @@ Lightweight **test management inside Jenkins**: test cases, suites, test runs, q
 ### Build the plugin
 
 ```bash
-cd jtm-plugin
 mvn clean verify
-# HPI: target/jenkins-test-management.hpi
+# HPI: target/jtm-test-management.hpi
 ```
 
 ### Run Jenkins locally with the plugin
 
 ```bash
-cd jtm-plugin
 mvn hpi:run
 # Open http://localhost:8080/jtm/
 ```
 
 ### Install on a real controller
 
-1. Build `jtm-plugin/target/jenkins-test-management.hpi`
+1. Build `target/jtm-test-management.hpi`
 2. **Manage Jenkins → Plugins → Advanced** → upload the HPI → restart if prompted
 3. Grant **JTM** permissions under **Manage Jenkins → Security**
 
-More detail: **[jtm-plugin/BUILD.md](jtm-plugin/BUILD.md)** (permissions, pipeline example, data layout).
+More detail: **[BUILD.md](BUILD.md)** (permissions, pipeline example, data layout).
 
 ## Repository layout
 
 | Path | Purpose |
 |------|---------|
-| `jtm-plugin/` | Maven module — Jenkins plugin (`.hpi`) |
+| `pom.xml`, `src/` | Jenkins plugin (Maven project at repository root, `.hpi` in `target/`) |
 | `e2e/` | Playwright tests against a running Jenkins (optional CI) |
 | `scripts/` | Helper scripts used by GitLab deploy jobs (optional) |
 
@@ -68,10 +66,10 @@ Set `JENKINS_BASE_URL` (and optionally `JENKINS_USER` / `JENKINS_PASSWORD`) as i
 
 ## Continuous integration
 
-- **GitHub Actions:** [.github/workflows/ci.yml](.github/workflows/ci.yml) — `mvn verify` on `jtm-plugin` (uploads the `.hpi` as a workflow artifact)
+- **GitHub Actions:** [.github/workflows/ci.yml](.github/workflows/ci.yml) — `mvn verify` at the repository root (uploads the `.hpi` as a workflow artifact)
 - **GitLab CI:** [.gitlab-ci.yml](.gitlab-ci.yml) — build, optional deploy to Jenkins, optional Playwright (if you still use GitLab)
 
-`mvn verify` runs SpotBugs from the Jenkins plugin parent. This repository sets `spotbugs.failOnError` to `false` in `jtm-plugin/pom.xml` until legacy findings are cleared; the report is still printed in the log.
+`mvn verify` runs SpotBugs from the Jenkins plugin parent. This repository sets `spotbugs.failOnError` to `false` in `pom.xml` until legacy findings are cleared; the report is still printed in the log.
 
 ## Contributing
 
@@ -79,8 +77,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-[MIT](LICENSE) (see also `jtm-plugin/pom.xml`).
+[MIT](LICENSE) (see also `pom.xml`).
 
 ## Publishing metadata
 
-`jtm-plugin/pom.xml` lists this repository as **home** (`<url>` and `<scm>`). If you fork to another GitHub org or user, update those entries and the CI badge above to match.
+`pom.xml` lists this repository as **home** (`<url>` and `<scm>`). If you fork to another GitHub org or user, update those entries and the CI badge above to match.

@@ -1,4 +1,4 @@
-# Build and test the Jenkins plugin (HPI module: jtm-plugin/)
+# Build and test the Jenkins plugin (Maven project at repository root)
 name: CI
 
 on:
@@ -26,11 +26,11 @@ jobs:
           cache: maven
 
       - name: Maven verify
-        run: mvn -B -ntp -f jtm-plugin/pom.xml clean verify
+        run: mvn -B -ntp clean verify
 
       - name: Upload HPI (artifact)
         uses: actions/upload-artifact@v4
         with:
-          name: jenkins-test-management-hpi
-          path: jtm-plugin/target/*.hpi
+          name: jtm-test-management-hpi
+          path: target/*.hpi
           if-no-files-found: error

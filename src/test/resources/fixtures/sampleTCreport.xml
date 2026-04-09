@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="sample WebAPP" tests="6"  failures="0" errors="0" time="1894" >
+  <testsuite name="sample WebAPP" tests="6" failures="0" errors="0" hostname="SRV-TC04" time="1893" timestamp="2026-04-01T19:06:20.706+02:00">
+    <testcase name="Passwort Ändern" time="151" classname="sample WebAPP">
+    </testcase>
+    <testcase name="Passwort Ändern Datadriven" time="508" classname="sample WebAPP">
+    </testcase>
+    <testcase name="neuen Benutzer anlegen" time="325" classname="sample WebAPP">
+    </testcase>
+    <testcase name="Login" time="543" classname="sample WebAPP">
+    </testcase>
+    <testcase name="aktive User Dialog" time="273" classname="sample WebAPP">
+    </testcase>
+    <testcase name="AGILA Login function" time="92" classname="sample WebAPP">
+    </testcase>
+  </testsuite>
+</testsuites>
