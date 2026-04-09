@@ -6,7 +6,7 @@
 set -euo pipefail
 
 JENKINS_URL="${JENKINS_URL%/}"
-PLUGIN_ID="${JENKINS_PLUGIN_ID:-jtm-test-management}"
+PLUGIN_ID="${JENKINS_PLUGIN_ID:-jtm}"
 HPI_GLOB="${JENKINS_HPI_GLOB:-target/*.hpi}"
 
 if [[ -z "${JENKINS_USER:-}" || -z "${JENKINS_TOKEN:-}" ]]; then

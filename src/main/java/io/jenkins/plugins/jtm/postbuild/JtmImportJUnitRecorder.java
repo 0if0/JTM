@@ -14,6 +14,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.jenkins.plugins.jtm.core.domain.TestCase;
 import io.jenkins.plugins.jtm.core.domain.TestCaseResult;
 import io.jenkins.plugins.jtm.core.domain.TestRun;
@@ -24,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import jenkins.tasks.SimpleBuildStep;
 
-import javax.annotation.Nonnull;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.Instant;
@@ -65,12 +65,12 @@ public final class JtmImportJUnitRecorder extends Notifier implements SimpleBuil
     public boolean isCreateMissingTestCases() { return createMissingTestCases; }
 
     @Override
-    public boolean perform(@Nonnull AbstractBuild<?, ?> build, @Nonnull Launcher launcher, @Nonnull BuildListener listener) {
+    public boolean perform(@NonNull AbstractBuild<?, ?> build, @NonNull Launcher launcher, @NonNull BuildListener listener) {
         return performOnRun(build, build.getWorkspace(), listener);
     }
 
     @Override
-    public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) {
+    public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull Launcher launcher, @NonNull TaskListener listener) {
         performOnRun(run, workspace, listener);
     }
 
@@ -269,7 +269,7 @@ public final class JtmImportJUnitRecorder extends Notifier implements SimpleBuil
             return true;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String getDisplayName() {
             return "JTM: Import JUnit results into test run";

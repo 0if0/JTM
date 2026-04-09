@@ -93,19 +93,37 @@ public final class JtmStore {
     private static final int MAX_PROJECT_KEY_LEN = 120;
 
     private final ObjectMapper objectMapper;
-    private final ExecutorService writeExecutor;
+    private volatile ExecutorService writeExecutor;
 
     // ── ID Counters ───────────────────────────────────────────────────────────
     private final ConcurrentMap<String, Long> counters = new ConcurrentHashMap<>();
 
     private JtmStore() {
         this.objectMapper = buildObjectMapper();
-        this.writeExecutor = Executors.newSingleThreadExecutor(r -> {
+        this.writeExecutor = newWriteExecutor();
+        loadAll();
+    }
+
+    private static ExecutorService newWriteExecutor() {
+        return Executors.newSingleThreadExecutor(r -> {
             Thread t = new Thread(r, "jtm-store-writer");
             t.setDaemon(true);
             return t;
         });
-        loadAll();
+    }
+
+    private ExecutorService ensureWriteExecutor() {
+        ExecutorService exec = writeExecutor;
+        if (exec != null && !exec.isShutdown() && !exec.isTerminated()) {
+            return exec;
+        }
+        synchronized (this) {
+            exec = writeExecutor;
+            if (exec == null || exec.isShutdown() || exec.isTerminated()) {
+                writeExecutor = newWriteExecutor();
+            }
+            return writeExecutor;
+        }
     }
 
     private ObjectMapper buildObjectMapper() {
@@ -646,7 +664,7 @@ public final class JtmStore {
     // ── Audit Log ─────────────────────────────────────────────────────────────
 
     public void appendAuditEntry(AuditEntry entry) {
-        writeExecutor.submit(() -> {
+        Runnable task = () -> {
             try {
                 String month = entry.getTimestamp().toString().substring(0, 7).replace("-", "-");
                 File auditDir = new File(getAuditDir(), month);
@@ -660,7 +678,14 @@ public final class JtmStore {
             } catch (IOException e) {
                 LOG.log(Level.WARNING, "[JTM] Failed to write audit entry", e);
             }
-        });
+        };
+        try {
+            ensureWriteExecutor().submit(task);
+        } catch (RejectedExecutionException ex) {
+            // Can happen in tests when a prior Jenkins instance already shut this executor down.
+            LOG.log(Level.FINE, "[JTM] Audit writer executor was shut down, recreating", ex);
+            ensureWriteExecutor().submit(task);
+        }
     }
 
     // ── Statistics ────────────────────────────────────────────────────────────
@@ -944,16 +969,28 @@ public final class JtmStore {
     }
 
     private void writeAsync(File dir, String filename, Object data) {
-        writeExecutor.submit(() -> writeSync(dir, filename, data));
+        Runnable task = () -> writeSync(dir, filename, data);
+        try {
+            ensureWriteExecutor().submit(task);
+        } catch (RejectedExecutionException ex) {
+            LOG.log(Level.FINE, "[JTM] Async writer rejected task, recreating", ex);
+            ensureWriteExecutor().submit(task);
+        }
     }
 
     private void deleteFile(File dir, String filename) {
-        writeExecutor.submit(() -> {
+        Runnable task = () -> {
             File f = new File(dir, filename);
             if (f.exists() && !f.delete()) {
                 LOG.warning("[JTM] Failed to delete " + f.getAbsolutePath());
             }
-        });
+        };
+        try {
+            ensureWriteExecutor().submit(task);
+        } catch (RejectedExecutionException ex) {
+            LOG.log(Level.FINE, "[JTM] Async delete rejected task, recreating", ex);
+            ensureWriteExecutor().submit(task);
+        }
     }
 
     /**
@@ -1010,10 +1047,14 @@ public final class JtmStore {
      * Graceful shutdown — flush pending writes.
      */
     public void shutdown() {
-        writeExecutor.shutdown();
+        ExecutorService exec = writeExecutor;
+        if (exec == null) {
+            return;
+        }
+        exec.shutdown();
         try {
-            if (!writeExecutor.awaitTermination(10, TimeUnit.SECONDS)) {
-                writeExecutor.shutdownNow();
+            if (!exec.awaitTermination(10, TimeUnit.SECONDS)) {
+                exec.shutdownNow();
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

@@ -17,7 +17,7 @@ Lightweight **test management inside Jenkins**: test cases, suites, test runs, q
 
 ## Requirements
 
-- Jenkins **2.401.3** or compatible (see `pom.xml`)
+- Jenkins **2.528.3** or compatible (see `pom.xml`)
 - **Java 11** for building the plugin (JDK 17 is fine as the compiler toolchain)
 
 ## Quick start
@@ -26,7 +26,7 @@ Lightweight **test management inside Jenkins**: test cases, suites, test runs, q
 
 ```bash
 mvn clean verify
-# HPI: target/jtm-test-management.hpi
+# HPI: target/jtm.hpi
 ```
 
 ### Run Jenkins locally with the plugin
@@ -38,7 +38,7 @@ mvn hpi:run
 
 ### Install on a real controller
 
-1. Build `target/jtm-test-management.hpi`
+1. Build `target/jtm.hpi`
 2. **Manage Jenkins → Plugins → Advanced** → upload the HPI → restart if prompted
 3. Grant **JTM** permissions under **Manage Jenkins → Security**
 

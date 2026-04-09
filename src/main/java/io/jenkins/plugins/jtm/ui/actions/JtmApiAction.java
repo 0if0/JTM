@@ -2,7 +2,6 @@ package io.jenkins.plugins.jtm.ui.actions;
 
 import hudson.model.Action;
 import io.jenkins.plugins.jtm.security.JtmPermissions;
-import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.interceptor.RequirePOST;
@@ -43,9 +42,9 @@ public final class JtmApiAction implements Action {
     public Object getDynamic(String name, StaplerRequest req, StaplerResponse rsp) {
         switch (name) {
             case "testcases":
-                return (HttpResponse) (r, p, n) -> dispatchTestcases(r, p);
+                return new JtmApiTestcasesAction(root);
             case "testruns":
-                return (HttpResponse) (r, p, n) -> dispatchTestruns(r, p);
+                return new JtmApiTestrunsAction(root);
             case "dashboard":
                 return new JtmApiDashboardAction(root);
             case "testcase":
@@ -55,25 +54,66 @@ public final class JtmApiAction implements Action {
         }
     }
 
-    private void dispatchTestcases(StaplerRequest req, StaplerResponse rsp)
-            throws IOException, ServletException {
-        String m = req.getMethod();
-        if ("GET".equalsIgnoreCase(m)) {
-            root.serveApiTestcases(req, rsp);
-        } else if ("POST".equalsIgnoreCase(m)) {
-            root.serveApiCreateTestcase(req, rsp);
-        } else {
-            root.serveApiMethodNotAllowed(req, rsp, m);
+    static final class JtmApiTestcasesAction implements Action {
+        private final JtmRootAction root;
+
+        JtmApiTestcasesAction(JtmRootAction root) {
+            this.root = root;
+        }
+
+        @Override
+        public String getUrlName() {
+            return "testcases";
+        }
+
+        @Override
+        public String getDisplayName() {
+            return null;
+        }
+
+        @Override
+        public String getIconFileName() {
+            return null;
+        }
+
+        public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+            String method = req.getMethod();
+            if ("GET".equalsIgnoreCase(method)) {
+                root.serveApiTestcases(req, rsp);
+            } else if ("POST".equalsIgnoreCase(method)) {
+                root.serveApiCreateTestcase(req, rsp);
+            } else {
+                root.serveApiMethodNotAllowed(req, rsp, method);
+            }
         }
     }
 
-    private void dispatchTestruns(StaplerRequest req, StaplerResponse rsp)
-            throws IOException, ServletException {
-        if (!"POST".equalsIgnoreCase(req.getMethod())) {
-            root.serveApiMethodNotAllowed(req, rsp, req.getMethod());
-            return;
+    static final class JtmApiTestrunsAction implements Action {
+        private final JtmRootAction root;
+
+        JtmApiTestrunsAction(JtmRootAction root) {
+            this.root = root;
         }
-        root.serveApiTestruns(req, rsp);
+
+        @Override
+        public String getUrlName() {
+            return "testruns";
+        }
+
+        @Override
+        public String getDisplayName() {
+            return null;
+        }
+
+        @Override
+        public String getIconFileName() {
+            return null;
+        }
+
+        @RequirePOST
+        public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+            root.serveApiTestruns(req, rsp);
+        }
     }
 
     // ── /jtm/api/dashboard/summary ────────────────────────────────────────────

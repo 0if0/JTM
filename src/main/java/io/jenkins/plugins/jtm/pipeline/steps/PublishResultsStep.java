@@ -11,11 +11,11 @@ import io.jenkins.plugins.jtm.core.domain.*;
 import io.jenkins.plugins.jtm.core.service.TestCaseService;
 import io.jenkins.plugins.jtm.persistence.JtmStore;
 import io.jenkins.plugins.jtm.pipeline.JtmPublishedRunAction;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.jenkinsci.plugins.workflow.steps.*;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
@@ -294,7 +294,7 @@ public final class PublishResultsStep extends Step implements Serializable {
         public String getFunctionName() { return "publishResults"; }
 
         @Override
-        @Nonnull
+        @NonNull
         public String getDisplayName() { return "JTM: Publish Test Results"; }
     }
 }

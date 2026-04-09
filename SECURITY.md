@@ -1,6 +1,6 @@
 # Security
 
-This repository contains **Jenkins Test Management (JTM)**, a Jenkins plugin (`jtm-test-management`). Security vulnerabilities in Jenkins and plugins published by the Jenkins project are handled according to the [Jenkins security process](https://www.jenkins.io/security/).
+This repository contains **Jenkins Test Management (JTM)**, a Jenkins plugin (`jtm`). Security vulnerabilities in Jenkins and plugins published by the Jenkins project are handled according to the [Jenkins security process](https://www.jenkins.io/security/).
 
 ## How to report
 

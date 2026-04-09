@@ -33,14 +33,14 @@ build-job:
   script:
     - mvn --batch-mode --no-transfer-progress clean package
   artifacts:
-    name: "jtm-test-management-$CI_COMMIT_SHORT_SHA"
+    name: "jtm-$CI_COMMIT_SHORT_SHA"
     expire_in: 30 days
     paths:
       - target/*.hpi
 
 # Deploy to test Jenkins (http://192.168.188.146:8080/ or your JENKINS_URL).
 # GitLab CI/CD variables (masked): JENKINS_URL, JENKINS_USER, JENKINS_TOKEN
-# Optional: JENKINS_PLUGIN_ID (default jtm-test-management)
+# Optional: JENKINS_PLUGIN_ID (default jtm)
 #
 # Runner must reach Jenkins (same LAN/VPN). On main: automatic when vars set;
 # other branches: manual job in pipeline.

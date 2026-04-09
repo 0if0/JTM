@@ -7,16 +7,15 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>4.72</version>
-    <relativePath/>
+    <version>6.2138.v03274d462c13</version>
   </parent>
 
   <groupId>io.jenkins.plugins</groupId>
-  <artifactId>jtm-test-management</artifactId>
+  <artifactId>jtm</artifactId>
   <version>${revision}.${changelist}</version>
   <packaging>hpi</packaging>
 
-  <name>Jenkins Test Management (JTM)</name>
+  <name>Test Management (JTM)</name>
   <description>Test cases, runs, quality gates, and pipeline integration for Jenkins.</description>
 
   <url>https://github.com/0if0/JTM</url>
@@ -38,12 +37,12 @@
   <properties>
     <revision>1</revision>
     <changelist>999999-SNAPSHOT</changelist>
-    <jenkins.version>2.401.3</jenkins.version>
-    <java.level>11</java.level>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <jenkins.baseline>2.528</jenkins.baseline>
+    <jenkins.version>${jenkins.baseline}.3</jenkins.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson.version>2.15.2</jackson.version>
+    <hpi.strictBundledArtifacts>true</hpi.strictBundledArtifacts>
+    <hpi.bundledArtifacts>annotations,autolink,commons-io,flexmark,flexmark-all,flexmark-ext-abbreviation,flexmark-ext-admonition,flexmark-ext-anchorlink,flexmark-ext-aside,flexmark-ext-attributes,flexmark-ext-autolink,flexmark-ext-definition,flexmark-ext-emoji,flexmark-ext-enumerated-reference,flexmark-ext-escaped-character,flexmark-ext-footnotes,flexmark-ext-gfm-issues,flexmark-ext-gfm-strikethrough,flexmark-ext-gfm-tasklist,flexmark-ext-gfm-users,flexmark-ext-gitlab,flexmark-ext-ins,flexmark-ext-jekyll-front-matter,flexmark-ext-jekyll-tag,flexmark-ext-macros,flexmark-ext-media-tags,flexmark-ext-resizable-image,flexmark-ext-superscript,flexmark-ext-tables,flexmark-ext-toc,flexmark-ext-typographic,flexmark-ext-wikilink,flexmark-ext-xwiki-macros,flexmark-ext-yaml-front-matter,flexmark-ext-youtube-embedded,flexmark-html2md-converter,flexmark-jira-converter,flexmark-pdf-converter,flexmark-profile-pegdown,flexmark-util,flexmark-util-ast,flexmark-util-builder,flexmark-util-collection,flexmark-util-data,flexmark-util-dependency,flexmark-util-format,flexmark-util-html,flexmark-util-misc,flexmark-util-options,flexmark-util-sequence,flexmark-util-visitor,flexmark-youtrack-converter,fontbox,graphics2d,icu4j,jsoup,openhtmltopdf-core,openhtmltopdf-pdfbox,openhtmltopdf-rtl-support,openpdf,pdfbox,xmpbox</hpi.bundledArtifacts>
+    <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
     <!-- `mvn verify` runs SpotBugs from the Jenkins plugin parent; fail the build once findings are cleared. -->
     <spotbugs.failOnError>false</spotbugs.failOnError>
   </properties>
@@ -52,8 +51,8 @@
     <dependencies>
       <dependency>
         <groupId>io.jenkins.tools.bom</groupId>
-        <artifactId>bom-2.401.x</artifactId>
-        <version>2543.vfb_1a_5fb_9496d</version>
+        <artifactId>bom-${jenkins.baseline}.x</artifactId>
+        <version>6237.v4da_61a_4a_19e5</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -79,19 +78,8 @@
 
     <!-- JSON processing -->
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>${jackson.version}</version>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>jackson2-api</artifactId>
     </dependency>
 
     <!-- Markdown support -->
@@ -103,9 +91,8 @@
 
     <!-- Utilities -->
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.12.0</version>
+      <groupId>io.jenkins.plugins</groupId>
+      <artifactId>commons-lang3-api</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -139,7 +126,6 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.4.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -168,18 +154,14 @@
       <plugin>
         <groupId>org.jenkins-ci.tools</groupId>
         <artifactId>maven-hpi-plugin</artifactId>
-        <extensions>true</extensions>
         <configuration>
-          
-          <pluginFirstClassLoader>true</pluginFirstClassLoader>
+          <disabledTestInjection>true</disabledTestInjection>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>11</source>
-          <target>11</target>
           <compilerArgs>
             <arg>-parameters</arg>
           </compilerArgs>

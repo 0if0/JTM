@@ -11,7 +11,7 @@
 # Build the plugin (skip tests for speed)
 mvn clean package -DskipTests
 
-# Output: target/jtm-test-management.hpi  (~2 MB)
+# Output: target/jtm.hpi  (~2 MB)
 ```
 
 ## Run Locally
@@ -33,7 +33,7 @@ mvn clean test
 
 1. Build: `mvn clean package -DskipTests`
 2. Open Jenkins → Manage Jenkins → Plugins → Advanced → Deploy Plugin
-3. Upload: `target/jtm-test-management.hpi`
+3. Upload: `target/jtm.hpi`
 4. Restart Jenkins when prompted
 5. Navigate to: `https://your-jenkins/jtm/`
 
@@ -78,7 +78,7 @@ pipeline {
 
 ```
 target/
-├── jtm-test-management.hpi    ← Upload this to Jenkins
+├── jtm.hpi    ← Upload this to Jenkins
 └── classes/                       ← Compiled class files
 ```
 

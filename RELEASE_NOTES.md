@@ -4,7 +4,7 @@
 
 ### Project
 
-- **Maven artifact ID:** Renamed to `jtm-test-management` (HPI: `jtm-test-management.hpi`) per [Jenkins plugin naming](https://www.jenkins.io/doc/developer/publishing/style-guides/#artifact-id); no prior release was published under the old ID.
+- **Maven artifact ID:** Renamed to `jtm` (HPI: `jtm.hpi`) per [Jenkins plugin naming](https://www.jenkins.io/doc/developer/publishing/style-guides/#artifact-id); no prior release was published under the old ID.
 - **Repository layout:** The Jenkins plugin Maven project (`pom.xml`, `src/`) now lives at the repository root instead of under `jtm-plugin/`. Build and CI commands run from the clone root.
 - **Jenkins hosting / CD prep:** [Incrementals](https://www.jenkins.io/doc/developer/plugin-development/incrementals/) versioning (`${revision}.${changelist}`; local snapshot `1.999999-SNAPSHOT`), `.mvn/maven.config` with `changelist.format`, `.mvn/extensions.xml`, Dependabot (Maven + GitHub Actions), root `Jenkinsfile` for ci.jenkins.io, and GitHub workflows `cd.yaml` plus `jenkins-security-scan.yml` aligned with [plugin hosting](https://www.jenkins.io/projects/infrastructure/) expectations.
 
@@ -61,7 +61,7 @@
 
 ### Requirements
 
-- Jenkins **2.401.3** or compatible (see `pom.xml`)
+- Jenkins **2.528.3** or compatible (see `pom.xml`)
 - Java **11** to build the plugin
 
 ### Highlights
@@ -78,7 +78,7 @@
 ### Install
 
 1. Build: `mvn clean package` (from the repository root)
-2. Upload `target/jtm-test-management.hpi` via **Manage Jenkins → Plugins → Advanced**
+2. Upload `target/jtm.hpi` via **Manage Jenkins → Plugins → Advanced**
 3. Grant JTM permissions under **Manage Jenkins → Security**
 
 ### Documentation

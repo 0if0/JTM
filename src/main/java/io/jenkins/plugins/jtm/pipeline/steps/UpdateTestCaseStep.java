@@ -6,12 +6,12 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.jtm.core.domain.TestCase;
 import io.jenkins.plugins.jtm.core.service.TestCaseService;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.workflow.steps.*;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -198,7 +198,7 @@ public final class UpdateTestCaseStep extends Step implements Serializable {
         }
 
         @Override
-        @Nonnull
+        @NonNull
         public String getDisplayName() {
             return "JTM: Update Test Case Status";
         }

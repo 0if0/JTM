@@ -17,6 +17,7 @@ import io.jenkins.plugins.jtm.persistence.JtmStore;
 import io.jenkins.plugins.jtm.persistence.RunLocks;
 import io.jenkins.plugins.jtm.postbuild.JUnitXmlImportParser;
 import io.jenkins.plugins.jtm.security.JtmPermissions;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.Stapler;
@@ -26,7 +27,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.kohsuke.stapler.verb.GET;
 import org.kohsuke.stapler.verb.POST;
 
-import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
 import java.io.IOException;

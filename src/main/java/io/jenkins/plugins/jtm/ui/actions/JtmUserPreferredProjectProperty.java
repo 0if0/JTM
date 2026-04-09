@@ -4,11 +4,10 @@ import hudson.Extension;
 import hudson.model.User;
 import hudson.model.UserProperty;
 import hudson.model.UserPropertyDescriptor;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
-
-import javax.annotation.Nullable;
 
 /**
  * Persists the last selected JTM project scope ({@code ?project=}) for the user so navigation

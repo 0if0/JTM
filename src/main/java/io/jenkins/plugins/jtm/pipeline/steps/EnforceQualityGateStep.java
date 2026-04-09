@@ -7,11 +7,11 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.jtm.core.service.QualityGateService;
 import io.jenkins.plugins.jtm.pipeline.JtmPublishedRunAction;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.jenkinsci.plugins.workflow.steps.*;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -179,7 +179,7 @@ public final class EnforceQualityGateStep extends Step implements Serializable {
         public String getFunctionName() { return "enforceQualityGate"; }
 
         @Override
-        @Nonnull
+        @NonNull
         public String getDisplayName() { return "JTM: Enforce Quality Gate"; }
     }
 }
