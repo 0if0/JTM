@@ -83,7 +83,8 @@ public final class TestCase implements Serializable {
 
     /** Logical project scope (filter); empty = unassigned. Not final so Jackson can set when loading old JSON. */
     @JsonProperty("projectKey")
-    private String projectKey; // lgtm[java] not a credential; logical project scope key
+    // lgtm[java] not a credential; logical project scope key
+    private String projectKey;
 
     // ── Audit ─────────────────────────────────────────────────────────────────
 
@@ -313,7 +314,8 @@ public final class TestCase implements Serializable {
         private String linkedJob;
         private String requirementId;
         private String jiraTicket;
-        private String projectKey = ""; // lgtm[java] not a credential; logical project scope key
+        // lgtm[java] not a credential; logical project scope key
+        private String projectKey = "";
         private Instant createdAt;
         private Instant updatedAt;
         private String createdBy;

@@ -45,7 +45,8 @@ public final class JtmImportJUnitRecorder extends Notifier implements SimpleBuil
     private final String junitFile;
     private final String runId;
     private final String runName;
-    private final String projectKey; // lgtm[java] not a credential; logical project scope key
+    // lgtm[java] not a credential; logical project scope key
+    private final String projectKey;
     private final boolean createMissingTestCases;
 
     @DataBoundConstructor

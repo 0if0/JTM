@@ -47,7 +47,8 @@ public final class JtmTestCaseImportParser {
         public String priority;
         public String risk;
         public String lifecycleStatus;
-        public String projectKey; // lgtm[java] not a credential; logical project scope key
+        // lgtm[java] not a credential; logical project scope key
+        public String projectKey;
         public List<String> tags = Collections.emptyList();
         public List<ImportStepDto> steps = Collections.emptyList();
     }

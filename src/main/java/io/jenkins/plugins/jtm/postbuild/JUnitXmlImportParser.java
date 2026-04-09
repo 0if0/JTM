@@ -18,9 +18,11 @@ public final class JUnitXmlImportParser {
     private JUnitXmlImportParser() {}
 
     public static final class ImportedCase {
-        private final String caseKey; // lgtm[java] not a password; stable mapping key (classname + name)
+        // lgtm[java] not a password; stable mapping key (classname + name)
+        private final String caseKey;
         private final String displayTitle; // "name" from junit testcase (keeps spaces/umlauts)
-        private final String projectKey; // lgtm[java] not a credential; derived project scope key
+        // lgtm[java] not a credential; derived project scope key
+        private final String projectKey;
         private final boolean explicitIdProvided;
         private final TestCaseResult result;
 
@@ -45,7 +47,8 @@ public final class JUnitXmlImportParser {
 
     public static final class ParseResult {
         private final List<ImportedCase> cases;
-        private final String projectKey; // lgtm[java] not a credential; fallback project scope key
+        // lgtm[java] not a credential; fallback project scope key
+        private final String projectKey;
 
         public ParseResult(List<ImportedCase> cases, String projectKey) {
             this.cases = cases;

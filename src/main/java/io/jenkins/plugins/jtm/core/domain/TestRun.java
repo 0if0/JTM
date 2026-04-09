@@ -54,7 +54,8 @@ public final class TestRun implements Serializable {
 
     /** Logical project scope; empty = unassigned. */
     @JsonProperty("projectKey")
-    private String projectKey; // lgtm[java] not a credential; logical project scope key
+    // lgtm[java] not a credential; logical project scope key
+    private String projectKey;
 
     // ── Run Metadata ──────────────────────────────────────────────────────────
     @JsonProperty("status")

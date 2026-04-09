@@ -16,7 +16,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public final class JtmUserPreferredProjectProperty extends UserProperty {
 
     @Nullable
-    private String preferredProjectKey; // lgtm[java] not a credential; UI convenience project scope key
+    // lgtm[java] not a credential; UI convenience project scope key
+    private String preferredProjectKey;
 
     @DataBoundConstructor
     public JtmUserPreferredProjectProperty(String preferredProjectKey) {

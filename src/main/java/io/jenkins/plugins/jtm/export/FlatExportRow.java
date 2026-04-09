@@ -12,7 +12,8 @@ public final class FlatExportRow implements Serializable {
     private final String runName;
     private final String jobName;
     private final int buildNumber;
-    private final String projectKey; // lgtm[java] not a credential; logical project scope key
+    // lgtm[java] not a credential; logical project scope key
+    private final String projectKey;
     private final String testCaseId;
     private final String title;
     private final String status;
