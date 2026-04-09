@@ -70,7 +70,7 @@ public class TestRunsAction implements Action {
 
     public List<String> getProjectOptions() {
         JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
-        return JtmStore.get().findDistinctProjectKeys();
+        return JtmStore.get().findDistinctProjectScopes();
     }
 
     public String getSelectedProject() {
@@ -82,17 +82,17 @@ public class TestRunsAction implements Action {
     }
 
     /** Prefill for newrun.jelly when ?project= is set. */
-    public String getProjectKeyPrefill() {
+    public String getProjectScopePrefill() {
         return StringUtils.defaultString(JtmProjectFilter.current());
     }
 
-    public String getProjectKeySelection() {
-        return getProjectKeyPrefill();
+    public String getProjectScopeSelection() {
+        return getProjectScopePrefill();
     }
 
-    public List<String> getProjectKeySelectOptions() {
+    public List<String> getProjectScopeSelectOptions() {
         JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
-        return JtmStore.get().findDistinctProjectKeysIncluding(getProjectKeySelection());
+        return JtmStore.get().findDistinctProjectScopesIncluding(getProjectScopeSelection());
     }
 
     /**
@@ -207,11 +207,11 @@ public class TestRunsAction implements Action {
         int buildNum = parseBuildNumber(req.getParameter("buildNumber"), 1);
         String branchRaw = trimRunParam(req.getParameter("branch"));
         String notes = trimRunParam(req.getParameter("notes"));
-        String projectKey = StringUtils.trimToEmpty(req.getParameter("projectKey"));
-        if (projectKey.isEmpty()) {
+        String projectScope = StringUtils.trimToEmpty(req.getParameter("projectScope"));
+        if (projectScope.isEmpty()) {
             String fromFilter = StringUtils.trimToNull(JtmProjectFilter.current());
             if (fromFilter != null) {
-                projectKey = fromFilter;
+                projectScope = fromFilter;
             }
         }
         String user = currentRunUser();
@@ -227,7 +227,7 @@ public class TestRunsAction implements Action {
         }
 
         TestRun run = TestRunService.get().createAdHocRun(
-            name, job, buildNum, branchRaw != null ? branchRaw : "", notes, linked, user, projectKey);
+            name, job, buildNum, branchRaw != null ? branchRaw : "", notes, linked, user, projectScope);
         rsp.sendRedirect2(req.getContextPath() + "/jtm/runs/" + run.getId() + "/");
     }
 

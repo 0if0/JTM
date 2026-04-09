@@ -81,7 +81,7 @@ public final class TestRunService {
      */
     public TestRun createAdHocRun(String displayName, String jobName, int buildNumber,
                                   String branch, String notes, List<String> linkedTestCaseIds, String user,
-                                  String projectKey) {
+                                  String projectScope) {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
         String id = store.generateRunId();
         TestRun run = new TestRun(id, jobName, buildNumber);
@@ -89,7 +89,7 @@ public final class TestRunService {
             run.setName(displayName.trim());
         }
         run.setBranch(branch != null ? branch : "");
-        run.setProjectKey(StringUtils.trimToEmpty(projectKey));
+        run.setProjectScope(StringUtils.trimToEmpty(projectScope));
         run.setTriggeredBy(user);
         run.setNotes(notes);
         run.setLinkedTestCaseIds(linkedTestCaseIds != null ? linkedTestCaseIds : new ArrayList<>());

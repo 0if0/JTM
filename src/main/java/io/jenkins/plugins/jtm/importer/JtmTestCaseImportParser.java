@@ -1,6 +1,7 @@
 package io.jenkins.plugins.jtm.importer;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -47,8 +48,8 @@ public final class JtmTestCaseImportParser {
         public String priority;
         public String risk;
         public String lifecycleStatus;
-        // lgtm[java] not a credential; logical project scope key
-        public String projectKey;
+        @JsonProperty("projectKey")
+        public String projectScope;
         public List<String> tags = Collections.emptyList();
         public List<ImportStepDto> steps = Collections.emptyList();
     }

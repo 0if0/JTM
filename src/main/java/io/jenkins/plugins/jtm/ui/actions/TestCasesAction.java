@@ -41,12 +41,12 @@ public final class TestCasesAction implements Action {
 
     // ── Data for index.jelly ──────────────────────────────────────────────────
     private transient Set<String> linkedTestCaseIds;
-    private transient String linkedScopeProjectKey;
+    private transient String linkedScopeProject;
 
     public List<TestCase> getTestCases() {
         JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
-        String projectKey = JtmProjectFilter.current();
-        List<TestCase> cases = TestCaseService.get().findAll(projectKey);
+        String projectScope = JtmProjectFilter.current();
+        List<TestCase> cases = TestCaseService.get().findAll(projectScope);
         StaplerRequest2 req = Stapler.getCurrentRequest2();
         if (req != null) {
             String q = StringUtils.trimToEmpty(req.getParameter("q")).toLowerCase(Locale.ROOT);
@@ -67,9 +67,9 @@ public final class TestCasesAction implements Action {
             }
             cases = filtered;
         }
-        if (linkedTestCaseIds == null || !java.util.Objects.equals(linkedScopeProjectKey, projectKey)) {
-            linkedTestCaseIds = JtmStore.get().findLinkedTestCaseIds(projectKey);
-            linkedScopeProjectKey = projectKey;
+        if (linkedTestCaseIds == null || !java.util.Objects.equals(linkedScopeProject, projectScope)) {
+            linkedTestCaseIds = JtmStore.get().findLinkedTestCaseIds(projectScope);
+            linkedScopeProject = projectScope;
         }
         return cases;
     }
@@ -83,9 +83,9 @@ public final class TestCasesAction implements Action {
         if (testCaseId == null) return false;
         if (linkedTestCaseIds == null) {
             // In case Jelly triggers this before getTestCases() (shouldn't happen, but safe).
-            String projectKey = JtmProjectFilter.current();
-            linkedTestCaseIds = JtmStore.get().findLinkedTestCaseIds(projectKey);
-            linkedScopeProjectKey = projectKey;
+            String projectScope = JtmProjectFilter.current();
+            linkedTestCaseIds = JtmStore.get().findLinkedTestCaseIds(projectScope);
+            linkedScopeProject = projectScope;
         }
         return linkedTestCaseIds.contains(testCaseId);
     }
@@ -96,7 +96,7 @@ public final class TestCasesAction implements Action {
 
     public List<String> getProjectOptions() {
         JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
-        return JtmStore.get().findDistinctProjectKeys();
+        return JtmStore.get().findDistinctProjectScopes();
     }
 
     /** Selected filter from {@code ?project=} (may be empty). */
@@ -109,19 +109,19 @@ public final class TestCasesAction implements Action {
     }
 
     /** Prefill for newcase.jelly when {@code ?project=} is set. */
-    public String getProjectKeyPrefill() {
+    public String getProjectScopePrefill() {
         return StringUtils.defaultString(JtmProjectFilter.current());
     }
 
     /** Selected value for project dropdown on newcase.jelly. */
-    public String getProjectKeySelection() {
-        return getProjectKeyPrefill();
+    public String getProjectScopeSelection() {
+        return getProjectScopePrefill();
     }
 
     /** Options for project dropdown (registry + cases/runs + current selection). */
-    public List<String> getProjectKeySelectOptions() {
+    public List<String> getProjectScopeSelectOptions() {
         JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
-        return JtmStore.get().findDistinctProjectKeysIncluding(getProjectKeySelection());
+        return JtmStore.get().findDistinctProjectScopesIncluding(getProjectScopeSelection());
     }
 
     public boolean canEdit()  { return JtmPermissions.hasPermission(JtmPermissions.TEST_EDIT); }
@@ -153,7 +153,7 @@ public final class TestCasesAction implements Action {
         String priorityStr = req.getParameter("priority");
         String description = trimToNull(req.getParameter("description"));
         String tagsRaw     = req.getParameter("tags");
-        String projectKey  = StringUtils.trimToEmpty(req.getParameter("projectKey"));
+        String projectScope  = StringUtils.trimToEmpty(req.getParameter("projectScope"));
         String user        = currentUser();
         List<TestStep> rawSteps = JtmStepFormParser.parseSteps(req);
 
@@ -169,7 +169,7 @@ public final class TestCasesAction implements Action {
 
         String descForStore = description != null ? description : "";
         TestCase created = TestCaseService.get().createTestCase(
-            title, type, priority, descForStore, parseTags(tagsRaw), rawSteps, user, projectKey);
+            title, type, priority, descForStore, parseTags(tagsRaw), rawSteps, user, projectScope);
 
         rsp.sendRedirect2(req.getContextPath() + "/jtm/testcases/" + created.getId() + "/");
     }

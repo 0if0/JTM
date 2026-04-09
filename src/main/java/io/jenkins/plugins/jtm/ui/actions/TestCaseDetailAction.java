@@ -109,7 +109,7 @@ public final class TestCaseDetailAction implements Action {
 
     public List<String> getProjectOptions() {
         JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
-        return JtmStore.get().findDistinctProjectKeys();
+        return JtmStore.get().findDistinctProjectScopes();
     }
 
     public String getSelectedProject() {
@@ -120,13 +120,13 @@ public final class TestCaseDetailAction implements Action {
         return JtmProjectFilter.urlQueryParam();
     }
 
-    public String getProjectKeySelection() {
-        return StringUtils.defaultString(testCase.getProjectKey());
+    public String getProjectScopeSelection() {
+        return StringUtils.defaultString(testCase.getProjectScope());
     }
 
-    public List<String> getProjectKeySelectOptions() {
+    public List<String> getProjectScopeSelectOptions() {
         JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
-        return JtmStore.get().findDistinctProjectKeysIncluding(getProjectKeySelection());
+        return JtmStore.get().findDistinctProjectScopesIncluding(getProjectScopeSelection());
     }
 
     public TestStep getStepAt(int index) {

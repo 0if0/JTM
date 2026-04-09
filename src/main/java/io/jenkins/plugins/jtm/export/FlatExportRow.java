@@ -12,8 +12,7 @@ public final class FlatExportRow implements Serializable {
     private final String runName;
     private final String jobName;
     private final int buildNumber;
-    // lgtm[java] not a credential; logical project scope key
-    private final String projectKey;
+    private final String projectScope;
     private final String testCaseId;
     private final String title;
     private final String status;
@@ -25,7 +24,7 @@ public final class FlatExportRow implements Serializable {
         String runName,
         String jobName,
         int buildNumber,
-        String projectKey,
+        String projectScope,
         String testCaseId,
         String title,
         String status,
@@ -36,7 +35,7 @@ public final class FlatExportRow implements Serializable {
         this.runName = runName;
         this.jobName = jobName;
         this.buildNumber = buildNumber;
-        this.projectKey = projectKey;
+        this.projectScope = projectScope;
         this.testCaseId = testCaseId;
         this.title = title;
         this.status = status;
@@ -60,8 +59,8 @@ public final class FlatExportRow implements Serializable {
         return buildNumber;
     }
 
-    public String getProjectKey() {
-        return projectKey;
+    public String getProjectScope() {
+        return projectScope;
     }
 
     public String getTestCaseId() {

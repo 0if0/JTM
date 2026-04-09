@@ -105,7 +105,7 @@ public final class TestRunExportService {
                         run.getName(),
                         run.getJobName(),
                         run.getBuildNumber(),
-                        StringUtils.defaultString(run.getProjectKey()),
+                        StringUtils.defaultString(run.getProjectScope()),
                         r.getTestCaseId(),
                         r.getTitle(),
                         r.getStatus(),
@@ -260,8 +260,8 @@ public final class TestRunExportService {
         html.append("<div><dt>Run ID</dt><dd>").append(ExportHtmlEscape.text(run.getId())).append("</dd></div>\n");
         html.append("<div><dt>Job / build</dt><dd>").append(ExportHtmlEscape.text(run.getJobName()))
             .append(" · #").append(run.getBuildNumber()).append("</dd></div>\n");
-        if (StringUtils.isNotBlank(run.getProjectKey())) {
-            html.append("<div><dt>Project</dt><dd>").append(ExportHtmlEscape.text(run.getProjectKey())).append("</dd></div>\n");
+        if (StringUtils.isNotBlank(run.getProjectScope())) {
+            html.append("<div><dt>Project</dt><dd>").append(ExportHtmlEscape.text(run.getProjectScope())).append("</dd></div>\n");
         }
         if (run.getStartedAt() != null) {
             html.append("<div><dt>Started</dt><dd>")
@@ -389,7 +389,7 @@ public final class TestRunExportService {
         for (FlatExportRow r : rows) {
             html.append("<tr>\n<td class=\"tc-id\">").append(ExportHtmlEscape.text(r.getRunId())).append("</td>\n");
             html.append("<td class=\"run-title-cell\">").append(ExportHtmlEscape.text(r.getRunName())).append("</td>\n");
-            String pk = StringUtils.isNotBlank(r.getProjectKey()) ? r.getProjectKey() : "—";
+            String pk = StringUtils.isNotBlank(r.getProjectScope()) ? r.getProjectScope() : "—";
             html.append("<td>").append(ExportHtmlEscape.text(pk)).append("</td>\n");
             html.append("<td class=\"tc-id\">").append(ExportHtmlEscape.text(r.getJobBuildLabel())).append("</td>\n");
             html.append("<td class=\"tc-id\">").append(ExportHtmlEscape.text(r.getTestCaseId())).append("</td>\n");
@@ -455,8 +455,8 @@ public final class TestRunExportService {
             "Run ID " + run.getId() + "  ·  " + run.getJobName() + " #" + run.getBuildNumber()
                 + "  ·  Outcome: " + run.getStatus(),
             small));
-        if (StringUtils.isNotBlank(run.getProjectKey())) {
-            doc.add(new Paragraph("Project: " + run.getProjectKey(), small));
+        if (StringUtils.isNotBlank(run.getProjectScope())) {
+            doc.add(new Paragraph("Project: " + run.getProjectScope(), small));
         }
         doc.add(new Paragraph("Generated " + generatedShort + "  ·  JTM", small));
         doc.add(new Paragraph(" "));
@@ -612,7 +612,7 @@ public final class TestRunExportService {
             Color rowBg = Math.floorMod(rowIdx++, 2) == 1 ? rowEven : Color.WHITE;
             table.addCell(bodyCell(r.getRunId(), normal, rowBg, borderLight, Element.ALIGN_LEFT));
             table.addCell(bodyCell(r.getRunName(), normal, rowBg, borderLight, Element.ALIGN_LEFT));
-            String pk = StringUtils.isNotBlank(r.getProjectKey()) ? r.getProjectKey() : "—";
+            String pk = StringUtils.isNotBlank(r.getProjectScope()) ? r.getProjectScope() : "—";
             table.addCell(bodyCell(pk, normal, rowBg, borderLight, Element.ALIGN_LEFT));
             table.addCell(bodyCell(r.getJobBuildLabel(), normal, rowBg, borderLight, Element.ALIGN_LEFT));
             table.addCell(bodyCell(r.getTestCaseId(), normal, rowBg, borderLight, Element.ALIGN_LEFT));

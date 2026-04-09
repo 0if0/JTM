@@ -87,10 +87,10 @@ public final class JtmStore {
     private final ReadWriteLock suiteLock = new ReentrantReadWriteLock();
     private final ReadWriteLock runLock = new ReentrantReadWriteLock();
 
-    /** User-registered project keys (also merged into {@link #findDistinctProjectKeys()}). */
-    private final NavigableSet<String> registeredProjectKeys = new ConcurrentSkipListSet<>();
+    /** User-registered project scopes (also merged into {@link #findDistinctProjectScopes()}). */
+    private final NavigableSet<String> registeredProjectScopes = new ConcurrentSkipListSet<>();
 
-    private static final int MAX_PROJECT_KEY_LEN = 120;
+    private static final int MAX_PROJECT_SCOPE_LEN = 120;
 
     private final ObjectMapper objectMapper;
     private volatile ExecutorService writeExecutor;
@@ -147,7 +147,7 @@ public final class JtmStore {
     // ── Initialization ────────────────────────────────────────────────────────
 
     private void loadAll() {
-        loadRegisteredProjectKeys();
+        loadRegisteredProjectScopes();
         loadDirectory(getTestCasesDir(), TestCase.class, testCaseIndex);
         loadDirectory(getSuitesDir(), TestSuite.class, suiteIndex);
         loadDirectory(getRunsDir(), TestRun.class, runIndex);
@@ -159,7 +159,7 @@ public final class JtmStore {
         return new File(getJtmDir(), "project-registry.json");
     }
 
-    private void loadRegisteredProjectKeys() {
+    private void loadRegisteredProjectScopes() {
         File f = getProjectRegistryFile();
         if (!f.exists()) {
             return;
@@ -169,37 +169,37 @@ public final class JtmStore {
             if (list == null) {
                 return;
             }
-            registeredProjectKeys.clear();
+            registeredProjectScopes.clear();
             for (String s : list) {
                 if (s == null) {
                     continue;
                 }
                 String t = StringUtils.trimToEmpty(s);
-                if (t.isEmpty() || t.length() > MAX_PROJECT_KEY_LEN) {
+                if (t.isEmpty() || t.length() > MAX_PROJECT_SCOPE_LEN) {
                     continue;
                 }
-                registeredProjectKeys.add(t);
+                registeredProjectScopes.add(t);
             }
         } catch (IOException e) {
             LOG.log(Level.WARNING, "[JTM] Failed to load project registry", e);
         }
     }
 
-    private void saveRegisteredProjectKeys() {
+    private void saveRegisteredProjectScopes() {
         File f = getProjectRegistryFile();
         f.getParentFile().mkdirs();
         try {
-            objectMapper.writeValue(f, new ArrayList<>(registeredProjectKeys));
+            objectMapper.writeValue(f, new ArrayList<>(registeredProjectScopes));
         } catch (IOException e) {
             LOG.log(Level.WARNING, "[JTM] Failed to persist project registry", e);
         }
     }
 
     /**
-     * Registers a project key for use in dropdowns before any case/run uses it.
+     * Registers a project scope for use in dropdowns before any case/run uses it.
      * Idempotent; trims and enforces a max length.
      */
-    public void registerProjectKey(String raw) {
+    public void registerProjectScope(String raw) {
         if (raw == null) {
             return;
         }
@@ -207,8 +207,8 @@ public final class JtmStore {
         if (key.isEmpty()) {
             return;
         }
-        if (key.length() > MAX_PROJECT_KEY_LEN) {
-            key = key.substring(0, MAX_PROJECT_KEY_LEN).trim();
+        if (key.length() > MAX_PROJECT_SCOPE_LEN) {
+            key = key.substring(0, MAX_PROJECT_SCOPE_LEN).trim();
             if (key.isEmpty()) {
                 return;
             }
@@ -216,34 +216,34 @@ public final class JtmStore {
         if (key.indexOf('\n') >= 0 || key.indexOf('\r') >= 0) {
             return;
         }
-        if (registeredProjectKeys.add(key)) {
-            saveRegisteredProjectKeys();
+        if (registeredProjectScopes.add(key)) {
+            saveRegisteredProjectScopes();
         }
     }
 
-    /** Removes a project key from registry (does not mutate existing test cases/runs). */
-    public boolean unregisterProjectKey(String raw) {
+    /** Removes a project scope from registry (does not mutate existing test cases/runs). */
+    public boolean unregisterProjectScope(String raw) {
         String key = StringUtils.trimToNull(raw);
         if (key == null) {
             return false;
         }
-        boolean removed = registeredProjectKeys.remove(key);
+        boolean removed = registeredProjectScopes.remove(key);
         if (removed) {
-            saveRegisteredProjectKeys();
+            saveRegisteredProjectScopes();
         }
         return removed;
     }
 
-    /** Number of test cases currently assigned to this project key. */
-    public long countTestCasesForProject(String projectKey) {
-        String key = StringUtils.trimToNull(projectKey);
+    /** Number of test cases currently assigned to this project scope. */
+    public long countTestCasesForProject(String projectScope) {
+        String key = StringUtils.trimToNull(projectScope);
         if (key == null) {
             return 0L;
         }
         testCaseLock.readLock().lock();
         try {
             return testCaseIndex.values().stream()
-                .filter(tc -> key.equals(StringUtils.trimToEmpty(tc.getProjectKey())))
+                .filter(tc -> key.equals(StringUtils.trimToEmpty(tc.getProjectScope())))
                 .count();
         } finally {
             testCaseLock.readLock().unlock();
@@ -251,15 +251,15 @@ public final class JtmStore {
     }
 
     /** Number of test runs currently assigned to this project key. */
-    public long countRunsForProject(String projectKey) {
-        String key = StringUtils.trimToNull(projectKey);
+    public long countRunsForProject(String projectScope) {
+        String key = StringUtils.trimToNull(projectScope);
         if (key == null) {
             return 0L;
         }
         runLock.readLock().lock();
         try {
             return runIndex.values().stream()
-                .filter(r -> key.equals(StringUtils.trimToEmpty(r.getProjectKey())))
+                .filter(r -> key.equals(StringUtils.trimToEmpty(r.getProjectScope())))
                 .count();
         } finally {
             runLock.readLock().unlock();
@@ -357,12 +357,12 @@ public final class JtmStore {
         return findAllTestCases(null);
     }
 
-    /** @param projectKeyFilter optional; blank = all projects */
-    public List<TestCase> findAllTestCases(String projectKeyFilter) {
+    /** @param projectScopeFilter optional; blank = all projects */
+    public List<TestCase> findAllTestCases(String projectScopeFilter) {
         testCaseLock.readLock().lock();
         try {
             return testCaseIndex.values().stream()
-                .filter(tc -> matchesProject(tc, projectKeyFilter))
+                .filter(tc -> matchesProject(tc, projectScopeFilter))
                 .sorted(Comparator.comparing(TestCase::getId))
                 .collect(Collectors.collectingAndThen(
                     Collectors.toCollection(ArrayList::new), Collections::unmodifiableList));
@@ -371,20 +371,20 @@ public final class JtmStore {
         }
     }
 
-    public List<String> findDistinctProjectKeys() {
+    public List<String> findDistinctProjectScopes() {
         testCaseLock.readLock().lock();
         runLock.readLock().lock();
         try {
             TreeSet<String> keys = new TreeSet<>();
-            keys.addAll(registeredProjectKeys);
+            keys.addAll(registeredProjectScopes);
             for (TestCase tc : testCaseIndex.values()) {
-                String k = StringUtils.trimToNull(tc.getProjectKey());
+                String k = StringUtils.trimToNull(tc.getProjectScope());
                 if (k != null) {
                     keys.add(k);
                 }
             }
             for (TestRun r : runIndex.values()) {
-                String k = StringUtils.trimToNull(r.getProjectKey());
+                String k = StringUtils.trimToNull(r.getProjectScope());
                 if (k != null) {
                     keys.add(k);
                 }
@@ -396,10 +396,10 @@ public final class JtmStore {
         }
     }
 
-    /** Distinct keys plus {@code preferredKey} if non-blank (for form dropdowns). */
-    public List<String> findDistinctProjectKeysIncluding(String preferredKey) {
-        TreeSet<String> keys = new TreeSet<>(findDistinctProjectKeys());
-        String p = StringUtils.trimToNull(preferredKey);
+    /** Distinct scopes plus {@code preferredScope} if non-blank (for form dropdowns). */
+    public List<String> findDistinctProjectScopesIncluding(String preferredScope) {
+        TreeSet<String> keys = new TreeSet<>(findDistinctProjectScopes());
+        String p = StringUtils.trimToNull(preferredScope);
         if (p != null) {
             keys.add(p);
         }
@@ -410,14 +410,14 @@ public final class JtmStore {
         if (projectFilter == null || projectFilter.isBlank()) {
             return true;
         }
-        return projectFilter.trim().equals(StringUtils.defaultString(tc.getProjectKey()).trim());
+        return projectFilter.trim().equals(StringUtils.defaultString(tc.getProjectScope()).trim());
     }
 
     private static boolean matchesProject(TestRun r, String projectFilter) {
         if (projectFilter == null || projectFilter.isBlank()) {
             return true;
         }
-        return projectFilter.trim().equals(StringUtils.defaultString(r.getProjectKey()).trim());
+        return projectFilter.trim().equals(StringUtils.defaultString(r.getProjectScope()).trim());
     }
 
     public List<TestCase> findTestCasesPaginated(int page, int pageSize,
@@ -590,12 +590,12 @@ public final class JtmStore {
         return findRecentRuns(limit, null);
     }
 
-    /** @param projectKeyFilter optional; blank = all projects */
-    public List<TestRun> findRecentRuns(int limit, String projectKeyFilter) {
+    /** @param projectScopeFilter optional; blank = all projects */
+    public List<TestRun> findRecentRuns(int limit, String projectScopeFilter) {
         runLock.readLock().lock();
         try {
             return runIndex.values().stream()
-                .filter(r -> matchesProject(r, projectKeyFilter))
+                .filter(r -> matchesProject(r, projectScopeFilter))
                 .sorted(Comparator.comparing(
                     TestRun::getStartedAt,
                     Comparator.nullsLast(Comparator.naturalOrder())).reversed())
@@ -694,16 +694,16 @@ public final class JtmStore {
         return getStatusCounts(null);
     }
 
-    /** @param projectKeyFilter optional; blank = all projects */
-    public Map<String, Long> getStatusCounts(String projectKeyFilter) {
+    /** @param projectScopeFilter optional; blank = all projects */
+    public Map<String, Long> getStatusCounts(String projectScopeFilter) {
         testCaseLock.readLock().lock();
         runLock.readLock().lock();
         try {
             // Status counts must only consider test cases that are linked to at least one run
             // AND have an execution timestamp (status "implemented" in a run).
-            Set<String> linkedIds = findLinkedTestCaseIdsInternal(projectKeyFilter);
+            Set<String> linkedIds = findLinkedTestCaseIdsInternal(projectScopeFilter);
             java.util.function.Predicate<TestCase> visible =
-                tc -> matchesProject(tc, projectKeyFilter)
+                tc -> matchesProject(tc, projectScopeFilter)
                     && linkedIds.contains(tc.getId())
                     && tc.getLastRunAt() != null;
 
@@ -748,13 +748,13 @@ public final class JtmStore {
         return getOverallPassRate(null);
     }
 
-    public double getOverallPassRate(String projectKeyFilter) {
+    public double getOverallPassRate(String projectScopeFilter) {
         testCaseLock.readLock().lock();
         runLock.readLock().lock();
         try {
-            Set<String> linkedIds = findLinkedTestCaseIdsInternal(projectKeyFilter);
+            Set<String> linkedIds = findLinkedTestCaseIdsInternal(projectScopeFilter);
             java.util.function.Predicate<TestCase> visible =
-                tc -> matchesProject(tc, projectKeyFilter)
+                tc -> matchesProject(tc, projectScopeFilter)
                     && linkedIds.contains(tc.getId())
                     && tc.getLastRunAt() != null;
 
@@ -783,7 +783,7 @@ public final class JtmStore {
      * {@link TestRun#getResultFor(String)} (missing entry → {@link TestCaseResult.TestResultStatus#PENDING}).
      * Otherwise falls back to iterating {@link TestRun#getResults()} (pipeline-only / legacy runs).
      */
-    public Map<String, Long> getLatestRunStatusCounts(String projectKeyFilter) {
+    public Map<String, Long> getLatestRunStatusCounts(String projectScopeFilter) {
         runLock.readLock().lock();
         try {
             Comparator<TestRun> byRecency = Comparator
@@ -792,7 +792,7 @@ public final class JtmStore {
                 .thenComparing(TestRun::getId);
             Map<String, TestRun> best = new HashMap<>();
             for (TestRun r : runIndex.values()) {
-                if (!matchesProject(r, projectKeyFilter)) {
+                if (!matchesProject(r, projectScopeFilter)) {
                     continue;
                 }
                 String key = jobKey(r);
@@ -863,8 +863,8 @@ public final class JtmStore {
     /**
      * Pass rate (0–100) from {@link #getLatestRunStatusCounts(String)} — latest run per job only.
      */
-    public double getLatestRunsPassRate(String projectKeyFilter) {
-        Map<String, Long> c = getLatestRunStatusCounts(projectKeyFilter);
+    public double getLatestRunsPassRate(String projectScopeFilter) {
+        Map<String, Long> c = getLatestRunStatusCounts(projectScopeFilter);
         long total = c.getOrDefault("TOTAL", 0L);
         if (total == 0) {
             return 0.0;
@@ -877,11 +877,11 @@ public final class JtmStore {
      * Runs with a start time, oldest→newest; if there are more than {@code maxPoints},
      * keeps the {@code maxPoints} most recent.
      */
-    public List<TestRun> findFailureTrendRuns(String projectKeyFilter, int maxPoints) {
+    public List<TestRun> findFailureTrendRuns(String projectScopeFilter, int maxPoints) {
         runLock.readLock().lock();
         try {
             List<TestRun> list = runIndex.values().stream()
-                .filter(r -> matchesProject(r, projectKeyFilter))
+                .filter(r -> matchesProject(r, projectScopeFilter))
                 .filter(r -> r.getStartedAt() != null)
                 .sorted(Comparator.comparing(TestRun::getStartedAt))
                 .collect(Collectors.toList());
@@ -905,10 +905,10 @@ public final class JtmStore {
     /**
      * @implNote Must be called with {@link #runLock} already held (read lock).
      */
-    private Set<String> findLinkedTestCaseIdsInternal(String projectKeyFilter) {
+    private Set<String> findLinkedTestCaseIdsInternal(String projectScopeFilter) {
         Set<String> out = new java.util.HashSet<>();
         for (TestRun r : runIndex.values()) {
-            if (!matchesProject(r, projectKeyFilter)) {
+            if (!matchesProject(r, projectScopeFilter)) {
                 continue;
             }
             List<String> ids = r.getLinkedTestCaseIds();
@@ -926,10 +926,10 @@ public final class JtmStore {
      * <p>Intended for UI visibility decisions ("status only exists once a test case was linked
      * and a run set its result").</p>
      */
-    public Set<String> findLinkedTestCaseIds(String projectKeyFilter) {
+    public Set<String> findLinkedTestCaseIds(String projectScopeFilter) {
         runLock.readLock().lock();
         try {
-            return java.util.Collections.unmodifiableSet(findLinkedTestCaseIdsInternal(projectKeyFilter));
+            return java.util.Collections.unmodifiableSet(findLinkedTestCaseIdsInternal(projectScopeFilter));
         } finally {
             runLock.readLock().unlock();
         }
@@ -939,11 +939,11 @@ public final class JtmStore {
         return getFlakyTests(limit, null);
     }
 
-    public List<TestCase> getFlakyTests(int limit, String projectKeyFilter) {
+    public List<TestCase> getFlakyTests(int limit, String projectScopeFilter) {
         testCaseLock.readLock().lock();
         try {
             return testCaseIndex.values().stream()
-                .filter(tc -> matchesProject(tc, projectKeyFilter))
+                .filter(tc -> matchesProject(tc, projectScopeFilter))
                 .filter(TestCase::isFlaky)
                 .sorted(Comparator.comparingInt(TestCase::getFlakyScore).reversed())
                 .limit(limit)
@@ -1019,7 +1019,7 @@ public final class JtmStore {
         } finally {
             runLock.writeLock().unlock();
         }
-        registeredProjectKeys.clear();
+        registeredProjectScopes.clear();
         File reg = getProjectRegistryFile();
         if (reg.exists() && !reg.delete()) {
             LOG.log(Level.WARNING, "[JTM] Could not delete project registry file");

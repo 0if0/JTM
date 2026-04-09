@@ -51,7 +51,7 @@ public final class JtmDelimitedImportParser {
             dto.priority = get(cols, header, "priority");
             dto.risk = get(cols, header, "risk");
             dto.lifecycleStatus = get(cols, header, "lifecycleStatus");
-            dto.projectKey = get(cols, header, "projectKey");
+            dto.projectScope = get(cols, header, "projectKey");
 
             String tags = get(cols, header, "tags");
             dto.tags = tags == null || tags.isBlank()

@@ -8,6 +8,7 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 /**
  * Persists the last selected JTM project scope ({@code ?project=}) for the user so navigation
@@ -16,25 +17,35 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public final class JtmUserPreferredProjectProperty extends UserProperty {
 
     @Nullable
-    // lgtm[java] not a credential; UI convenience project scope key
-    private String preferredProjectKey;
+    private String preferredProjectScope;
 
     @DataBoundConstructor
-    public JtmUserPreferredProjectProperty(String preferredProjectKey) {
-        this.preferredProjectKey = StringUtils.trimToNull(preferredProjectKey);
+    public JtmUserPreferredProjectProperty(String preferredProjectScope) {
+        this.preferredProjectScope = StringUtils.trimToNull(preferredProjectScope);
     }
 
     public JtmUserPreferredProjectProperty() {
-        this.preferredProjectKey = null;
+        this.preferredProjectScope = null;
+    }
+
+    /**
+     * Legacy user {@code config.xml} element; merged when {@code preferredProjectScope} is blank.
+     */
+    @Deprecated
+    @DataBoundSetter
+    public void setPreferredProjectKey(String legacy) {
+        if (preferredProjectScope == null && legacy != null) {
+            preferredProjectScope = StringUtils.trimToNull(legacy);
+        }
     }
 
     @Nullable
-    public String getPreferredProjectKey() {
-        return preferredProjectKey;
+    public String getPreferredProjectScope() {
+        return preferredProjectScope;
     }
 
-    public void setPreferredProjectKey(@Nullable String preferredProjectKey) {
-        this.preferredProjectKey = StringUtils.trimToNull(preferredProjectKey);
+    public void setPreferredProjectScope(@Nullable String preferredProjectScope) {
+        this.preferredProjectScope = StringUtils.trimToNull(preferredProjectScope);
     }
 
     @Override

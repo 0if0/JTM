@@ -41,10 +41,10 @@ public final class JtmProjectFilter {
             return null;
         }
         JtmUserPreferredProjectProperty prop = u.getProperty(JtmUserPreferredProjectProperty.class);
-        if (prop == null || StringUtils.isBlank(prop.getPreferredProjectKey())) {
+        if (prop == null || StringUtils.isBlank(prop.getPreferredProjectScope())) {
             return null;
         }
-        return prop.getPreferredProjectKey();
+        return prop.getPreferredProjectScope();
     }
 
     private static void savePreferredProject(String trimmedOrNull) {
@@ -58,7 +58,7 @@ public final class JtmProjectFilter {
                 prop = new JtmUserPreferredProjectProperty();
                 u.addProperty(prop);
             }
-            prop.setPreferredProjectKey(trimmedOrNull);
+            prop.setPreferredProjectScope(trimmedOrNull);
             u.save();
         } catch (IOException e) {
             LOG.log(Level.FINE, "[JTM] Could not persist preferred project for user", e);

@@ -83,8 +83,7 @@ public final class TestCase implements Serializable {
 
     /** Logical project scope (filter); empty = unassigned. Not final so Jackson can set when loading old JSON. */
     @JsonProperty("projectKey")
-    // lgtm[java] not a credential; logical project scope key
-    private String projectKey;
+    private String projectScope;
 
     // ── Audit ─────────────────────────────────────────────────────────────────
 
@@ -149,7 +148,7 @@ public final class TestCase implements Serializable {
         this.risk = Risk.MEDIUM; this.tags = Collections.emptyList();
         this.lifecycleStatus = LifecycleStatus.DRAFT;
         this.linkedJob = null; this.requirementId = null; this.jiraTicket = null;
-        this.projectKey = "";
+        this.projectScope = "";
         this.createdAt = Instant.now(); this.updatedAt = Instant.now();
         this.createdBy = null; this.updatedBy = null;
         this.lastStatus = TestCaseStatus.PENDING; this.lastRunAt = null;
@@ -178,7 +177,7 @@ public final class TestCase implements Serializable {
         this.linkedJob = builder.linkedJob;
         this.requirementId = builder.requirementId;
         this.jiraTicket = builder.jiraTicket;
-        this.projectKey = StringUtils.defaultString(builder.projectKey);
+        this.projectScope = StringUtils.defaultString(builder.projectScope);
         this.createdAt = Objects.requireNonNullElse(builder.createdAt, Instant.now());
         this.updatedAt = Objects.requireNonNullElse(builder.updatedAt, Instant.now());
         this.createdBy = builder.createdBy;
@@ -205,7 +204,7 @@ public final class TestCase implements Serializable {
         b.tags = new ArrayList<>(this.tags);
         b.lifecycleStatus = this.lifecycleStatus; b.linkedJob = this.linkedJob;
         b.requirementId = this.requirementId; b.jiraTicket = this.jiraTicket;
-        b.projectKey = StringUtils.defaultString(this.projectKey);
+        b.projectScope = StringUtils.defaultString(this.projectScope);
         b.createdAt = this.createdAt; b.updatedAt = this.updatedAt;
         b.createdBy = this.createdBy; b.updatedBy = this.updatedBy;
         b.lastStatus = this.lastStatus; b.lastRunAt = this.lastRunAt;
@@ -265,7 +264,7 @@ public final class TestCase implements Serializable {
     public String getLinkedJob() { return linkedJob; }
     public String getRequirementId() { return requirementId; }
     public String getJiraTicket() { return jiraTicket; }
-    public String getProjectKey() { return StringUtils.defaultString(projectKey); }
+    public String getProjectScope() { return StringUtils.defaultString(projectScope); }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
     public String getCreatedBy() { return createdBy; }
@@ -314,8 +313,7 @@ public final class TestCase implements Serializable {
         private String linkedJob;
         private String requirementId;
         private String jiraTicket;
-        // lgtm[java] not a credential; logical project scope key
-        private String projectKey = "";
+        private String projectScope = "";
         private Instant createdAt;
         private Instant updatedAt;
         private String createdBy;
@@ -344,7 +342,7 @@ public final class TestCase implements Serializable {
         public Builder linkedJob(String j) { this.linkedJob = j; return this; }
         public Builder requirementId(String r) { this.requirementId = r; return this; }
         public Builder jiraTicket(String j) { this.jiraTicket = j; return this; }
-        public Builder projectKey(String p) { this.projectKey = p; return this; }
+        public Builder projectScope(String p) { this.projectScope = p; return this; }
         public Builder createdAt(Instant i) { this.createdAt = i; return this; }
         public Builder updatedAt(Instant i) { this.updatedAt = i; return this; }
         public Builder createdBy(String u) { this.createdBy = u; return this; }

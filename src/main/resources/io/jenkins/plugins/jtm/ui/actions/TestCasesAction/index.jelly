@@ -216,7 +216,7 @@
                           <span class="jtm-tc-badge-flaky" title="Flaky (score: ${tc.flakyScore})">Flaky</span>
                         </j:if>
                       </td>
-                      <td class="jtm-tc-muted jtm-tc-small">${tc.projectKey}</td>
+                      <td class="jtm-tc-muted jtm-tc-small">${tc.projectScope}</td>
                       <td><span class="jtm-tc-badge jtm-tc-badge--type">${tc.type}</span></td>
                       <td><span class="jtm-tc-prio jtm-tc-prio--${tc.priority}">${tc.priority}</span></td>
                       <td></td>

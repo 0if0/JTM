@@ -16,7 +16,7 @@ public class JUnitXmlImportParserTest {
         try (InputStream in = getClass().getResourceAsStream("/fixtures/sample-junit-jtm.xml")) {
             assertThat(in).isNotNull();
             JUnitXmlImportParser.ParseResult pr = JUnitXmlImportParser.parse(in);
-            assertThat(pr.getProjectKey()).isEqualTo("jtm-sample");
+            assertThat(pr.getProjectScope()).isEqualTo("jtm-sample");
             List<TestCaseResult> results = pr.getResults();
             assertThat(results).hasSize(2);
             assertThat(results.get(0).getTestCaseId()).isEqualTo("TC-JUNIT-IMPORT-1");

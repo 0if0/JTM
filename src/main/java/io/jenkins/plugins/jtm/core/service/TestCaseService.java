@@ -71,7 +71,7 @@ public final class TestCaseService {
     public TestCase createTestCase(String title, TestCase.TestCaseType type,
                                    TestCase.Priority priority,
                                    String description, List<String> tags, List<TestStep> rawSteps,
-                                   String createdByUser, String projectKey) {
+                                   String createdByUser, String projectScope) {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         validateTitle(title);
 
@@ -89,7 +89,7 @@ public final class TestCaseService {
             .lifecycleStatus(TestCase.LifecycleStatus.DRAFT)
             .tags(tagList)
             .steps(steps)
-            .projectKey(StringUtils.trimToEmpty(projectKey))
+            .projectScope(StringUtils.trimToEmpty(projectScope))
             .lastStatus(TestCase.TestCaseStatus.PENDING)
             .createdAt(Instant.now())
             .updatedAt(Instant.now())
@@ -121,7 +121,7 @@ public final class TestCaseService {
                                               TestCase.TestCaseType type,
                                               TestCase.Priority priority,
                                               String createdByUser,
-                                              String projectKey) {
+                                              String projectScope) {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         validateTitle(title);
         if (StringUtils.isBlank(id)) {
@@ -140,7 +140,7 @@ public final class TestCaseService {
             .risk(TestCase.Risk.MEDIUM)
             .lifecycleStatus(TestCase.LifecycleStatus.DRAFT)
             .lastStatus(TestCase.TestCaseStatus.PENDING)
-            .projectKey(StringUtils.trimToEmpty(projectKey))
+            .projectScope(StringUtils.trimToEmpty(projectScope))
             .createdAt(Instant.now())
             .updatedAt(Instant.now())
             .createdBy(createdByUser)
@@ -196,10 +196,10 @@ public final class TestCaseService {
         return findAll(null);
     }
 
-    /** @param projectKeyFilter optional; blank = all projects */
-    public List<TestCase> findAll(String projectKeyFilter) {
+    /** @param projectScopeFilter optional; blank = all projects */
+    public List<TestCase> findAll(String projectScopeFilter) {
         JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
-        return store.findAllTestCases(projectKeyFilter);
+        return store.findAllTestCases(projectScopeFilter);
     }
 
     public PagedResult<TestCase> findPaginated(int page, int pageSize,
@@ -237,7 +237,7 @@ public final class TestCaseService {
             .linkedJob(updated.getLinkedJob())
             .requirementId(updated.getRequirementId())
             .jiraTicket(updated.getJiraTicket())
-            .projectKey(updated.getProjectKey())
+            .projectScope(updated.getProjectScope())
             .parentSuiteId(updated.getParentSuiteId())
             .version(existing.getVersion() + 1)
             .updatedAt(Instant.now())
@@ -261,10 +261,10 @@ public final class TestCaseService {
                                           TestCase.Risk risk, TestCase.LifecycleStatus lifecycle,
                                           List<String> tags,
                                           String requirementId, String jiraTicket,
-                                          String projectKey,
+                                          String projectScope,
                                           String updatedByUser) {
         return updateTestCaseContent(id, title, description, preconditions, expectedResult,
-            steps, type, priority, risk, lifecycle, tags, requirementId, jiraTicket, projectKey,
+            steps, type, priority, risk, lifecycle, tags, requirementId, jiraTicket, projectScope,
             updatedByUser, null);
     }
 
@@ -278,7 +278,7 @@ public final class TestCaseService {
                                           TestCase.Risk risk, TestCase.LifecycleStatus lifecycle,
                                           List<String> tags,
                                           String requirementId, String jiraTicket,
-                                          String projectKey,
+                                          String projectScope,
                                           String updatedByUser,
                                           String createdByOverride) {
         validateTitle(title);
@@ -303,7 +303,7 @@ public final class TestCaseService {
             .tags(tags != null ? tags : Collections.emptyList())
             .requirementId(req)
             .jiraTicket(jira)
-            .projectKey(StringUtils.trimToEmpty(projectKey))
+            .projectScope(StringUtils.trimToEmpty(projectScope))
             .version(existing.getVersion() + 1)
             .updatedAt(Instant.now())
             .updatedBy(updatedByUser);
@@ -355,7 +355,7 @@ public final class TestCaseService {
                     TestCase.LifecycleStatus.DRAFT))
                 .tags(dto.tags != null ? new ArrayList<>(dto.tags) : Collections.emptyList())
                 .steps(steps)
-                .projectKey(StringUtils.trimToEmpty(dto.projectKey))
+                .projectScope(StringUtils.trimToEmpty(dto.projectScope))
                 .lastStatus(TestCase.TestCaseStatus.PENDING)
                 .createdAt(Instant.now())
                 .updatedAt(Instant.now())

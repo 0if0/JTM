@@ -115,7 +115,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
 
     public List<String> getProjectOptions() {
         JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
-        return JtmStore.get().findDistinctProjectKeys();
+        return JtmStore.get().findDistinctProjectScopes();
     }
 
     public String getSelectedProject() {
@@ -278,9 +278,9 @@ public final class JtmRootAction implements UnprotectedRootAction {
     @POST
     public void doRegisterproject(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
-        String key = StringUtils.trimToEmpty(req.getParameter("newProjectKey"));
+        String key = StringUtils.trimToEmpty(req.getParameter("newProjectScope"));
         if (!key.isEmpty()) {
-            JtmStore.get().registerProjectKey(key);
+            JtmStore.get().registerProjectScope(key);
         }
         String cp = req.getContextPath();
         if (key.isEmpty()) {
@@ -296,7 +296,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
     @POST
     public void doDeleteproject(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
-        String key = StringUtils.trimToEmpty(req.getParameter("projectKey"));
+        String key = StringUtils.trimToEmpty(req.getParameter("projectScope"));
         String cp = req.getContextPath();
         if (key.isEmpty()) {
             rsp.sendRedirect2(cp + "/jtm/?projectDeleteStatus=missing");
@@ -314,7 +314,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
                 + "&projectDeleteRuns=" + runCount);
             return;
         }
-        store.unregisterProjectKey(key);
+        store.unregisterProjectScope(key);
         rsp.sendRedirect2(cp + "/jtm/?projectDeleteStatus=deleted&projectDeleteKey=" + encoded);
     }
 
@@ -442,7 +442,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
             tags,
             req.getParameter("requirementId"),
             req.getParameter("jiraTicket"),
-            StringUtils.trimToEmpty(req.getParameter("projectKey")),
+            StringUtils.trimToEmpty(req.getParameter("projectScope")),
             user,
             createdByOverride
         );

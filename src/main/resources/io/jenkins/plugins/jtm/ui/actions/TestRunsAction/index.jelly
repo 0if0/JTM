@@ -150,7 +150,7 @@
                       </td>
                       <td><a href="${rootURL}/jtm/runs/${run.id}/" class="jtm-runs-mono">${run.id}</a></td>
                       <td><a href="${rootURL}/jtm/runs/${run.id}/" class="jtm-runs-table__primary">${run.name}</a></td>
-                      <td class="jtm-runs-muted jtm-runs-small">${run.projectKey}</td>
+                      <td class="jtm-runs-muted jtm-runs-small">${run.projectScope}</td>
                       <td><a href="${rootURL}/job/${run.jobName}" class="jtm-runs-table__link">${run.jobName}</a></td>
                       <td><span class="jtm-runs-build">#${run.buildNumber}</span></td>
                       <td class="jtm-runs-muted">${run.branch}</td>

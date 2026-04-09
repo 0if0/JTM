@@ -130,19 +130,19 @@
           </j:if>
 
           <div class="jtm-tce-field">
-            <label for="projectKey">Project</label>
-            <select id="projectKey" name="projectKey" class="jenkins-select jtm-tce-select">
+            <label for="projectScope">Project</label>
+            <select id="projectScope" name="projectScope" class="jenkins-select jtm-tce-select">
               <j:choose>
-                <j:when test="${it.projectKeySelection == ''}">
+                <j:when test="${it.projectScopeSelection == ''}">
                   <option value="" selected="selected">— None —</option>
                 </j:when>
                 <j:otherwise>
                   <option value="">— None —</option>
                 </j:otherwise>
               </j:choose>
-              <j:forEach var="pk" items="${it.projectKeySelectOptions}">
+              <j:forEach var="pk" items="${it.projectScopeSelectOptions}">
                 <j:choose>
-                  <j:when test="${it.projectKeySelection == pk}">
+                  <j:when test="${it.projectScopeSelection == pk}">
                     <option value="${pk}" selected="selected">${pk}</option>
                   </j:when>
                   <j:otherwise>

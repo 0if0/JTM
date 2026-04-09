@@ -18,7 +18,7 @@ public class TestRunExportServiceTest {
         run.setName("Release 42");
         run.setJobName("manual");
         run.setBuildNumber(3);
-        run.setProjectKey("WebApp");
+        run.setProjectScope("WebApp");
         run.setStatus(TestRun.RunStatus.PARTIAL);
         List<ExportRow> rows = List.of(
             new ExportRow("TC-1", "Login", "PASSED", "alice", "1: PASSED")
@@ -64,7 +64,7 @@ public class TestRunExportServiceTest {
         run.setName("Beta");
         run.setJobName("j");
         run.setBuildNumber(2);
-        run.setProjectKey("X");
+        run.setProjectScope("X");
         run.setStatus(TestRun.RunStatus.PASSED);
         List<TestRun> runs = List.of(run);
         List<FlatExportRow> flat = List.of(

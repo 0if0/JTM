@@ -100,13 +100,13 @@
 
       <form method="POST" id="jtm-project-delete-form" action="${rootURL}/jtm/deleteproject" style="display:none">
         <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
-        <input type="hidden" id="jtm-project-delete-key" name="projectKey" value="${it.selectedProject}"/>
+        <input type="hidden" id="jtm-project-delete-key" name="projectScope" value="${it.selectedProject}"/>
       </form>
 
       <form method="POST" id="jtm-project-new-form" action="${rootURL}/jtm/registerproject" class="jtm-project-new-popover" style="display:none">
         <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
         <label for="jtm-project-new-input">New project</label>
-        <input type="text" id="jtm-project-new-input" name="newProjectKey" class="jenkins-input"
+        <input type="text" id="jtm-project-new-input" name="newProjectScope" class="jenkins-input"
                maxlength="120" placeholder="e.g. Mobile App" autocomplete="off"/>
         <button type="submit" class="jenkins-button jenkins-button--primary">Create</button>
         <button type="button" id="jtm-project-new-cancel" class="jenkins-button">Cancel</button>

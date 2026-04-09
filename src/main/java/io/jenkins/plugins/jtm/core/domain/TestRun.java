@@ -54,8 +54,7 @@ public final class TestRun implements Serializable {
 
     /** Logical project scope; empty = unassigned. */
     @JsonProperty("projectKey")
-    // lgtm[java] not a credential; logical project scope key
-    private String projectKey;
+    private String projectScope;
 
     // ── Run Metadata ──────────────────────────────────────────────────────────
     @JsonProperty("status")
@@ -93,7 +92,7 @@ public final class TestRun implements Serializable {
     public TestRun() {
         this.results = new ArrayList<>();
         this.linkedTestCaseIds = new ArrayList<>();
-        this.projectKey = "";
+        this.projectScope = "";
         this.startedAt = Instant.now();
         this.status = RunStatus.RUNNING;
     }
@@ -198,8 +197,8 @@ public final class TestRun implements Serializable {
     public void setRelease(String release) { this.release = release; }
     public String getEnvironment() { return environment; }
     public void setEnvironment(String environment) { this.environment = environment; }
-    public String getProjectKey() { return projectKey != null ? projectKey : ""; }
-    public void setProjectKey(String projectKey) { this.projectKey = projectKey != null ? projectKey.trim() : ""; }
+    public String getProjectScope() { return projectScope != null ? projectScope : ""; }
+    public void setProjectScope(String projectScope) { this.projectScope = projectScope != null ? projectScope.trim() : ""; }
     public RunStatus getStatus() { return status; }
     public void setStatus(RunStatus status) { this.status = status; }
     public String getTriggeredBy() { return triggeredBy; }

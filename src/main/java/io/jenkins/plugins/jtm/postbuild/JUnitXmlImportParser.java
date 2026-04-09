@@ -18,45 +18,42 @@ public final class JUnitXmlImportParser {
     private JUnitXmlImportParser() {}
 
     public static final class ImportedCase {
-        // lgtm[java] not a password; stable mapping key (classname + name)
-        private final String caseKey;
+        private final String caseIdentifier;
         private final String displayTitle; // "name" from junit testcase (keeps spaces/umlauts)
-        // lgtm[java] not a credential; derived project scope key
-        private final String projectKey;
+        private final String projectScope;
         private final boolean explicitIdProvided;
         private final TestCaseResult result;
 
-        private ImportedCase(String caseKey,
+        private ImportedCase(String caseIdentifier,
                               String displayTitle,
-                              String projectKey,
+                              String projectScope,
                               boolean explicitIdProvided,
                               TestCaseResult result) {
-            this.caseKey = caseKey;
+            this.caseIdentifier = caseIdentifier;
             this.displayTitle = displayTitle;
-            this.projectKey = projectKey;
+            this.projectScope = projectScope;
             this.explicitIdProvided = explicitIdProvided;
             this.result = result;
         }
 
-        public String getCaseKey() { return caseKey; }
+        public String getCaseIdentifier() { return caseIdentifier; }
         public String getDisplayTitle() { return displayTitle; }
-        public String getProjectKey() { return projectKey; }
+        public String getProjectScope() { return projectScope; }
         public boolean isExplicitIdProvided() { return explicitIdProvided; }
         public TestCaseResult getResult() { return result; }
     }
 
     public static final class ParseResult {
         private final List<ImportedCase> cases;
-        // lgtm[java] not a credential; fallback project scope key
-        private final String projectKey;
+        private final String projectScope;
 
-        public ParseResult(List<ImportedCase> cases, String projectKey) {
+        public ParseResult(List<ImportedCase> cases, String projectScope) {
             this.cases = cases;
-            this.projectKey = projectKey;
+            this.projectScope = projectScope;
         }
 
-        public String getProjectKey() {
-            return projectKey;
+        public String getProjectScope() {
+            return projectScope;
         }
 
         public List<ImportedCase> getCases() {
@@ -89,14 +86,14 @@ public final class JUnitXmlImportParser {
         var doc = f.newDocumentBuilder().parse(in);
         var nodes = doc.getElementsByTagName("testcase");
         List<ImportedCase> cases = new ArrayList<>();
-        // Fallback project key if we cannot resolve a testsuite for a testcase.
-        String fallbackProjectKey = "";
+        // Fallback project scope if we cannot resolve a testsuite for a testcase.
+        String fallbackProjectScope = "";
         var suites = doc.getElementsByTagName("testsuite");
         if (suites != null && suites.getLength() > 0) {
             var s0 = suites.item(0);
             if (s0 != null && s0.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
                 var se = (org.w3c.dom.Element) s0;
-                fallbackProjectKey = StringUtils.trimToEmpty(se.getAttribute("name"));
+                fallbackProjectScope = StringUtils.trimToEmpty(se.getAttribute("name"));
             }
         }
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -107,10 +104,10 @@ public final class JUnitXmlImportParser {
             var el = (org.w3c.dom.Element) n;
             String classname = StringUtils.defaultString(el.getAttribute("classname")).trim();
             String name = StringUtils.defaultString(el.getAttribute("name")).trim();
-            String caseKey = (StringUtils.defaultString(classname) + "#" + name).trim();
+            String caseIdentifier = (StringUtils.defaultString(classname) + "#" + name).trim();
             boolean explicitId = name.matches("^TC-[A-Za-z0-9._-]+$");
             String caseId = explicitId ? name : toCaseId(classname, name);
-            String projectKey = resolveNearestTestsuiteProjectKey(el).orElse(fallbackProjectKey);
+            String projectScope = resolveNearestTestsuiteProjectScope(el).orElse(fallbackProjectScope);
             TestCaseResult.TestResultStatus status = statusFromCaseElement(el);
             long durationMs = parseDurationMs(el.getAttribute("time"));
             TestCaseResult r = new TestCaseResult(caseId, status, durationMs);
@@ -122,12 +119,12 @@ public final class JUnitXmlImportParser {
             } else if (status == TestCaseResult.TestResultStatus.SKIPPED) {
                 r.setComment("skipped");
             }
-            cases.add(new ImportedCase(caseKey, name, projectKey, explicitId, r));
+            cases.add(new ImportedCase(caseIdentifier, name, projectScope, explicitId, r));
         }
-        return new ParseResult(cases, fallbackProjectKey);
+        return new ParseResult(cases, fallbackProjectScope);
     }
 
-    private static java.util.Optional<String> resolveNearestTestsuiteProjectKey(org.w3c.dom.Element testcaseEl) {
+    private static java.util.Optional<String> resolveNearestTestsuiteProjectScope(org.w3c.dom.Element testcaseEl) {
         org.w3c.dom.Node p = testcaseEl.getParentNode();
         while (p != null) {
             if (p.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
