@@ -19,16 +19,16 @@ import io.jenkins.plugins.jtm.postbuild.JUnitXmlImportParser;
 import io.jenkins.plugins.jtm.security.JtmPermissions;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import jenkins.model.Jenkins;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Part;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.Stapler;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.apache.commons.fileupload.FileItem;
 import org.kohsuke.stapler.verb.GET;
 import org.kohsuke.stapler.verb.POST;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.ByteArrayInputStream;
@@ -180,7 +180,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * returns null and yields “page not found” before {@code doSavecase} runs.
      */
     @POST
-    public void doSavecase(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doSavecase(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         new TestCasesAction().doSavecase(req, rsp);
     }
 
@@ -189,7 +189,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * <p>Declared on the root action for the same reason as {@link #doSavecase}.
      */
     @POST
-    public void doSaverun(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doSaverun(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         new TestRunsAction().doSaverun(req, rsp);
     }
 
@@ -197,7 +197,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * POST /jtm/importcases — JSON file upload (multipart) or {@code importJson} body field.
      */
     @POST
-    public void doImportcases(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doImportcases(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         String payload = req.getParameter("importJson");
         String fileName = StringUtils.defaultString(req.getParameter("importFileName"));
@@ -276,7 +276,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * POST /jtm/registerproject — persist a new project key for dropdowns and open the dashboard scoped to it.
      */
     @POST
-    public void doRegisterproject(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doRegisterproject(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         String key = StringUtils.trimToEmpty(req.getParameter("newProjectKey"));
         if (!key.isEmpty()) {
@@ -294,7 +294,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * POST /jtm/deleteproject — removes a project from registry if no cases/runs still reference it.
      */
     @POST
-    public void doDeleteproject(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doDeleteproject(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         String key = StringUtils.trimToEmpty(req.getParameter("projectKey"));
         String cp = req.getContextPath();
@@ -322,7 +322,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * GET /jtm/exportBranding — view export branding configuration.
      */
     @GET
-    public void doExportBranding(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+    public void doExportBranding(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_ADMIN);
         req.getView(this, "exportBranding").forward(req, rsp);
     }
@@ -331,7 +331,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * POST /jtm/exportBrandingSave — upload company logo for run exports (stored under {@code jtm/branding/}).
      */
     @POST
-    public void doExportBrandingSave(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doExportBrandingSave(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_ADMIN);
         String cp = req.getContextPath();
 
@@ -382,7 +382,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * POST /jtm/exportBrandingClear — clear company logo used in exports.
      */
     @POST
-    public void doExportBrandingClear(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doExportBrandingClear(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_ADMIN);
         String cp = req.getContextPath();
         try {
@@ -408,7 +408,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * POST /jtm/edittestcase — save metadata and steps from TestCaseDetailAction/edit.jelly.
      */
     @POST
-    public void doEdittestcase(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doEdittestcase(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         String id = trim(req.getParameter("jtmCaseId"));
         if (id == null) {
             rsp.sendRedirect2(req.getContextPath() + "/jtm/testcases/");
@@ -453,7 +453,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * POST /jtm/deletetestcase — permanently delete (JTM Admin or creator of the case).
      */
     @POST
-    public void doDeletetestcase(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doDeletetestcase(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         String id = trim(req.getParameter("jtmCaseId"));
         if (id == null) {
             rsp.sendRedirect2(req.getContextPath() + "/jtm/testcases/");
@@ -467,7 +467,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * POST /jtm/resetJtmData — clear all JTM persisted data (admin only). For E2E or support.
      */
     @POST
-    public void doResetJtmData(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doResetJtmData(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         JtmStore.get().resetAllData();
         rsp.sendRedirect2(req.getContextPath() + "/jtm/");
@@ -477,7 +477,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * POST /jtm/resetjtmdata — alias for {@link #doResetJtmData} (older Stapler-style name).
      */
     @POST
-    public void doResetjtmdata(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doResetjtmdata(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         doResetJtmData(req, rsp);
     }
 
@@ -516,13 +516,13 @@ public final class JtmRootAction implements UnprotectedRootAction {
 
     // ── REST API: /jtm/api/* (routed via {@link JtmApiAction#getDynamic}) ─────
 
-    void serveApiMethodNotAllowed(StaplerRequest req, StaplerResponse rsp, String method)
+    void serveApiMethodNotAllowed(StaplerRequest2 req, StaplerResponse2 rsp, String method)
         throws IOException {
         sendError(rsp, 405, "Method not allowed: " + method);
     }
 
     /** GET /jtm/api/testcases */
-    void serveApiTestcases(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    void serveApiTestcases(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         try {
             int page = intParam(req, "page", 0);
             int pageSize = intParam(req, "pageSize", 50);
@@ -550,7 +550,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
     }
 
     /** GET /jtm/api/testcase/{id} */
-    void serveApiTestcaseGet(String id, StaplerRequest req, StaplerResponse rsp) throws IOException {
+    void serveApiTestcaseGet(String id, StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         TestCaseService.get().findById(id).ifPresentOrElse(
             tc -> { try { sendJson(rsp, 200, tc); } catch (IOException e) { /* ignore */ } },
             () -> { try { sendError(rsp, 404, "TestCase not found: " + id); } catch (IOException e) { /* ignore */ } }
@@ -558,7 +558,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
     }
 
     /** POST /jtm/api/testcases */
-    void serveApiCreateTestcase(StaplerRequest req, StaplerResponse rsp)
+    void serveApiCreateTestcase(StaplerRequest2 req, StaplerResponse2 rsp)
         throws IOException, ServletException {
         try {
             TestCase template = JSON.readValue(req.getInputStream(), TestCase.class);
@@ -574,7 +574,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
     }
 
     /** POST /jtm/api/testcase/{id}/update */
-    void serveApiTestcaseUpdate(String id, StaplerRequest req, StaplerResponse rsp)
+    void serveApiTestcaseUpdate(String id, StaplerRequest2 req, StaplerResponse2 rsp)
         throws IOException, ServletException {
         try {
             byte[] body = req.getInputStream().readAllBytes();
@@ -592,7 +592,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
     }
 
     /** POST /jtm/api/testcase/{id}/status */
-    void serveApiUpdateStatus(StaplerRequest req, StaplerResponse rsp)
+    void serveApiUpdateStatus(StaplerRequest2 req, StaplerResponse2 rsp)
         throws IOException, ServletException {
         try {
             @SuppressWarnings("unchecked") Map<String, Object> body =
@@ -619,7 +619,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
     }
 
     /** POST /jtm/api/testcase/{id}/delete */
-    void serveApiTestcaseDelete(String id, StaplerRequest req, StaplerResponse rsp) throws IOException {
+    void serveApiTestcaseDelete(String id, StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         try {
             String user = getApiUser(req);
             TestCaseService.get().deleteTestCase(id, user);
@@ -632,7 +632,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
     }
 
     /** POST /jtm/api/testruns */
-    void serveApiTestruns(StaplerRequest req, StaplerResponse rsp)
+    void serveApiTestruns(StaplerRequest2 req, StaplerResponse2 rsp)
         throws IOException, ServletException {
         try {
             TestRun run = JSON.readValue(req.getInputStream(), TestRun.class);
@@ -666,7 +666,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
     }
 
     /** GET /jtm/api/dashboard/summary */
-    void serveApiDashboardSummary(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    void serveApiDashboardSummary(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         try {
             JtmStore store = JtmStore.get();
             Map<String, Object> summary = new LinkedHashMap<>();
@@ -684,7 +684,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
 
     // ── Private Helpers ───────────────────────────────────────────────────────
 
-    void sendJson(StaplerResponse rsp, int status, Object data) throws IOException {
+    void sendJson(StaplerResponse2 rsp, int status, Object data) throws IOException {
         rsp.setStatus(status);
         rsp.setContentType("application/json;charset=UTF-8");
         rsp.setHeader("X-JTM-Version", "1.0.0");
@@ -694,7 +694,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
         }
     }
 
-    void sendError(StaplerResponse rsp, int status, String message) throws IOException {
+    void sendError(StaplerResponse2 rsp, int status, String message) throws IOException {
         Map<String, Object> error = new LinkedHashMap<>();
         error.put("error", true);
         error.put("status", status);
@@ -703,12 +703,12 @@ public final class JtmRootAction implements UnprotectedRootAction {
         sendJson(rsp, status, error);
     }
 
-    private String getApiUser(StaplerRequest req) {
+    private String getApiUser(StaplerRequest2 req) {
         hudson.model.User user = hudson.model.User.current();
         return user != null ? user.getId() : "anonymous";
     }
 
-    private int intParam(StaplerRequest req, String name, int defaultValue) {
+    private int intParam(StaplerRequest2 req, String name, int defaultValue) {
         String val = req.getParameter(name);
         if (val == null) return defaultValue;
         try { return Integer.parseInt(val); }

@@ -1,7 +1,7 @@
 package io.jenkins.plugins.jtm.ui.actions;
 
 import io.jenkins.plugins.jtm.core.domain.TestStep;
-import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerRequest2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ final class JtmStepFormParser {
 
     private JtmStepFormParser() {}
 
-    static List<TestStep> parseSteps(StaplerRequest req) {
+    static List<TestStep> parseSteps(StaplerRequest2 req) {
         String[] actions = req.getParameterValues("stepAction");
         String[] expected = req.getParameterValues("stepExpected");
         int alen = actions != null ? actions.length : 0;

@@ -8,12 +8,12 @@ import io.jenkins.plugins.jtm.persistence.JtmStore;
 import io.jenkins.plugins.jtm.security.JtmPermissions;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.Stapler;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.verb.GET;
 import org.kohsuke.stapler.verb.POST;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +47,7 @@ public final class TestCasesAction implements Action {
         JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
         String projectKey = JtmProjectFilter.current();
         List<TestCase> cases = TestCaseService.get().findAll(projectKey);
-        StaplerRequest req = Stapler.getCurrentRequest();
+        StaplerRequest2 req = Stapler.getCurrentRequest2();
         if (req != null) {
             String q = StringUtils.trimToEmpty(req.getParameter("q")).toLowerCase(Locale.ROOT);
             String fType = StringUtils.trimToEmpty(req.getParameter("type")).toUpperCase(Locale.ROOT);
@@ -137,7 +137,7 @@ public final class TestCasesAction implements Action {
     // reliably select newcase.jelly under nested Stapler dispatch (404).
 
     @GET
-    public void doNewcase(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+    public void doNewcase(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         req.getView(this, "newcase").forward(req, rsp);
     }
@@ -145,7 +145,7 @@ public final class TestCasesAction implements Action {
     // ── POST /jtm/savecase (via JtmRootAction) → save and redirect ─────────────
 
     @POST
-    public void doSavecase(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doSavecase(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
 
         String title       = trimToNull(req.getParameter("title"));
@@ -175,7 +175,7 @@ public final class TestCasesAction implements Action {
     }
 
     @POST
-    public void doDeleteSelected(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doDeleteSelected(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         String[] selected = req.getParameterValues("selectedCaseId");
         if (selected == null || selected.length == 0) {
@@ -206,7 +206,7 @@ public final class TestCasesAction implements Action {
 
     private static final Set<String> TESTCASES_RESERVED_SEGMENTS = Set.of("newcase");
 
-    public Object getDynamic(String id, StaplerRequest req, StaplerResponse rsp) {
+    public Object getDynamic(String id, StaplerRequest2 req, StaplerResponse2 rsp) {
         if (id == null || id.isBlank() || TESTCASES_RESERVED_SEGMENTS.contains(id)) {
             return null;
         }

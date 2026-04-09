@@ -10,13 +10,13 @@ import io.jenkins.plugins.jtm.export.JtmExportBrandingStore;
 import io.jenkins.plugins.jtm.export.TestRunExportService;
 import io.jenkins.plugins.jtm.persistence.JtmStore;
 import io.jenkins.plugins.jtm.security.JtmPermissions;
+import jakarta.servlet.ServletException;
 import org.apache.commons.lang3.StringUtils;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.verb.GET;
 import org.kohsuke.stapler.verb.POST;
 
-import javax.servlet.ServletException;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -99,7 +99,7 @@ public class TestRunsAction implements Action {
      * POST /jtm/runs/exportBatch — flat multi-run report (HTML or PDF). Body: {@code runId} (repeatable), {@code format}.
      */
     @POST
-    public void doExportBatch(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doExportBatch(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
         String format = StringUtils.defaultString(req.getParameter("format")).toLowerCase(Locale.ROOT);
         if (!"html".equals(format) && !"pdf".equals(format)) {
@@ -161,7 +161,7 @@ public class TestRunsAction implements Action {
 
     /** POST /jtm/runs/deleteBatch — delete selected runs from list page. */
     @POST
-    public void doDeleteBatch(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doDeleteBatch(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
         LinkedHashSet<String> idOrder = new LinkedHashSet<>();
         String[] raw = req.getParameterValues("runId");
@@ -190,14 +190,14 @@ public class TestRunsAction implements Action {
     }
 
     @GET
-    public void doNewrun(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+    public void doNewrun(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
         req.getView(this, "newrun").forward(req, rsp);
     }
 
     /** POST /jtm/saverun (via JtmRootAction#doSaverun) — ad-hoc run from UI. */
     @POST
-    public void doSaverun(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doSaverun(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
         String name = trimRunParam(req.getParameter("name"));
         String job = trimRunParam(req.getParameter("jobName"));
@@ -254,7 +254,7 @@ public class TestRunsAction implements Action {
         return u != null ? u.getId() : "anonymous";
     }
 
-    public Object getDynamic(String id, StaplerRequest req, StaplerResponse rsp) {
+    public Object getDynamic(String id, StaplerRequest2 req, StaplerResponse2 rsp) {
         if (id == null || id.isBlank() || RUNS_RESERVED_SEGMENTS.contains(id)) {
             return null;
         }

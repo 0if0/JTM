@@ -2,12 +2,12 @@ package io.jenkins.plugins.jtm.ui.actions;
 
 import hudson.model.Action;
 import io.jenkins.plugins.jtm.security.JtmPermissions;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 import org.kohsuke.stapler.verb.GET;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.io.IOException;
 
 /**
@@ -39,7 +39,7 @@ public final class JtmApiAction implements Action {
         return null;
     }
 
-    public Object getDynamic(String name, StaplerRequest req, StaplerResponse rsp) {
+    public Object getDynamic(String name, StaplerRequest2 req, StaplerResponse2 rsp) {
         switch (name) {
             case "testcases":
                 return new JtmApiTestcasesAction(root);
@@ -77,7 +77,7 @@ public final class JtmApiAction implements Action {
         }
 
         @GET
-        public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+        public void doIndex(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
             JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
             root.serveApiTestcases(req, rsp);
         }
@@ -86,7 +86,7 @@ public final class JtmApiAction implements Action {
          * URL: /jtm/api/testcases/create
          */
         @RequirePOST
-        public void doCreate(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+        public void doCreate(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
             JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
             root.serveApiCreateTestcase(req, rsp);
         }
@@ -115,7 +115,7 @@ public final class JtmApiAction implements Action {
         }
 
         @GET
-        public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+        public void doIndex(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
             JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
             root.serveApiTestruns(req, rsp);
         }
@@ -173,7 +173,7 @@ public final class JtmApiAction implements Action {
         }
 
         @GET
-        public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException {
+        public void doIndex(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
             JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
             root.serveApiDashboardSummary(req, rsp);
         }
@@ -203,7 +203,7 @@ public final class JtmApiAction implements Action {
             return null;
         }
 
-        public JtmApiTestcaseById getDynamic(String id, StaplerRequest req, StaplerResponse rsp) {
+        public JtmApiTestcaseById getDynamic(String id, StaplerRequest2 req, StaplerResponse2 rsp) {
             return new JtmApiTestcaseById(root, id);
         }
     }
@@ -233,7 +233,7 @@ public final class JtmApiAction implements Action {
         }
 
         @GET
-        public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException {
+        public void doIndex(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
             JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
             root.serveApiTestcaseGet(id, req, rsp);
         }
@@ -244,7 +244,7 @@ public final class JtmApiAction implements Action {
          * URL: /jtm/api/testcase/{id}/update
          */
         @RequirePOST
-        public void doUpdate(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+        public void doUpdate(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
             root.serveApiTestcaseUpdate(id, req, rsp);
         }
 
@@ -252,7 +252,7 @@ public final class JtmApiAction implements Action {
          * URL: /jtm/api/testcase/{id}/delete
          */
         @RequirePOST
-        public void doDelete(StaplerRequest req, StaplerResponse rsp) throws IOException {
+        public void doDelete(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
             root.serveApiTestcaseDelete(id, req, rsp);
         }
 
@@ -284,7 +284,7 @@ public final class JtmApiAction implements Action {
         }
 
         @RequirePOST
-        public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+        public void doIndex(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
             root.serveApiUpdateStatus(req, rsp);
         }
     }
