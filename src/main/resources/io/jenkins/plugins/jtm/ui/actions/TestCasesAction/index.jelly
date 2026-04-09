@@ -2,34 +2,29 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/hudson/form" xmlns:i="jelly:fmt" xmlns:h="/lib/hudson">
   <l:layout title="Test Cases — JTM">
+    <l:breadcrumb title="${%breadcrumb.testCases}" href="${rootURL}/jtm/testcases/"/>
     <l:side-panel>
       <l:tasks>
-        <l:task icon="symbol-list-outline plugin-ionicons-api"
-                href="${request.contextPath}/jtm${it.projectUrlQuery}" title="Dashboard"/>
+        <l:task icon="symbol-jtm plugin-jtm"
+                href="${rootURL}/jtm${it.projectUrlQuery}" title="${%task.dashboard}"/>
         <l:task icon="symbol-checkbox-outline plugin-ionicons-api"
-                href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}" title="Test Cases"/>
+                href="${rootURL}/jtm/testcases${it.projectUrlQuery}" title="${%task.testCases}"/>
         <l:task icon="symbol-play-circle-outline plugin-ionicons-api"
-                href="${request.contextPath}/jtm/runs${it.projectUrlQuery}" title="Test Runs"/>
+                href="${rootURL}/jtm/runs${it.projectUrlQuery}" title="${%task.testRuns}"/>
         <l:task icon="symbol-flash-outline plugin-ionicons-api"
-                href="${request.contextPath}/jtm/runs/newrun${it.projectUrlQuery}" title="New Test Run"/>
+                href="${rootURL}/jtm/runs/newrun${it.projectUrlQuery}" title="${%task.newTestRun}"/>
         <l:task icon="symbol-add-circle-outline plugin-ionicons-api"
-                href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}" title="New Test Case"/>
+                href="${rootURL}/jtm/testcases/newcase${it.projectUrlQuery}" title="${%task.newTestCase}"/>
       </l:tasks>
     </l:side-panel>
 
     <l:main-panel>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestCasesAction.index"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.common"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.dialog"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestCasesAction.cases-index"/>
 
       <j:set var="fq" value="${request.getParameter('q')}"/>
       <j:set var="fType" value="${request.getParameter('type')}"/>
-
-      <div id="breadcrumbBar" class="jtm-tc-bc">
-        <a href="${request.contextPath}/">Jenkins</a>
-        <span class="jtm-tc-bc__sep" aria-hidden="true">/</span>
-        <a href="${request.contextPath}/jtm/">JTM Testmanagement</a>
-        <span class="jtm-tc-bc__sep" aria-hidden="true">/</span>
-        <span class="jtm-tc-bc__here">Test Cases</span>
-      </div>
 
       <header class="jtm-tc-hero">
         <div class="jtm-tc-hero__text">
@@ -47,14 +42,14 @@
               </j:choose>
             </span>
           </div>
-          <a href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}"
+          <a href="${rootURL}/jtm/testcases/newcase${it.projectUrlQuery}"
              class="jenkins-button jenkins-button--primary jtm-tc-hero__cta">New test case</a>
         </div>
       </header>
 
       <section class="jtm-tc-section" aria-labelledby="jtm-tc-filter-h">
         <h2 id="jtm-tc-filter-h" class="jtm-tc-section__title">Search &amp; filters</h2>
-        <form method="GET" class="jtm-tc-filter" action="${request.contextPath}/jtm/testcases/">
+        <form method="GET" class="jtm-tc-filter" action="${rootURL}/jtm/testcases/">
           <div class="jtm-tc-filter__row jtm-tc-filter__row--search">
             <label class="jtm-tc-filter__label" for="jtm-tc-q">Search</label>
             <input type="text" id="jtm-tc-q" name="q" value="${fq}"
@@ -63,7 +58,8 @@
           <div class="jtm-tc-filter__row jtm-tc-filter__row--selects">
             <div class="jtm-tc-filter__field">
               <label for="jtm-tc-type">Type</label>
-              <select name="type" id="jtm-tc-type" class="jenkins-select jtm-tc-select">
+              <div class="jenkins-select">
+              <select name="type" id="jtm-tc-type" class="jenkins-select__input jtm-tc-select">
                 <j:choose>
                   <j:when test="${fType == null || fType == ''}">
                     <option value="" selected="selected">All types</option>
@@ -85,10 +81,12 @@
                   <j:otherwise><option value="EXPLORATORY">Exploratory</option></j:otherwise>
                 </j:choose>
               </select>
+              </div>
             </div>
             <div class="jtm-tc-filter__field">
               <label for="jtm-filter-project">Project</label>
-              <select name="project" id="jtm-filter-project" class="jenkins-select jtm-tc-select" aria-describedby="jtm-tc-proj-hint">
+              <div class="jenkins-select">
+              <select name="project" id="jtm-filter-project" class="jenkins-select__input jtm-tc-select" aria-describedby="jtm-tc-proj-hint">
                 <j:choose>
                   <j:when test="${it.selectedProject == ''}">
                     <option value="" selected="selected">All projects</option>
@@ -108,12 +106,13 @@
                   </j:choose>
                 </j:forEach>
               </select>
+              </div>
             </div>
           </div>
           <p class="jtm-tc-filter__hint" id="jtm-tc-proj-hint">Project change reloads the list with the same search filters.</p>
           <div class="jtm-tc-filter__actions">
             <button type="submit" class="jenkins-button jenkins-button--primary">Apply filters</button>
-            <a href="${request.contextPath}/jtm/testcases/" class="jenkins-button">Reset</a>
+            <a href="${rootURL}/jtm/testcases/" class="jenkins-button">Reset</a>
           </div>
         </form>
       </section>
@@ -141,7 +140,7 @@
         <details class="jtm-tc-import">
           <summary class="jtm-tc-import__summary">Import test cases</summary>
           <div class="jtm-tc-import__body">
-            <form method="POST" action="${request.contextPath}/jtm/importcases" class="jtm-tc-import-form" id="jtm-import-form" enctype="multipart/form-data">
+            <form method="POST" action="${rootURL}/jtm/importcases" class="jtm-tc-import-form" id="jtm-import-form" enctype="multipart/form-data">
               <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
               <input type="hidden" name="importJson" id="jtm-import-json" value=""/>
               <input type="hidden" name="importFileName" id="jtm-import-file-name" value=""/>
@@ -165,12 +164,12 @@
             </div>
             <p class="jtm-tc-empty__title">No test cases match</p>
             <p class="jtm-tc-empty__text">Adjust filters or add your first case.</p>
-            <a href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}" class="jenkins-button jenkins-button--primary">Create test case</a>
+            <a href="${rootURL}/jtm/testcases/newcase${it.projectUrlQuery}" class="jenkins-button jenkins-button--primary">Create test case</a>
           </div>
         </j:when>
         <j:otherwise>
           <section class="jtm-tc-panel" aria-labelledby="jtm-tc-table-h">
-            <form method="POST" action="${request.contextPath}/jtm/testcases/deleteSelected" id="jtm-bulk-delete-form">
+            <form method="POST" action="${rootURL}/jtm/testcases/deleteSelected" id="jtm-bulk-delete-form">
               <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
             <div class="jtm-tc-panel__head">
               <div>
@@ -182,7 +181,7 @@
                   <input type="checkbox" id="jtm-tc-select-all"/>
                   <span>Select all</span>
                 </label>
-                <button type="submit" class="jenkins-button jenkins-button--danger" id="jtm-tc-delete-selected">Delete selected</button>
+                <button type="submit" class="jenkins-button jenkins-!-destructive-color" id="jtm-tc-delete-selected">Delete selected</button>
               </div>
             </div>
             <div class="jtm-tc-table-wrap">
@@ -209,10 +208,10 @@
                         <input type="checkbox" name="selectedCaseId" value="${tc.id}" class="jtm-tc-row-check"/>
                       </td>
                       <td>
-                        <a href="${request.contextPath}/jtm/testcases/${tc.id}/" class="jtm-tc-mono">${tc.id}</a>
+                        <a href="${rootURL}/jtm/testcases/${tc.id}/" class="jtm-tc-mono">${tc.id}</a>
                       </td>
                       <td>
-                        <a href="${request.contextPath}/jtm/testcases/${tc.id}/" class="jtm-tc-table__primary">${tc.title}</a>
+                        <a href="${rootURL}/jtm/testcases/${tc.id}/" class="jtm-tc-table__primary">${tc.title}</a>
                         <j:if test="${tc.flaky}">
                           <span class="jtm-tc-badge-flaky" title="Flaky (score: ${tc.flakyScore})">Flaky</span>
                         </j:if>
@@ -231,12 +230,12 @@
                         <j:if test="${tc.lastBuildNumber != null}">
                           #${tc.lastBuildNumber}
                           <j:if test="${tc.linkedJob != null}">
-                            (<a href="${request.contextPath}/job/${tc.linkedJob}">${tc.linkedJob}</a>)
+                            (<a href="${rootURL}/job/${tc.linkedJob}">${tc.linkedJob}</a>)
                           </j:if>
                         </j:if>
                       </td>
                       <td class="jtm-tc-row-actions">
-                        <a href="${request.contextPath}/jtm/testcases/${tc.id}/edit" class="jenkins-button jenkins-button--primary jtm-tc-btn-edit">Edit</a>
+                        <a href="${rootURL}/jtm/testcases/${tc.id}/edit" class="jenkins-button jenkins-button--primary jtm-tc-btn-edit">Edit</a>
                       </td>
                     </tr>
                   </j:forEach>
@@ -247,66 +246,6 @@
           </section>
         </j:otherwise>
       </j:choose>
-      <j:comment><![CDATA[
-(function () {
-  var form = document.getElementById('jtm-import-form');
-  var input = document.getElementById('jtm-import-file');
-  var payload = document.getElementById('jtm-import-json');
-  var name = document.getElementById('jtm-import-file-name');
-  if (!form || !input || !payload || !name) return;
-  form.addEventListener('submit', function (e) {
-    var file = input.files && input.files[0];
-    if (!file) return;
-    if (payload.value && payload.value.length > 0) return;
-    e.preventDefault();
-    var r = new FileReader();
-    r.onload = function () {
-      try {
-        var bytes = new Uint8Array(r.result);
-        var decoded = '';
-        try {
-          decoded = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
-        } catch (utfErr) {
-          decoded = new TextDecoder('windows-1252').decode(bytes);
-        }
-        payload.value = decoded;
-        name.value = file.name || '';
-        form.submit();
-      } catch (err) {
-        alert('Could not decode file for import.');
-      }
-    };
-    r.onerror = function () {
-      alert('Could not read file for import.');
-    };
-    r.readAsArrayBuffer(file);
-  });
-  var proj = document.getElementById('jtm-filter-project');
-  if (proj && proj.form) {
-    proj.addEventListener('change', function () { proj.form.submit(); });
-  }
-  var selectAll = document.getElementById('jtm-tc-select-all');
-  if (selectAll) {
-    selectAll.addEventListener('change', function () {
-      document.querySelectorAll('.jtm-tc-row-check').forEach(function (cb) { cb.checked = selectAll.checked; });
-    });
-  }
-  var bulkForm = document.getElementById('jtm-bulk-delete-form');
-  if (bulkForm) {
-    bulkForm.addEventListener('submit', function (ev) {
-      var checked = Array.from(document.querySelectorAll('.jtm-tc-row-check')).filter(function (cb) { return cb.checked; }).length;
-      if (checked === 0) {
-        ev.preventDefault();
-        alert('Bitte mindestens einen Test Case auswaehlen.');
-        return;
-      }
-      if (!confirm('Ausgewaehlte Test Cases wirklich loeschen?')) {
-        ev.preventDefault();
-      }
-    });
-  }
-})();
-]]></j:comment>
     </l:main-panel>
   </l:layout>
 </j:jelly>

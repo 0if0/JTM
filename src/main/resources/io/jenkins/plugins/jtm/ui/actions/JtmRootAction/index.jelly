@@ -5,39 +5,33 @@
     JTM Dashboard — /jtm/
     Modern test-management overview: KPIs, distribution, runs, quality widgets.
   -->
-  <l:layout title="JTM Testmanagement — Dashboard">
+  <l:layout title="${%layout.titleDashboard}">
+    <l:breadcrumb title="${%breadcrumb.dashboard}" href="${rootURL}/jtm/"/>
 
     <l:side-panel>
       <l:tasks>
-        <l:task icon="symbol-list-outline plugin-ionicons-api"
+        <l:task icon="symbol-jtm plugin-jtm"
                 href="${rootURL}/jtm${it.projectUrlQuery}"
-                title="Dashboard"/>
+                title="${%task.dashboard}"/>
         <l:task icon="symbol-checkbox-outline plugin-ionicons-api"
                 href="${rootURL}/jtm/testcases${it.projectUrlQuery}"
-                title="Test Cases"/>
+                title="${%task.testCases}"/>
         <l:task icon="symbol-play-circle-outline plugin-ionicons-api"
                 href="${rootURL}/jtm/runs${it.projectUrlQuery}"
-                title="Test Runs"/>
+                title="${%task.testRuns}"/>
         <l:task icon="symbol-flash-outline plugin-ionicons-api"
                 href="${rootURL}/jtm/runs/newrun${it.projectUrlQuery}"
-                title="New Test Run"/>
+                title="${%task.newTestRun}"/>
         <l:task icon="symbol-add-circle-outline plugin-ionicons-api"
                 href="${rootURL}/jtm/testcases/newcase${it.projectUrlQuery}"
-                title="New Test Case"/>
+                title="${%task.newTestCase}"/>
       </l:tasks>
     </l:side-panel>
 
     <l:main-panel>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.JtmRootAction.index"/>
-
-
-      <div id="breadcrumbBar" class="jtm-dash-breadcrumb">
-        <a href="${rootURL}/">Jenkins</a>
-        <span class="jtm-dash-breadcrumb__sep" aria-hidden="true">/</span>
-        <a href="${rootURL}/jtm/">JTM Testmanagement</a>
-        <span class="jtm-dash-breadcrumb__sep" aria-hidden="true">/</span>
-        <span class="jtm-dash-breadcrumb__here">Dashboard</span>
-      </div>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.common"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.dialog"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.JtmRootAction.dashboard"/>
 
       <j:set var="data" value="${it.dashboardData}"/>
       <j:set var="tot" value="${data.total}"/>
@@ -71,7 +65,8 @@
           <div class="jtm-dash-project-filter__main">
             <div class="jtm-dash-project-filter__field">
               <label for="jtm-dash-project">Project</label>
-              <select name="project" id="jtm-dash-project" class="jenkins-select jtm-dash-select"
+              <div class="jenkins-select">
+              <select name="project" id="jtm-dash-project" class="jenkins-select__input jtm-dash-select"
                       title="Changing project reloads the dashboard" aria-describedby="jtm-dash-project-hint">
                 <j:choose>
                   <j:when test="${it.selectedProject == ''}">
@@ -92,11 +87,12 @@
                   </j:choose>
                 </j:forEach>
               </select>
+              </div>
               <p class="jtm-dash-project-filter__hint" id="jtm-dash-project-hint">Choosing a value reloads the dashboard.</p>
             </div>
             <div class="jtm-dash-project-filter__actions" role="group" aria-label="Project actions">
               <button type="button" id="jtm-project-new-btn" class="jenkins-button jtm-dash-btn-secondary">New project</button>
-              <button type="button" id="jtm-project-delete-btn" class="jenkins-button jtm-dash-btn-danger-outline">Delete project</button>
+              <button type="button" id="jtm-project-delete-btn" class="jenkins-button jenkins-!-destructive-color">Delete project</button>
             </div>
           </div>
         </form>
@@ -117,20 +113,20 @@
       </form>
 
       <j:if test="${it.projectDeleteStatus == 'deleted'}">
-        <div class="jtm-project-msg jtm-project-msg--ok" role="status">
-          Projekt <strong>${it.projectDeleteKey}</strong> wurde aus der Auswahlliste entfernt.
+        <div class="jenkins-alert jenkins-alert--success jtm-project-msg" role="status">
+          Project <strong>${it.projectDeleteKey}</strong> was removed from the selection list.
         </div>
       </j:if>
       <j:if test="${it.projectDeleteStatus == 'missing'}">
-        <div class="jtm-project-msg jtm-project-msg--warn" role="alert">
-          Bitte zuerst ein Projekt auswählen, das gelöscht werden soll.
+        <div class="jenkins-alert jenkins-alert--warning jtm-project-msg" role="alert">
+          ${%project.delete.selectFirst}
         </div>
       </j:if>
       <j:if test="${it.projectDeleteStatus == 'blocked'}">
-        <div class="jtm-project-msg jtm-project-msg--warn" role="alert">
-          Projekt <strong>${it.projectDeleteKey}</strong> kann nicht gelöscht werden:
-          es ist noch mit <strong>${it.projectDeleteCasesCount}</strong> Test Cases und
-          <strong>${it.projectDeleteRunsCount}</strong> Test Runs verknüpft.
+        <div class="jenkins-alert jenkins-alert--warning jtm-project-msg" role="alert">
+          Project <strong>${it.projectDeleteKey}</strong> cannot be deleted: it is still linked to
+          <strong>${it.projectDeleteCasesCount}</strong> test case(s) and
+          <strong>${it.projectDeleteRunsCount}</strong> test run(s).
         </div>
       </j:if>
 
@@ -394,7 +390,8 @@
                 <j:otherwise>
                   <div class="jtm-run-pie-toolbar">
                     <label for="jtm-run-pie-select">Test run</label>
-                    <select id="jtm-run-pie-select" class="jenkins-select jtm-dash-select">
+                    <div class="jenkins-select">
+                    <select id="jtm-run-pie-select" class="jenkins-select__input jtm-dash-select">
                       <j:forEach var="run" items="${data.recentRuns}">
                         <option
                           value="${run.id}"
@@ -408,6 +405,7 @@
                         </option>
                       </j:forEach>
                     </select>
+                    </div>
                   </div>
                   <div class="jtm-run-pie-body jtm-run-pie-body--centered">
                     <div class="jtm-run-kpis" aria-label="Selected run KPIs">
@@ -522,112 +520,6 @@
 
         </aside>
       </div>
-
-      <j:comment><![CDATA[
-        (function () {
-          const projectSelect = document.getElementById('jtm-dash-project');
-          const deleteBtn = document.getElementById('jtm-project-delete-btn');
-          const deleteForm = document.getElementById('jtm-project-delete-form');
-          const deleteKey = document.getElementById('jtm-project-delete-key');
-          const newBtn = document.getElementById('jtm-project-new-btn');
-          const newForm = document.getElementById('jtm-project-new-form');
-          const newInput = document.getElementById('jtm-project-new-input');
-          const newCancel = document.getElementById('jtm-project-new-cancel');
-
-          if (projectSelect) {
-            if (deleteKey) {
-              deleteKey.value = projectSelect.value || '';
-            }
-            projectSelect.addEventListener('change', () => {
-              if (deleteKey) {
-                deleteKey.value = projectSelect.value || '';
-              }
-              if (projectSelect.form) {
-                projectSelect.form.submit();
-              }
-            });
-          }
-
-          if (deleteBtn && deleteForm && deleteKey) {
-            deleteBtn.addEventListener('click', () => {
-              if (!deleteKey.value) {
-                alert('Please select a project first.');
-                return;
-              }
-              const ok = confirm('Delete selected project? This works only when no test cases or runs still reference it.');
-              if (ok) {
-                deleteForm.submit();
-              }
-            });
-          }
-
-          if (newBtn && newForm && newInput) {
-            newBtn.addEventListener('click', () => {
-              const show = newForm.style.display === 'none' || newForm.style.display === '';
-              newForm.style.display = show ? 'flex' : 'none';
-              if (show) {
-                setTimeout(() => newInput.focus(), 0);
-              }
-            });
-          }
-
-          if (newCancel && newForm) {
-            newCancel.addEventListener('click', () => {
-              newForm.style.display = 'none';
-            });
-          }
-
-          const runSelect = document.getElementById('jtm-run-pie-select');
-          const pie = document.getElementById('jtm-run-pie-chart');
-          const pct = document.getElementById('jtm-run-pie-pct');
-          const sub = document.getElementById('jtm-run-pie-sub');
-          const linkedEl = document.getElementById('jtm-run-pie-linked');
-          const kPass = document.getElementById('jtm-run-kpi-pass');
-          const kFail = document.getElementById('jtm-run-kpi-fail');
-          const kBlocked = document.getElementById('jtm-run-kpi-blocked');
-          const kPending = document.getElementById('jtm-run-kpi-pending');
-          if (runSelect && pie && pct && sub && linkedEl && kPass && kFail && kBlocked && kPending) {
-            const updatePie = () => {
-              const opt = runSelect.options[runSelect.selectedIndex];
-              if (!opt) return;
-              const passed = parseInt(opt.dataset.passed || '0', 10) || 0;
-              const failed = parseInt(opt.dataset.failed || '0', 10) || 0;
-              const blocked = parseInt(opt.dataset.blocked || '0', 10) || 0;
-              const total = parseInt(opt.dataset.total || '0', 10) || 0;
-              const linked = parseInt(opt.dataset.linked || '0', 10) || 0;
-              const pending = Math.max(0, total - passed - failed - blocked);
-              const passPct = total > 0 ? (passed / total) : 0;
-              const failPct = total > 0 ? (failed / total) : 0;
-              const blockedPct = total > 0 ? (blocked / total) : 0;
-              pie.style.setProperty('--pie-pass', (passPct * 360) + 'deg');
-              pie.style.setProperty('--pie-fail', (failPct * 360) + 'deg');
-              pie.style.setProperty('--pie-blocked', (blockedPct * 360) + 'deg');
-              pct.textContent = (passPct * 100).toFixed(1) + '%';
-              sub.textContent = passed + ' / ' + total;
-              linkedEl.textContent = 'Linked: ' + linked;
-              kPass.textContent = String(passed);
-              kFail.textContent = String(failed);
-              kBlocked.textContent = String(blocked);
-              kPending.textContent = String(pending);
-            };
-            runSelect.addEventListener('change', updatePie);
-            updatePie();
-          }
-
-          const barWrap = document.getElementById('jtm-auto-bars');
-          if (barWrap) {
-            const rows = Array.from(barWrap.querySelectorAll('.jtm-bar-row'));
-            const ms = rows.map(r => parseInt(r.getAttribute('data-ms') || '0', 10) || 0);
-            const max = Math.max(0, ...ms);
-            rows.forEach((r) => {
-              const v = parseInt(r.getAttribute('data-ms') || '0', 10) || 0;
-              const p = max > 0 ? (v / max) * 100 : 0;
-              const fill = r.querySelector('.jtm-bar-fill');
-              if (fill) fill.style.width = p.toFixed(2) + '%';
-            });
-          }
-        })();
-      ]]></j:comment>
 
     </l:main-panel>
   </l:layout>

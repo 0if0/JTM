@@ -64,7 +64,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
     @Override
     @Nullable
     public String getIconFileName() {
-        return "/plugin/jenkins-test-management/images/jtm-icon-24.svg";
+        return "symbol-jtm plugin-jtm";
     }
 
     @Override

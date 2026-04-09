@@ -3,27 +3,22 @@
          xmlns:i="jelly:fmt" xmlns:h="/lib/hudson">
   <j:set var="run" value="${it.testRun}"/>
   <l:layout title="${run.name} — JTM">
+    <l:breadcrumb title="${run.name}" href="${rootURL}/jtm/runs/${run.id}/"/>
     <l:side-panel>
       <l:tasks>
-        <l:task icon="symbol-list-outline plugin-ionicons-api" href="${request.contextPath}/jtm${it.projectUrlQuery}" title="Dashboard"/>
-        <l:task icon="symbol-checkbox-outline plugin-ionicons-api" href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}" title="Test Cases"/>
-        <l:task icon="symbol-play-circle-outline plugin-ionicons-api" href="${request.contextPath}/jtm/runs${it.projectUrlQuery}" title="Test Runs"/>
-        <l:task icon="symbol-flash-outline plugin-ionicons-api" href="${request.contextPath}/jtm/runs/newrun${it.projectUrlQuery}" title="New Test Run"/>
-        <l:task icon="symbol-add-circle-outline plugin-ionicons-api" href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}" title="New Test Case"/>
+        <l:task icon="symbol-jtm plugin-jtm" href="${rootURL}/jtm${it.projectUrlQuery}" title="${%task.dashboard}"/>
+        <l:task icon="symbol-checkbox-outline plugin-ionicons-api" href="${rootURL}/jtm/testcases${it.projectUrlQuery}" title="${%task.testCases}"/>
+        <l:task icon="symbol-play-circle-outline plugin-ionicons-api" href="${rootURL}/jtm/runs${it.projectUrlQuery}" title="${%task.testRuns}"/>
+        <l:task icon="symbol-flash-outline plugin-ionicons-api" href="${rootURL}/jtm/runs/newrun${it.projectUrlQuery}" title="${%task.newTestRun}"/>
+        <l:task icon="symbol-add-circle-outline plugin-ionicons-api" href="${rootURL}/jtm/testcases/newcase${it.projectUrlQuery}" title="${%task.newTestCase}"/>
       </l:tasks>
     </l:side-panel>
     <l:main-panel>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestRunDetailAction.index"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.common"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.dialog"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestRunDetailAction.run-detail"/>
 
-      <div id="breadcrumbBar" class="jtm-run-bc">
-        <a href="${request.contextPath}/">Jenkins</a>
-        <span class="jtm-run-bc__sep" aria-hidden="true">/</span>
-        <a href="${request.contextPath}/jtm/">JTM Testmanagement</a>
-        <span class="jtm-run-bc__sep" aria-hidden="true">/</span>
-        <a href="${request.contextPath}/jtm/runs${it.projectUrlQuery}">Test Runs</a>
-        <span class="jtm-run-bc__sep" aria-hidden="true">/</span>
-        <span class="jtm-run-bc__here">${run.id}</span>
-      </div>
+      <div id="jtm-run-detail-config" data-current-user-id="${it.currentUserId}" style="display:none" aria-hidden="true"></div>
 
       <header class="jtm-run-detail-hero">
         <div class="jtm-run-detail-hero__title-wrap">
@@ -31,21 +26,21 @@
           <h1 class="jtm-run-detail-hero__title">${run.name}</h1>
         </div>
         <div class="jtm-run-detail-actions">
-          <form method="POST" action="${request.contextPath}/jtm/runs/${run.id}/export" class="jtm-run-action-form">
+          <form method="POST" action="${rootURL}/jtm/runs/${run.id}/export" class="jtm-run-action-form">
             <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
             <input type="hidden" name="format" value="html"/>
             <button type="submit" class="jenkins-button jenkins-button--secondary jtm-run-action-btn">Export HTML</button>
           </form>
-          <form method="POST" action="${request.contextPath}/jtm/runs/${run.id}/export" class="jtm-run-action-form">
+          <form method="POST" action="${rootURL}/jtm/runs/${run.id}/export" class="jtm-run-action-form">
             <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
             <input type="hidden" name="format" value="pdf"/>
             <button type="submit" class="jenkins-button jenkins-button--primary jtm-run-action-btn">Export PDF</button>
           </form>
-          <a href="${request.contextPath}/jtm/exportBranding" class="jenkins-button jenkins-button--tertiary jtm-run-action-btn">Branding…</a>
-          <form method="POST" action="${request.contextPath}/jtm/runs/${run.id}/deleteRun" class="jtm-run-delete-form jtm-confirm-submit"
+          <a href="${rootURL}/jtm/exportBranding" class="jenkins-button jenkins-button--tertiary jtm-run-action-btn">Branding…</a>
+          <form method="POST" action="${rootURL}/jtm/runs/${run.id}/deleteRun" class="jtm-run-delete-form jtm-confirm-submit"
                 data-confirm-message="Delete this test run permanently?">
             <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
-            <button type="submit" class="jenkins-button jenkins-button--danger jtm-run-action-btn jtm-run-action-btn--danger">Delete run</button>
+            <button type="submit" class="jenkins-button jenkins-!-destructive-color jtm-run-action-btn jtm-run-action-btn--danger">Delete run</button>
           </form>
         </div>
       </header>
@@ -65,7 +60,7 @@
           </j:if>
         </div>
         <div class="jtm-run-summary-card__meta">
-          <span class="jtm-run-meta-chip">Job <a href="${request.contextPath}/job/${run.jobName}">${run.jobName}</a> <strong class="jtm-run-meta-chip__build">#${run.buildNumber}</strong></span>
+          <span class="jtm-run-meta-chip">Job <a href="${rootURL}/job/${run.jobName}">${run.jobName}</a> <strong class="jtm-run-meta-chip__build">#${run.buildNumber}</strong></span>
           <j:if test="${run.branch != null}">
             <span class="jtm-run-meta-chip">Branch <strong>${run.branch}</strong></span>
           </j:if>
@@ -125,7 +120,7 @@
               <j:forEach var="row" items="${it.linkedCaseRows}">
                 <tr class="jtm-case-row" data-case-id="${row.testCaseId}">
                   <td>
-                    <a href="${request.contextPath}/jtm/testcases/${row.testCaseId}/" class="jtm-mono">${row.testCaseId}</a>
+                    <a href="${rootURL}/jtm/testcases/${row.testCaseId}/" class="jtm-mono">${row.testCaseId}</a>
                     <span class="jtm-muted"> — ${row.title}</span>
                   </td>
                   <td>
@@ -137,10 +132,11 @@
                     </j:if>
                   </td>
                   <td>
-                    <form method="POST" action="${request.contextPath}/jtm/runs/${run.id}/addResult" class="jtm-inline-result-form jtm-autosave-form" data-form-kind="result" data-case-id="${row.testCaseId}">
+                    <form method="POST" action="${rootURL}/jtm/runs/${run.id}/addResult" class="jtm-inline-result-form jtm-autosave-form" data-form-kind="result" data-case-id="${row.testCaseId}">
                       <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
                       <input type="hidden" name="testCaseId" value="${row.testCaseId}"/>
-                      <select name="resultStatus" class="jenkins-select jtm-result-select" required="required">
+                      <div class="jenkins-select">
+                      <select name="resultStatus" class="jenkins-select__input jtm-result-select" required="required">
                         <j:forEach var="opt" items="${it.overallResultOptions}">
                           <j:choose>
                             <j:when test="${row.overallResultSelectValue == opt}">
@@ -152,8 +148,10 @@
                           </j:choose>
                         </j:forEach>
                       </select>
+                      </div>
                       <label class="jtm-muted" for="jtm-assignee-${row.testCaseId}">Assign to</label>
-                      <select id="jtm-assignee-${row.testCaseId}" name="assignedTo" class="jenkins-select" style="min-width:12rem;max-width:18rem">
+                      <div class="jenkins-select" style="min-width:12rem;max-width:18rem">
+                      <select id="jtm-assignee-${row.testCaseId}" name="assignedTo" class="jenkins-select__input">
                         <option value="">— Unassigned —</option>
                         <j:forEach var="u" items="${it.jenkinsUserChoices}">
                           <j:choose>
@@ -166,6 +164,7 @@
                           </j:choose>
                         </j:forEach>
                       </select>
+                      </div>
                       <j:if test="${row.stepRowsEmpty}">
                         <div class="jtm-case-comment-wrap">
                           <label class="jtm-case-comment-label" for="jtm-case-comment-${row.testCaseId}">Case comment</label>
@@ -173,7 +172,7 @@
                         </div>
                       </j:if>
                     </form>
-                    <form method="POST" action="${request.contextPath}/jtm/runs/${run.id}/removeLinked" class="jtm-unlink-form-inline jtm-confirm-submit"
+                    <form method="POST" action="${rootURL}/jtm/runs/${run.id}/removeLinked" class="jtm-unlink-form-inline jtm-confirm-submit"
                           data-confirm-message="Remove this test case from the run?">
                       <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
                       <input type="hidden" name="testCaseId" value="${row.testCaseId}"/>
@@ -183,10 +182,10 @@
                       <summary>Steps</summary>
                       <j:choose>
                         <j:when test="${row.stepRowsEmpty}">
-                          <p class="jtm-muted jtm-step-empty">No steps defined — use <strong>Case comment</strong> in the row above. Add steps under <a href="${request.contextPath}/jtm/testcases/${row.testCaseId}/edit">Edit test case</a>.</p>
+                          <p class="jtm-muted jtm-step-empty">No steps defined — use <strong>Case comment</strong> in the row above. Add steps under <a href="${rootURL}/jtm/testcases/${row.testCaseId}/edit">Edit test case</a>.</p>
                         </j:when>
                         <j:otherwise>
-                      <form method="POST" action="${request.contextPath}/jtm/runs/${run.id}/addStepResult" class="jtm-step-form jtm-autosave-form no-json" data-form-kind="steps" data-case-id="${row.testCaseId}" data-step-save-url="${request.contextPath}/jtm/runs/${run.id}/setStepStatus">
+                      <form method="POST" action="${rootURL}/jtm/runs/${run.id}/addStepResult" class="jtm-step-form jtm-autosave-form no-json" data-form-kind="steps" data-case-id="${row.testCaseId}" data-step-save-url="${rootURL}/jtm/runs/${run.id}/setStepStatus">
                         <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
                         <input type="hidden" name="testCaseId" value="${row.testCaseId}"/>
                         <input type="hidden" name="assignedTo" class="jtm-step-assigned-hidden" value="${row.assignedToDisplay}"/>
@@ -201,7 +200,8 @@
                                 <td>${sr.step.action}</td>
                                 <td class="jtm-muted">${sr.step.expectedResult}</td>
                                 <td>
-                                  <select name="stepStatus" class="jenkins-select" data-step-index="${sr.listIndex}">
+                                  <div class="jenkins-select">
+                                  <select name="stepStatus" class="jenkins-select__input" data-step-index="${sr.listIndex}">
                                     <j:forEach var="opt" items="${it.stepStatusOptions}">
                                       <j:choose>
                                         <j:when test="${sr.stepStatusSelectValue == opt}">
@@ -213,6 +213,7 @@
                                       </j:choose>
                                     </j:forEach>
                                   </select>
+                                  </div>
                                 </td>
                                 <td class="jtm-step-comment-cell">
                                   <textarea name="stepComment_${sr.listIndex}" class="jenkins-input jtm-step-comment" rows="2" data-step-index="${sr.listIndex}" placeholder="Notes for this step">${sr.stepCommentValue}</textarea>
@@ -236,7 +237,7 @@
         <j:if test="${it.testCasesNotYetLinkedCount > 0}">
           <div class="jtm-run-subcard">
             <h3 class="jtm-run-subcard__title">Add more test cases to this run</h3>
-            <form method="POST" action="${request.contextPath}/jtm/runs/${run.id}/addLinked">
+            <form method="POST" action="${rootURL}/jtm/runs/${run.id}/addLinked">
               <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
               <label class="jtm-linked-pick__all">
                 <input type="checkbox" id="jtm-linked-pick-all"/>
@@ -262,20 +263,23 @@
         <div class="jtm-run-subcard jtm-run-subcard--accent">
           <h3 class="jtm-run-subcard__title">Link test case result</h3>
           <p class="jtm-run-subcard__lead">Attach a test case to this run and set its outcome (updates the test case’s last status).</p>
-          <form method="POST" action="${request.contextPath}/jtm/runs/${run.id}/addResult" class="jtm-run-inline-form">
+          <form method="POST" action="${rootURL}/jtm/runs/${run.id}/addResult" class="jtm-run-inline-form">
             <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
             <div class="jtm-run-form-field">
               <label for="jtm-tc-pick">Test case</label>
-              <select id="jtm-tc-pick" name="testCaseId" class="jenkins-select jtm-run-form-select" required="required">
+              <div class="jenkins-select">
+              <select id="jtm-tc-pick" name="testCaseId" class="jenkins-select__input jtm-run-form-select" required="required">
                 <option value="">— Select —</option>
                 <j:forEach var="tc" items="${it.testCasesForPicker}">
                   <option value="${tc.id}">${tc.id} — ${tc.title}</option>
                 </j:forEach>
               </select>
+              </div>
             </div>
             <div class="jtm-run-form-field">
               <label for="jtm-res-st">Result</label>
-              <select id="jtm-res-st" name="resultStatus" class="jenkins-select jtm-run-form-select" required="required">
+              <div class="jenkins-select">
+              <select id="jtm-res-st" name="resultStatus" class="jenkins-select__input jtm-run-form-select" required="required">
                 <option value="PASSED">PASSED</option>
                 <option value="FAILED">FAILED</option>
                 <option value="BLOCKED">BLOCKED</option>
@@ -283,6 +287,7 @@
                 <option value="FALSE_POSITIVE">FALSE_POSITIVE</option>
                 <option value="PENDING">PENDING</option>
               </select>
+              </div>
             </div>
             <button type="submit" class="jenkins-button jenkins-button--primary">Add to run</button>
           </form>
@@ -308,7 +313,7 @@
               <j:forEach var="r" items="${run.results}">
                 <tr>
                   <td>
-                    <a href="${request.contextPath}/jtm/testcases/${r.testCaseId}/" class="jtm-mono">${r.testCaseId}</a>
+                    <a href="${rootURL}/jtm/testcases/${r.testCaseId}/" class="jtm-mono">${r.testCaseId}</a>
                   </td>
                   <td><span class="jtm-badge jtm-res--${r.status}">${r.status}</span></td>
                   <td>${r.durationFormatted}</td>

@@ -1,27 +1,21 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:h="/lib/hudson">
   <l:layout title="New Test Run — JTM">
+    <l:breadcrumb title="${%breadcrumb.newTestRun}" href="${rootURL}/jtm/runs/newrun"/>
     <l:side-panel>
       <l:tasks>
-        <l:task icon="symbol-list-outline plugin-ionicons-api" href="${request.contextPath}/jtm${it.projectUrlQuery}" title="Dashboard"/>
-        <l:task icon="symbol-checkbox-outline plugin-ionicons-api" href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}" title="Test Cases"/>
-        <l:task icon="symbol-play-circle-outline plugin-ionicons-api" href="${request.contextPath}/jtm/runs${it.projectUrlQuery}" title="Test Runs"/>
-        <l:task icon="symbol-flash-outline plugin-ionicons-api" href="${request.contextPath}/jtm/runs/newrun${it.projectUrlQuery}" title="New Test Run"/>
-        <l:task icon="symbol-add-circle-outline plugin-ionicons-api" href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}" title="New Test Case"/>
+        <l:task icon="symbol-jtm plugin-jtm" href="${rootURL}/jtm${it.projectUrlQuery}" title="${%task.dashboard}"/>
+        <l:task icon="symbol-checkbox-outline plugin-ionicons-api" href="${rootURL}/jtm/testcases${it.projectUrlQuery}" title="${%task.testCases}"/>
+        <l:task icon="symbol-play-circle-outline plugin-ionicons-api" href="${rootURL}/jtm/runs${it.projectUrlQuery}" title="${%task.testRuns}"/>
+        <l:task icon="symbol-flash-outline plugin-ionicons-api" href="${rootURL}/jtm/runs/newrun${it.projectUrlQuery}" title="${%task.newTestRun}"/>
+        <l:task icon="symbol-add-circle-outline plugin-ionicons-api" href="${rootURL}/jtm/testcases/newcase${it.projectUrlQuery}" title="${%task.newTestCase}"/>
       </l:tasks>
     </l:side-panel>
     <l:main-panel>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.common"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.dialog"/>
       <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestRunsAction.newrun"/>
 
-      <div id="breadcrumbBar" class="jtm-newrun-bc">
-        <a href="${request.contextPath}/">Jenkins</a>
-        <span class="jtm-newrun-bc__sep" aria-hidden="true">/</span>
-        <a href="${request.contextPath}/jtm/">JTM Testmanagement</a>
-        <span class="jtm-newrun-bc__sep" aria-hidden="true">/</span>
-        <a href="${request.contextPath}/jtm/runs${it.projectUrlQuery}">Test Runs</a>
-        <span class="jtm-newrun-bc__sep" aria-hidden="true">/</span>
-        <span class="jtm-newrun-bc__here">New run</span>
-      </div>
 
       <header class="jtm-newrun-hero">
         <p class="jtm-newrun-hero__eyebrow">Ad-hoc execution</p>
@@ -37,7 +31,7 @@
       </div>
 
       <div class="jtm-newrun-panel">
-        <form method="POST" action="${request.contextPath}/jtm/saverun" class="jtm-newrun-form">
+        <form method="POST" action="${rootURL}/jtm/saverun" class="jtm-newrun-form">
           <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
 
           <div class="jtm-newrun-field">
@@ -73,7 +67,8 @@
 
           <div class="jtm-newrun-field">
             <label for="projectKey">Project</label>
-            <select id="projectKey" name="projectKey" class="jenkins-select jtm-newrun-select">
+            <div class="jenkins-select">
+            <select id="projectKey" name="projectKey" class="jenkins-select__input jtm-newrun-select">
               <j:choose>
                 <j:when test="${it.projectKeySelection == ''}">
                   <option value="" selected="selected">— None —</option>
@@ -93,7 +88,8 @@
                 </j:choose>
               </j:forEach>
             </select>
-            <span class="jtm-newrun-hint">Weitere Projekte legst du auf dem <a href="${request.contextPath}/jtm/">Dashboard</a> an.</span>
+            </div>
+            <span class="jtm-newrun-hint">Create additional projects from the <a href="${rootURL}/jtm/">dashboard</a>.</span>
           </div>
 
           <div class="jtm-newrun-field jtm-newrun-field--picker">
@@ -102,11 +98,13 @@
             <div class="jtm-newrun-picker-toolbar">
               <div class="jtm-newrun-picker-filter">
                 <label for="jtm-newrun-type-filter">Show</label>
-                <select id="jtm-newrun-type-filter" class="jenkins-select jtm-newrun-type-filter" title="Filter by test case type">
+                <div class="jenkins-select">
+                <select id="jtm-newrun-type-filter" class="jenkins-select__input jtm-newrun-type-filter" title="Filter by test case type">
                   <option value="all">All types</option>
                   <option value="manual">Manual only</option>
                   <option value="automated">Automated only</option>
                 </select>
+                </div>
               </div>
               <label class="jtm-newrun-pick-all">
                 <input type="checkbox" id="jtm-newrun-linked-all"/>
@@ -127,7 +125,7 @@
 
           <div class="jtm-newrun-actions">
             <button type="submit" class="jenkins-button jenkins-button--primary jtm-newrun-submit">Create test run</button>
-            <a href="${request.contextPath}/jtm/runs${it.projectUrlQuery}" class="jenkins-button">Cancel</a>
+            <a href="${rootURL}/jtm/runs${it.projectUrlQuery}" class="jenkins-button">Cancel</a>
           </div>
         </form>
       </div>

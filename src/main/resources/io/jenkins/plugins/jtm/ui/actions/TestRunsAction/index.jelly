@@ -2,25 +2,20 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout"
          xmlns:i="jelly:fmt" xmlns:h="/lib/hudson">
   <l:layout title="Test Runs — JTM">
+    <l:breadcrumb title="${%breadcrumb.testRuns}" href="${rootURL}/jtm/runs/"/>
     <l:side-panel>
       <l:tasks>
-        <l:task icon="symbol-list-outline plugin-ionicons-api" href="${request.contextPath}/jtm${it.projectUrlQuery}" title="Dashboard"/>
-        <l:task icon="symbol-checkbox-outline plugin-ionicons-api" href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}" title="Test Cases"/>
-        <l:task icon="symbol-play-circle-outline plugin-ionicons-api" href="${request.contextPath}/jtm/runs${it.projectUrlQuery}" title="Test Runs"/>
-        <l:task icon="symbol-flash-outline plugin-ionicons-api" href="${request.contextPath}/jtm/runs/newrun${it.projectUrlQuery}" title="New Test Run"/>
-        <l:task icon="symbol-add-circle-outline plugin-ionicons-api" href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}" title="New Test Case"/>
+        <l:task icon="symbol-jtm plugin-jtm" href="${rootURL}/jtm${it.projectUrlQuery}" title="${%task.dashboard}"/>
+        <l:task icon="symbol-checkbox-outline plugin-ionicons-api" href="${rootURL}/jtm/testcases${it.projectUrlQuery}" title="${%task.testCases}"/>
+        <l:task icon="symbol-play-circle-outline plugin-ionicons-api" href="${rootURL}/jtm/runs${it.projectUrlQuery}" title="${%task.testRuns}"/>
+        <l:task icon="symbol-flash-outline plugin-ionicons-api" href="${rootURL}/jtm/runs/newrun${it.projectUrlQuery}" title="${%task.newTestRun}"/>
+        <l:task icon="symbol-add-circle-outline plugin-ionicons-api" href="${rootURL}/jtm/testcases/newcase${it.projectUrlQuery}" title="${%task.newTestCase}"/>
       </l:tasks>
     </l:side-panel>
     <l:main-panel>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestRunsAction.index"/>
-
-      <div id="breadcrumbBar" class="jtm-runs-bc">
-        <a href="${request.contextPath}/">Jenkins</a>
-        <span class="jtm-runs-bc__sep" aria-hidden="true">/</span>
-        <a href="${request.contextPath}/jtm/">JTM Testmanagement</a>
-        <span class="jtm-runs-bc__sep" aria-hidden="true">/</span>
-        <span class="jtm-runs-bc__here">Test Runs</span>
-      </div>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.common"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.dialog"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestRunsAction.runs-index"/>
 
       <header class="jtm-runs-hero">
         <div class="jtm-runs-hero__text">
@@ -38,7 +33,7 @@
               </j:choose>
             </span>
           </div>
-          <a href="${request.contextPath}/jtm/runs/newrun${it.projectUrlQuery}"
+          <a href="${rootURL}/jtm/runs/newrun${it.projectUrlQuery}"
              class="jenkins-button jenkins-button--primary jtm-runs-hero__cta"
              title="Create new test run">New run</a>
         </div>
@@ -46,10 +41,11 @@
 
       <section class="jtm-runs-section" aria-labelledby="jtm-runs-filter-h">
         <h2 id="jtm-runs-filter-h" class="jtm-runs-section__title">Filter</h2>
-        <form method="GET" class="jtm-runs-filter" action="${request.contextPath}/jtm/runs/">
+        <form method="GET" class="jtm-runs-filter" action="${rootURL}/jtm/runs/">
           <div class="jtm-runs-filter__field">
             <label for="jtm-runs-project">Project</label>
-            <select name="project" id="jtm-runs-project" class="jenkins-select jtm-runs-select"
+            <div class="jenkins-select">
+            <select name="project" id="jtm-runs-project" class="jenkins-select__input jtm-runs-select"
                     title="Changing project reloads the list" aria-describedby="jtm-runs-project-hint">
               <j:choose>
                 <j:when test="${it.selectedProject == ''}">
@@ -70,6 +66,7 @@
                 </j:choose>
               </j:forEach>
             </select>
+            </div>
             <p class="jtm-runs-filter__hint" id="jtm-runs-project-hint">Selection reloads this page.</p>
           </div>
         </form>
@@ -80,7 +77,7 @@
           <span class="jtm-runs-scope-note__icon" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
           </span>
-          <p>Es werden nur Runs mit diesem Projekt gezeigt. Runs ohne Projekt siehst du unter „All projects“.</p>
+          <p>Only runs tagged with this project are shown. Use &quot;All projects&quot; to include runs without a project.</p>
         </div>
       </j:if>
       <j:if test="${request.getParameter('bulkDeleted') != null}">
@@ -98,14 +95,14 @@
             <p class="jtm-runs-empty__title">No test runs yet</p>
             <p class="jtm-runs-empty__text">Create a run manually or publish results from a pipeline.</p>
             <div class="jtm-runs-empty__actions">
-              <a href="${request.contextPath}/jtm/runs/newrun${it.projectUrlQuery}" class="jenkins-button jenkins-button--primary">Create test run</a>
+              <a href="${rootURL}/jtm/runs/newrun${it.projectUrlQuery}" class="jenkins-button jenkins-button--primary">Create test run</a>
             </div>
             <p class="jtm-runs-empty__code"><code>publishResults resultsFile: 'jtm-results.json'</code></p>
           </div>
         </j:when>
         <j:otherwise>
           <section class="jtm-runs-panel" aria-labelledby="jtm-runs-table-h">
-            <form method="post" action="${request.contextPath}/jtm/runs/exportBatch" id="jtm-runs-batch-export" class="jtm-runs-batch-form">
+            <form method="post" action="${rootURL}/jtm/runs/exportBatch" id="jtm-runs-batch-export" class="jtm-runs-batch-form">
               <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
             <div class="jtm-runs-panel__head">
               <div>
@@ -114,12 +111,14 @@
               </div>
               <div class="jtm-runs-panel__export" role="group" aria-label="Multi-run export">
                 <label class="jtm-runs-export-label" for="jtm-runs-export-format">Format</label>
-                <select name="format" id="jtm-runs-export-format" class="jenkins-select jtm-runs-export-select">
+                <div class="jenkins-select">
+                <select name="format" id="jtm-runs-export-format" class="jenkins-select__input jtm-runs-export-select">
                   <option value="html" selected="selected">HTML</option>
                   <option value="pdf">PDF</option>
                 </select>
+                </div>
                 <button type="submit" class="jenkins-button jenkins-button--primary">Export selected</button>
-                <button type="button" class="jenkins-button jenkins-button--danger" id="jtm-runs-delete-selected">Delete selected</button>
+                <button type="button" class="jenkins-button jenkins-!-destructive-color" id="jtm-runs-delete-selected">Delete selected</button>
               </div>
             </div>
             <div class="jtm-runs-table-wrap">
@@ -149,10 +148,10 @@
                       <td class="jtm-runs-check-col">
                         <input type="checkbox" name="runId" value="${run.id}" class="jtm-runs-row-check" aria-label="Select run ${run.id} for export"/>
                       </td>
-                      <td><a href="${request.contextPath}/jtm/runs/${run.id}/" class="jtm-runs-mono">${run.id}</a></td>
-                      <td><a href="${request.contextPath}/jtm/runs/${run.id}/" class="jtm-runs-table__primary">${run.name}</a></td>
+                      <td><a href="${rootURL}/jtm/runs/${run.id}/" class="jtm-runs-mono">${run.id}</a></td>
+                      <td><a href="${rootURL}/jtm/runs/${run.id}/" class="jtm-runs-table__primary">${run.name}</a></td>
                       <td class="jtm-runs-muted jtm-runs-small">${run.projectKey}</td>
-                      <td><a href="${request.contextPath}/job/${run.jobName}" class="jtm-runs-table__link">${run.jobName}</a></td>
+                      <td><a href="${rootURL}/job/${run.jobName}" class="jtm-runs-table__link">${run.jobName}</a></td>
                       <td><span class="jtm-runs-build">#${run.buildNumber}</span></td>
                       <td class="jtm-runs-muted">${run.branch}</td>
                       <td>

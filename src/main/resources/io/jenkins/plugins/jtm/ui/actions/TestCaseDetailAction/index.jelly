@@ -2,36 +2,29 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout"
          xmlns:f="/lib/hudson/form" xmlns:i="jelly:fmt" xmlns:h="/lib/hudson">
   <l:layout title="${it.testCase.title} — JTM">
+    <l:breadcrumb title="${it.testCase.id}" href="${rootURL}/jtm/testcases/${it.testCase.id}/"/>
     <l:side-panel>
       <l:tasks>
-        <l:task icon="symbol-list-outline plugin-ionicons-api"
-                href="${request.contextPath}/jtm${it.projectUrlQuery}" title="Dashboard"/>
+        <l:task icon="symbol-jtm plugin-jtm"
+                href="${rootURL}/jtm${it.projectUrlQuery}" title="${%task.dashboard}"/>
         <l:task icon="symbol-checkbox-outline plugin-ionicons-api"
-                href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}" title="Test Cases"/>
+                href="${rootURL}/jtm/testcases${it.projectUrlQuery}" title="${%task.testCases}"/>
         <l:task icon="symbol-play-circle-outline plugin-ionicons-api"
-                href="${request.contextPath}/jtm/runs${it.projectUrlQuery}" title="Test Runs"/>
+                href="${rootURL}/jtm/runs${it.projectUrlQuery}" title="${%task.testRuns}"/>
         <l:task icon="symbol-flash-outline plugin-ionicons-api"
-                href="${request.contextPath}/jtm/runs/newrun${it.projectUrlQuery}" title="New Test Run"/>
+                href="${rootURL}/jtm/runs/newrun${it.projectUrlQuery}" title="${%task.newTestRun}"/>
         <l:task icon="symbol-add-circle-outline plugin-ionicons-api"
-                href="${request.contextPath}/jtm/testcases/newcase${it.projectUrlQuery}" title="New Test Case"/>
+                href="${rootURL}/jtm/testcases/newcase${it.projectUrlQuery}" title="${%task.newTestCase}"/>
         <l:task icon="symbol-create-outline plugin-ionicons-api"
-                href="${request.contextPath}/jtm/testcases/${it.testCase.id}/edit" title="Edit test case"/>
+                href="${rootURL}/jtm/testcases/${it.testCase.id}/edit" title="${%breadcrumb.editTestCase}"/>
       </l:tasks>
     </l:side-panel>
 
     <l:main-panel>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestCaseDetailAction.index"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.common"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.dialog"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestCaseDetailAction.case-detail"/>
 
-      <div id="breadcrumbBar" class="jtm-tcd-bc">
-        <a href="${request.contextPath}/">Jenkins</a>
-        <span class="jtm-tcd-bc__sep" aria-hidden="true">/</span>
-        <a href="${request.contextPath}/jtm/">JTM Testmanagement</a>
-        <span class="jtm-tcd-bc__sep" aria-hidden="true">/</span>
-        <a href="${request.contextPath}/jtm/testcases${it.projectUrlQuery}">Test Cases</a>
-        <span class="jtm-tcd-bc__sep" aria-hidden="true">/</span>
-        <span class="jtm-mono jtm-tcd-bc__id">${it.testCase.id}</span>
-        <span class="jtm-tcd-bc__title"> — ${it.testCase.title}</span>
-      </div>
 
       <j:set var="tc" value="${it.testCase}"/>
 
@@ -56,11 +49,11 @@
           </div>
         </div>
         <div class="jtm-page-head__actions">
-          <a href="${request.contextPath}/jtm/testcases/${tc.id}/edit" class="jenkins-button jenkins-button--primary jtm-btn-lg">
+          <a href="${rootURL}/jtm/testcases/${tc.id}/edit" class="jenkins-button jenkins-button--primary jtm-btn-lg">
             Edit test case
           </a>
           <j:if test="${it.canDelete()}">
-            <form method="POST" action="${request.contextPath}/jtm/testcases/${tc.id}/delete" class="jtm-inline-form jtm-confirm-submit"
+            <form method="POST" action="${rootURL}/jtm/testcases/${tc.id}/delete" class="jtm-inline-form jtm-confirm-submit"
                   data-confirm-message="Delete test case ${tc.id} permanently? This cannot be undone.">
               <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
               <button type="submit" class="jenkins-button jenkins-button--destructive">Delete</button>
@@ -91,7 +84,7 @@
           <div class="jtm-section jtm-section--steps">
             <div class="jtm-section-head">
               <h3 class="jtm-section-title">Test steps</h3>
-              <a href="${request.contextPath}/jtm/testcases/${tc.id}/edit#steps" class="jenkins-button jenkins-button--primary jtm-btn-sm">
+              <a href="${rootURL}/jtm/testcases/${tc.id}/edit#steps" class="jenkins-button jenkins-button--primary jtm-btn-sm">
                 Manage steps
               </a>
             </div>
@@ -100,7 +93,7 @@
               <j:when test="${tc.steps.isEmpty()}">
                 <div class="jtm-empty-inline">
                   <p>No steps yet. Use <strong>Edit test case</strong> to add, reorder, or remove steps.</p>
-                  <a href="${request.contextPath}/jtm/testcases/${tc.id}/edit" class="jenkins-button">Open editor</a>
+                  <a href="${rootURL}/jtm/testcases/${tc.id}/edit" class="jenkins-button">Open editor</a>
                 </div>
               </j:when>
               <j:otherwise>
@@ -118,7 +111,7 @@
                     </j:forEach>
                   </tbody>
                 </table>
-                <p class="jtm-hint-below">To change steps, use <a href="${request.contextPath}/jtm/testcases/${tc.id}/edit">Edit test case</a>.</p>
+                <p class="jtm-hint-below">To change steps, use <a href="${rootURL}/jtm/testcases/${tc.id}/edit">Edit test case</a>.</p>
               </j:otherwise>
             </j:choose>
           </div>
@@ -150,7 +143,7 @@
               </j:if>
               <j:if test="${tc.linkedJob != null and tc.linkedJob != ''}">
                 <dt>Linked job</dt>
-                <dd><a href="${request.contextPath}/job/${tc.linkedJob}">${tc.linkedJob}</a></dd>
+                <dd><a href="${rootURL}/job/${tc.linkedJob}">${tc.linkedJob}</a></dd>
               </j:if>
             </dl>
           </div>
@@ -180,7 +173,7 @@
             <h3 class="jtm-section-title">Tags</h3>
             <j:choose>
               <j:when test="${tc.tags.size() == 0}">
-                <p class="jtm-muted-small">None — add tags in <a href="${request.contextPath}/jtm/testcases/${tc.id}/edit">edit</a>.</p>
+                <p class="jtm-muted-small">None — add tags in <a href="${rootURL}/jtm/testcases/${tc.id}/edit">edit</a>.</p>
               </j:when>
               <j:otherwise>
                 <div class="jtm-tags">

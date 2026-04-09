@@ -7,12 +7,12 @@ import io.jenkins.plugins.jtm.core.service.TestCaseService;
 import io.jenkins.plugins.jtm.persistence.JtmStore;
 import io.jenkins.plugins.jtm.security.JtmPermissions;
 import org.apache.commons.lang3.StringUtils;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.verb.GET;
 import org.kohsuke.stapler.verb.POST;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,7 +69,7 @@ public final class TestCaseDetailAction implements Action {
      * GET …/testcases/{id}/edit — forward explicitly (nested Stapler dispatch is fragile).
      */
     @GET
-    public void doEdit(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+    public void doEdit(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         JtmPermissions.checkEditTestCase(testCase);
         req.getView(this, "edit").forward(req, rsp);
@@ -79,7 +79,7 @@ public final class TestCaseDetailAction implements Action {
      * POST …/testcases/{id}/delete — same object as GET detail (CSRF / routing work reliably).
      */
     @POST
-    public void doDelete(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doDelete(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkDeleteTestCase(testCase);
         String user = currentUser();
         TestCaseService.get().deleteTestCase(testCase.getId(), user);
@@ -196,7 +196,7 @@ public final class TestCaseDetailAction implements Action {
     }
 
     @POST
-    public void doUpdateStatus(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doUpdateStatus(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
         String statusStr = req.getParameter("status");
         String user = hudson.model.User.current() != null

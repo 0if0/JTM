@@ -1,15 +1,19 @@
 package io.jenkins.plugins.jtm.security;
 
+import hudson.model.Hudson;
 import hudson.security.Permission;
 import hudson.security.PermissionGroup;
 import hudson.security.PermissionScope;
 import io.jenkins.plugins.jtm.core.domain.TestCase;
+import jenkins.model.Jenkins;
 import org.jvnet.localizer.Localizable;
 
 /**
- * JTM-specific Jenkins permissions (declared for possible future use).
- * <p><strong>Current behaviour:</strong> JTM does not enforce these — all users may use all features.
- * Re-enable checks in {@link #checkPermission} / {@link #hasPermission} when you need authorization again.
+ * JTM-specific Jenkins permissions.
+ *
+ * <p>Hierarchy (each permission implies those listed after the arrow):
+ * {@link #TEST_ADMIN} → {@link #TEST_EDIT} → {@link #TEST_EXECUTE} → {@link #TEST_VIEW} → {@link Hudson#READ}.
+ * {@code TEST_ADMIN} is <em>not</em> implied by {@code TEST_EXECUTE}; it extends {@code TEST_EDIT} only.
  */
 public final class JtmPermissions {
 
@@ -21,7 +25,7 @@ public final class JtmPermissions {
     public static final Permission TEST_VIEW = new Permission(
         GROUP, "View",
         new NonLocalizableString("View test cases, runs, and dashboard"),
-        hudson.model.Hudson.READ,
+        Hudson.READ,
         PermissionScope.JENKINS
     );
 
@@ -41,41 +45,35 @@ public final class JtmPermissions {
 
     public static final Permission TEST_ADMIN = new Permission(
         GROUP, "Admin",
-        new NonLocalizableString("Full administrative access to JTM plugin"),
+        new NonLocalizableString("Full administrative access to JTM plugin (e.g. export branding)"),
         TEST_EDIT,
         PermissionScope.JENKINS
     );
 
     private JtmPermissions() {}
 
-    /** No-op: open access. */
     public static void checkPermission(Permission p) {
-        // intentionally empty
+        Jenkins.get().checkPermission(p);
     }
 
-    /** Always true: open access. */
     public static boolean hasPermission(Permission p) {
-        return true;
+        return Jenkins.get().hasPermission(p);
     }
 
-    /** Always true: open access. */
     public static boolean canEditTestCase(TestCase tc) {
-        return true;
+        return Jenkins.get().hasPermission(TEST_EDIT);
     }
 
-    /** Always true: open access. */
     public static boolean canDeleteTestCase(TestCase tc) {
-        return true;
+        return Jenkins.get().hasPermission(TEST_EDIT);
     }
 
-    /** No-op: open access. */
     public static void checkEditTestCase(TestCase tc) {
-        // intentionally empty
+        Jenkins.get().checkPermission(TEST_EDIT);
     }
 
-    /** No-op: open access. */
     public static void checkDeleteTestCase(TestCase tc) {
-        // intentionally empty
+        Jenkins.get().checkPermission(TEST_EDIT);
     }
 
     private static final class NonLocalizableString extends Localizable {
