@@ -12,6 +12,8 @@
       </l:tasks>
     </l:side-panel>
     <l:main-panel>
+      <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestCaseDetailAction.edit"/>
+
       <div id="breadcrumbBar" class="jtm-tce-bc">
         <a href="${request.contextPath}/">Jenkins</a>
         <span class="jtm-tce-bc__sep" aria-hidden="true">/</span>
@@ -217,47 +219,7 @@
         </form>
       </div>
 
-      <style>
-        .jtm-tce-bc { font-size: 12px; color: var(--text-color-secondary); margin-bottom: 8px; }
-        .jtm-tce-bc__sep { margin: 0 6px; opacity: 0.55; }
-        .jtm-tce-bc__here { color: var(--text-color); font-weight: 600; }
-        .jtm-tce-hero { margin-bottom: 16px; }
-        .jtm-tce-hero__eyebrow { margin: 0 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-color-secondary); }
-        .jtm-tce-hero__title { margin: 0; font-size: 1.45rem; font-weight: 750; letter-spacing: -0.02em; color: var(--text-color); }
-        .jtm-tce-hero__id { font-weight: 600; color: var(--text-color-secondary); }
-        .jtm-tce-hero__lead { margin: 8px 0 0; font-size: 14px; color: var(--text-color-secondary); line-height: 1.4; max-width: 48rem; }
-
-        .jtm-tce-panel {
-          max-width: 900px; border-radius: 12px; border: 1px solid var(--medium-grey);
-          background: var(--background); box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 40px; overflow: hidden;
-        }
-        .jtm-tce-form { padding: 22px 24px 24px; }
-        .jtm-tce-field { margin-bottom: 14px; }
-        .jtm-tce-field label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; color: var(--text-color); }
-        .jtm-tce-req { color: #dc2626; font-weight: 700; }
-        .jtm-tce-hint { display: block; font-size: 12px; color: var(--text-color-secondary); margin: 6px 0 0; line-height: 1.35; }
-        .jtm-tce-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        @media (max-width: 640px) { .jtm-tce-row { grid-template-columns: 1fr; } }
-        .jtm-tce-select, .jtm-tce-form .jenkins-input { width: 100%; box-sizing: border-box; border-radius: 8px; }
-        textarea.jenkins-input { font-family: inherit; resize: vertical; }
-        .jtm-mono { font-family: var(--font-family-mono); font-size: 12px; color: var(--text-color-secondary); }
-
-        .jtm-tce-steps { margin-top: 8px; padding-top: 20px; border-top: 1px solid var(--medium-grey); }
-        .jtm-tce-steps__title { margin: 0 0 6px; font-size: 15px; font-weight: 700; color: var(--text-color); }
-        .jtm-tce-steps__intro { margin-bottom: 12px; }
-        .jtm-tce-steps-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--medium-grey); background: var(--panel-header-bg-dark); }
-        .jtm-tce-steps-table { width: 100%; margin: 0; }
-        .jtm-tce-steps-num { width: 3rem; }
-        .jtm-tce-step-inp { width: 100%; min-width: 8rem; }
-        .jtm-step-actions-col { width: 11rem; white-space: nowrap; }
-        .jtm-step-actions-cell { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-        .jtm-tce-stepbtn { padding: 0.28rem 0.5rem; font-size: 12px; border-radius: 6px; }
-
-        .jtm-tce-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--medium-grey); }
-        .jtm-tce-save { border-radius: 8px; font-weight: 600; }
-      </style>
-
-      <script><![CDATA[
+      <j:comment><![CDATA[
 (function () {
   var tb = document.getElementById('jtm-step-rows');
   if (!tb) return;
@@ -287,7 +249,7 @@
     renumber();
   });
 })();
-      ]]></script>
+      ]]></j:comment>
     </l:main-panel>
   </l:layout>
 </j:jelly>

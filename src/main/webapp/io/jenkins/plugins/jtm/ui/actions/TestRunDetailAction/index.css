@@ -1,0 +1,146 @@
+.jtm-run-bc { font-size: 12px; color: var(--text-color-secondary); margin-bottom: 8px; }
+        .jtm-run-bc__sep { margin: 0 6px; opacity: 0.55; }
+        .jtm-run-bc__here { color: var(--text-color); font-weight: 600; }
+
+        .jtm-run-detail-hero {
+          display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between;
+          gap: 16px; margin-bottom: 18px; padding-bottom: 16px;
+          border-bottom: 1px solid var(--medium-grey);
+        }
+        .jtm-run-detail-hero__eyebrow { margin: 0 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-color-secondary); }
+        .jtm-run-detail-hero__title { margin: 0; font-size: 1.45rem; font-weight: 750; letter-spacing: -0.02em; line-height: 1.2; color: var(--text-color); word-break: break-word; }
+        .jtm-run-detail-actions {
+          display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+        }
+        .jtm-run-detail-actions .jtm-run-action-btn {
+          display: inline-flex; align-items: center; justify-content: center;
+          padding: 0 12px; min-height: 32px; white-space: nowrap; box-sizing: border-box; border-radius: 8px; font-weight: 600;
+        }
+        .jtm-run-detail-actions a.jtm-run-action-btn { text-decoration: none; }
+        .jtm-run-action-btn--danger { font-weight: 600; }
+        .jtm-run-delete-form { flex: 0 0 auto; margin: 0; }
+
+        .jtm-run-summary-card {
+          margin-bottom: 22px; padding: 16px 18px; border-radius: 12px;
+          border: 1px solid var(--medium-grey); background: var(--panel-header-bg-dark);
+          box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+        .jtm-run-summary-card__row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .jtm-run-status-pill {
+          display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 10px; font-weight: 800;
+          letter-spacing: 0.05em; text-transform: uppercase;
+        }
+        .jtm-run-status-pill--PASSED  { background: rgba(34,197,94,0.14); color: #15803d; }
+        .jtm-run-status-pill--FAILED  { background: rgba(239,68,68,0.14); color: #b91c1c; }
+        .jtm-run-status-pill--BLOCKED { background: rgba(245,158,11,0.14); color: #b45309; }
+        .jtm-run-status-pill--PENDING, .jtm-run-status-pill--RUNNING { background: rgba(107,114,128,0.12); color: #4b5563; }
+        .jtm-run-status-pill--PARTIAL { background: rgba(59,130,246,0.12); color: #1d4ed8; }
+        .jtm-run-status-pill--ABORTED { background: rgba(107,114,128,0.14); color: #4b5563; }
+        .jtm-run-qg {
+          font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+          padding: 4px 10px; border-radius: 999px;
+        }
+        .jtm-run-qg--pass { background: rgba(34,197,94,0.12); color: #15803d; }
+        .jtm-run-qg--fail { background: rgba(239,68,68,0.12); color: #b91c1c; }
+        .jtm-run-summary-card__meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+        .jtm-run-meta-chip {
+          font-size: 12px; color: var(--text-color-secondary); padding: 6px 10px; border-radius: 8px;
+          background: var(--background); border: 1px solid var(--medium-grey);
+        }
+        .jtm-run-meta-chip__build { font-variant-numeric: tabular-nums; color: var(--text-color); }
+        .jtm-run-stat-grid {
+          display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;
+        }
+        .jtm-run-stat {
+          padding: 10px 12px; border-radius: 10px; border: 1px solid var(--medium-grey); background: var(--background);
+        }
+        .jtm-run-stat__label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-color-secondary); margin-bottom: 4px; }
+        .jtm-run-stat__value { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--text-color); line-height: 1.1; }
+        .jtm-run-stat__value--rate { color: var(--primary-color, #1972f5); font-size: 17px; }
+        .jtm-run-stat__value--pass { color: #15803d; }
+        .jtm-run-stat__value--fail { color: #b91c1c; }
+        .jtm-run-stat__value--blocked { color: #b45309; }
+
+        .jtm-run-section {
+          margin-bottom: 22px; border-radius: 12px; border: 1px solid var(--medium-grey);
+          background: var(--background); box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden;
+        }
+        .jtm-run-section__head { padding: 14px 16px; border-bottom: 1px solid var(--medium-grey); background: var(--panel-header-bg-dark); }
+        .jtm-run-section__title { margin: 0; font-size: 15px; font-weight: 700; color: var(--text-color); }
+        .jtm-run-section__desc { margin: 6px 0 0; font-size: 12px; line-height: 1.4; color: var(--text-color-secondary); }
+        .jtm-run-section__body { overflow-x: auto; }
+
+        .jtm-run-subcard {
+          margin-bottom: 22px; padding: 16px 18px; border-radius: 12px;
+          border: 1px solid var(--medium-grey); background: var(--background); box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+        .jtm-run-subcard--accent { border-left-width: 3px; border-left-color: var(--primary-color, #1972f5); }
+        .jtm-run-subcard__title { margin: 0 0 10px; font-size: 14px; font-weight: 700; color: var(--text-color); }
+        .jtm-run-subcard__lead { margin: 0 0 14px; font-size: 13px; line-height: 1.45; color: var(--text-color-secondary); }
+        .jtm-run-subcard__submit { margin-top: 12px; border-radius: 8px; font-weight: 600; }
+
+        .jtm-run-inline-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+        .jtm-run-form-field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-color-secondary); }
+        .jtm-run-form-select { min-width: 220px; border-radius: 8px; }
+
+        .jtm-run-results-wrap { margin-bottom: 24px; }
+        .jtm-run-results-wrap__title { margin: 0 0 10px; font-size: 14px; font-weight: 700; color: var(--text-color); }
+        .jtm-run-results-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; color: var(--text-color-secondary); }
+        .jtm-run-empty-hint { font-size: 13px; color: var(--text-color-secondary); margin: 0 0 16px; }
+
+        .jtm-muted { color: var(--text-color-secondary); font-size: 13px; }
+        .jtm-small { font-size: 12px; }
+        .jtm-mono { font-family: var(--font-family-mono); font-size: 12px; }
+        .jtm-badge { display:inline-block; padding:3px 9px; border-radius:999px; font-size:10px; font-weight:700; letter-spacing:0.03em; text-transform:uppercase; }
+        .jtm-badge--PASSED  { background: rgba(34,197,94,0.15);  color: #16a34a; }
+        .jtm-badge--FAILED  { background: rgba(239,68,68,0.15);  color: #dc2626; }
+        .jtm-badge--BLOCKED { background: rgba(245,158,11,0.15); color: #d97706; }
+        .jtm-badge--PENDING, .jtm-badge--RUNNING { background: rgba(107,114,128,0.12); color: #6b7280; }
+        .jtm-badge--PARTIAL { background: rgba(59,130,246,0.12); color: #2563eb; }
+        .jtm-badge--ABORTED { background: rgba(107,114,128,0.2); color: #4b5563; }
+        .jtm-res--PASSED { background: rgba(34,197,94,0.15); color: #16a34a; font-size:10px; }
+        .jtm-res--FAILED { background: rgba(239,68,68,0.15); color: #dc2626; font-size:10px; }
+        .jtm-res--BLOCKED { background: rgba(245,158,11,0.15); color: #d97706; font-size:10px; }
+        .jtm-res--SKIPPED { background: rgba(107,114,128,0.12); color: #6b7280; font-size:10px; }
+        .jtm-res--FALSE_POSITIVE { background: rgba(139,92,246,0.15); color: #6d28d9; font-size:10px; }
+        .jtm-res--PENDING { background: rgba(107,114,128,0.12); color: #6b7280; font-size:10px; }
+        .jtm-run-cases-table { table-layout: fixed; width: 100%; }
+        .jtm-run-cases-table td, .jtm-run-cases-table th { vertical-align: top; }
+        .jtm-run-cases-table td:first-child { word-break: break-word; }
+        .jtm-inline-result-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+        .jtm-case-comment-wrap {
+          flex: 1 1 100%;
+          width: 100%;
+          margin-top: 4px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .jtm-case-comment-label { font-size: 11px; font-weight: 600; color: var(--text-color-secondary); }
+        .jtm-case-comment { width: 100%; min-height: 3.5rem; font-size: 12px; resize: vertical; box-sizing: border-box; border-radius: 8px; }
+        .jtm-unlink-form-inline { display: inline-flex; margin-left: 6px; vertical-align: middle; }
+        .jtm-result-select { min-width: 6.8rem; max-width: 7.5rem; border-radius: 8px; }
+        .jtm-step-details { margin-top: 8px; }
+        .jtm-step-details summary { cursor: pointer; font-size: 12px; color: var(--link-color); }
+        .jtm-step-form { margin-top: 8px; }
+        .jtm-step-table { margin-bottom: 8px; }
+        .jtm-step-comment-cell { min-width: 12rem; vertical-align: top; }
+        .jtm-step-comment { width: 100%; min-height: 2.75rem; font-size: 12px; resize: vertical; box-sizing: border-box; }
+        .jtm-step-empty { margin: 8px 0 0 0; font-size: 12px; }
+        .jtm-remove-x {
+          min-width: 1.8rem;
+          width: 1.8rem;
+          height: 1.8rem;
+          line-height: 1;
+          font-size: 16px;
+          padding: 0;
+          text-align: center;
+        }
+        .jtm-linked-pick {
+          max-height: 260px; overflow: auto; padding: 4px 0;
+          border-radius: 10px; border: 1px solid var(--medium-grey); background: var(--panel-header-bg-dark);
+        }
+        .jtm-linked-pick__all { display: inline-flex; gap: 8px; align-items: center; font-size: 12px; font-weight: 600; margin: 2px 0 10px 0; cursor: pointer; user-select: none; }
+        .jtm-linked-pick__row { display: flex; gap: 10px; align-items: baseline; padding: 10px 12px; border-bottom: 1px solid var(--medium-grey); cursor: pointer; }
+        .jtm-linked-pick__row:last-child { border-bottom: none; }
+        .jtm-linked-pick__row input { flex-shrink: 0; margin: 0; }
