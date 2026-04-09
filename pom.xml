@@ -43,7 +43,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson.version>2.15.2</jackson.version>
+    <jackson.version>2.21</jackson.version>
     <!-- `mvn verify` runs SpotBugs from the Jenkins plugin parent; fail the build once findings are cleared. -->
     <spotbugs.failOnError>false</spotbugs.failOnError>
   </properties>
