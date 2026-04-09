@@ -76,15 +76,19 @@ public final class JtmApiAction implements Action {
             return null;
         }
 
+        @GET
         public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
-            String method = req.getMethod();
-            if ("GET".equalsIgnoreCase(method)) {
-                root.serveApiTestcases(req, rsp);
-            } else if ("POST".equalsIgnoreCase(method)) {
-                root.serveApiCreateTestcase(req, rsp);
-            } else {
-                root.serveApiMethodNotAllowed(req, rsp, method);
-            }
+            JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
+            root.serveApiTestcases(req, rsp);
+        }
+
+        /**
+         * URL: /jtm/api/testcases/create
+         */
+        @RequirePOST
+        public void doCreate(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+            JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
+            root.serveApiCreateTestcase(req, rsp);
         }
     }
 
@@ -110,8 +114,9 @@ public final class JtmApiAction implements Action {
             return null;
         }
 
-        @RequirePOST
+        @GET
         public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+            JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
             root.serveApiTestruns(req, rsp);
         }
     }
@@ -229,6 +234,7 @@ public final class JtmApiAction implements Action {
 
         @GET
         public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException {
+            JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
             root.serveApiTestcaseGet(id, req, rsp);
         }
 

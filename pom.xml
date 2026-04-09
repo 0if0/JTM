@@ -18,12 +18,12 @@
   <name>Test Management (JTM)</name>
   <description>Test cases, runs, quality gates, and pipeline integration for Jenkins.</description>
 
-  <url>https://github.com/0if0/JTM</url>
+  <url>https://github.com/${gitHubRepo}</url>
 
   <scm>
-    <connection>scm:git:https://github.com/0if0/JTM.git</connection>
-    <developerConnection>scm:git:git@github.com:0if0/JTM.git</developerConnection>
-    <url>https://github.com/0if0/JTM</url>
+    <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
+    <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
+    <url>https://github.com/${gitHubRepo}</url>
     <tag>${scmTag}</tag>
   </scm>
 
@@ -37,11 +37,12 @@
   <properties>
     <revision>1</revision>
     <changelist>999999-SNAPSHOT</changelist>
+    <gitHubRepo>jenkinsci/jtm-plugin</gitHubRepo>
     <jenkins.baseline>2.528</jenkins.baseline>
     <jenkins.version>${jenkins.baseline}.3</jenkins.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <hpi.strictBundledArtifacts>true</hpi.strictBundledArtifacts>
-    <hpi.bundledArtifacts>annotations,autolink,commons-io,flexmark,flexmark-all,flexmark-ext-abbreviation,flexmark-ext-admonition,flexmark-ext-anchorlink,flexmark-ext-aside,flexmark-ext-attributes,flexmark-ext-autolink,flexmark-ext-definition,flexmark-ext-emoji,flexmark-ext-enumerated-reference,flexmark-ext-escaped-character,flexmark-ext-footnotes,flexmark-ext-gfm-issues,flexmark-ext-gfm-strikethrough,flexmark-ext-gfm-tasklist,flexmark-ext-gfm-users,flexmark-ext-gitlab,flexmark-ext-ins,flexmark-ext-jekyll-front-matter,flexmark-ext-jekyll-tag,flexmark-ext-macros,flexmark-ext-media-tags,flexmark-ext-resizable-image,flexmark-ext-superscript,flexmark-ext-tables,flexmark-ext-toc,flexmark-ext-typographic,flexmark-ext-wikilink,flexmark-ext-xwiki-macros,flexmark-ext-yaml-front-matter,flexmark-ext-youtube-embedded,flexmark-html2md-converter,flexmark-jira-converter,flexmark-pdf-converter,flexmark-profile-pegdown,flexmark-util,flexmark-util-ast,flexmark-util-builder,flexmark-util-collection,flexmark-util-data,flexmark-util-dependency,flexmark-util-format,flexmark-util-html,flexmark-util-misc,flexmark-util-options,flexmark-util-sequence,flexmark-util-visitor,flexmark-youtrack-converter,fontbox,graphics2d,icu4j,jsoup,openhtmltopdf-core,openhtmltopdf-pdfbox,openhtmltopdf-rtl-support,openpdf,pdfbox,xmpbox</hpi.bundledArtifacts>
+    <hpi.bundledArtifacts>openpdf</hpi.bundledArtifacts>
     <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
     <!-- `mvn verify` runs SpotBugs from the Jenkins plugin parent; fail the build once findings are cleared. -->
     <spotbugs.failOnError>false</spotbugs.failOnError>
@@ -82,24 +83,11 @@
       <artifactId>jackson2-api</artifactId>
     </dependency>
 
-    <!-- Markdown support -->
-    <dependency>
-      <groupId>com.vladsch.flexmark</groupId>
-      <artifactId>flexmark-all</artifactId>
-      <version>0.64.8</version>
-    </dependency>
-
     <!-- Utilities -->
     <dependency>
       <groupId>io.jenkins.plugins</groupId>
       <artifactId>commons-lang3-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.13.0</version>
-    </dependency>
-
     <!-- PDF export for test run reports -->
     <dependency>
       <groupId>com.github.librepdf</groupId>
@@ -109,18 +97,8 @@
 
     <!-- Test dependencies -->
     <dependency>
-      <groupId>org.jenkins-ci.main</groupId>
-      <artifactId>jenkins-test-harness</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.jenkins-ci.plugins.workflow</groupId>
       <artifactId>workflow-basic-steps</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
