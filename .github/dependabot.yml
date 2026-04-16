@@ -10,3 +10,7 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    ignore:
+      # This action is used by Dependabot's own runner and can trigger
+      # Node runtime deprecation warnings that we cannot fix in-repo.
+      - dependency-name: github/dependabot-action

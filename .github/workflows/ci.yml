@@ -64,4 +64,4 @@ jobs:
           JENKINS_BASE_URL: ${{ secrets.JENKINS_BASE_URL }}
           JENKINS_USER: ${{ secrets.JENKINS_USER }}
           JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
-        run: npx playwright test --grep "dashboard: project apply keeps scope in navigation"
+        run: 'npx playwright test --grep "dashboard: project apply keeps scope in navigation"'
