@@ -18,7 +18,7 @@ Lightweight **test management inside Jenkins**: test cases, suites, test runs, q
 ## Requirements
 
 - Jenkins **2.528.3** or compatible (see `pom.xml`)
-- **Java 11** for building the plugin (JDK 17 is fine as the compiler toolchain)
+- **Java 17+** for building the plugin
 
 ## Quick start
 
@@ -66,10 +66,10 @@ Set `JENKINS_BASE_URL` (and optionally `JENKINS_USER` / `JENKINS_PASSWORD`) as i
 
 ## Continuous integration
 
-- **GitHub Actions:** [.github/workflows/ci.yml](.github/workflows/ci.yml) — `mvn verify` at the repository root (uploads the `.hpi` as a workflow artifact)
+- **GitHub Actions:** [.github/workflows/ci.yml](.github/workflows/ci.yml) — `mvn verify` on a JDK matrix (21/25), plus optional Playwright smoke if Jenkins secrets are configured
 - **GitLab CI:** [.gitlab-ci.yml](.gitlab-ci.yml) — build, optional deploy to Jenkins, optional Playwright (if you still use GitLab)
 
-`mvn verify` runs SpotBugs from the Jenkins plugin parent. This repository sets `spotbugs.failOnError` to `false` in `pom.xml` until legacy findings are cleared; the report is still printed in the log.
+`mvn verify` runs SpotBugs from the Jenkins plugin parent and fails the build on findings (`spotbugs.failOnError=true`).
 
 ## Contributing
 

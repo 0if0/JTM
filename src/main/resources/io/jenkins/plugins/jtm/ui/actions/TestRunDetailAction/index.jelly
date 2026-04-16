@@ -3,7 +3,6 @@
          xmlns:i="jelly:fmt" xmlns:h="/lib/hudson">
   <j:set var="run" value="${it.testRun}"/>
   <l:layout title="${run.name} — JTM">
-    <l:breadcrumb title="${run.name}" href="${rootURL}/jtm/runs/${run.id}/"/>
     <l:side-panel>
       <l:tasks>
         <l:task icon="symbol-jtm plugin-jtm" href="${rootURL}/jtm${it.projectUrlQuery}" title="${%task.dashboard}"/>
@@ -14,8 +13,7 @@
       </l:tasks>
     </l:side-panel>
     <l:main-panel>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.common"/>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.dialog"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.JtmPlugin.common"/>
       <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestRunDetailAction.run-detail"/>
 
       <div id="jtm-run-detail-config" data-current-user-id="${it.currentUserId}" style="display:none" aria-hidden="true"></div>

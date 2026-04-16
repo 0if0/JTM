@@ -6,6 +6,7 @@ import io.jenkins.plugins.jtm.persistence.JtmStore;
 /**
  * Plugin lifecycle: flush JTM store async writer on shutdown.
  */
+@SuppressWarnings("deprecation")
 public class JtmPlugin extends Plugin {
 
     @Override

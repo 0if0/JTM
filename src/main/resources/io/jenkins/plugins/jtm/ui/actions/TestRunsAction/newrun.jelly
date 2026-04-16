@@ -1,7 +1,6 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:h="/lib/hudson">
-  <l:layout title="New Test Run — JTM">
-    <l:breadcrumb title="${%breadcrumb.newTestRun}" href="${rootURL}/jtm/runs/newrun"/>
+  <l:layout title="${%layout.titleNewTestRun}">
     <l:side-panel>
       <l:tasks>
         <l:task icon="symbol-jtm plugin-jtm" href="${rootURL}/jtm${it.projectUrlQuery}" title="${%task.dashboard}"/>
@@ -12,8 +11,7 @@
       </l:tasks>
     </l:side-panel>
     <l:main-panel>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.common"/>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.dialog"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.JtmPlugin.common"/>
       <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestRunsAction.newrun"/>
 
 
@@ -25,7 +23,7 @@
 
       <div class="jtm-newrun-callout" role="note">
         <span class="jtm-newrun-callout__icon" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span class="symbol-shield-outline plugin-ionicons-api"></span>
         </span>
         <p>Status is <strong>PARTIAL</strong> until results are published.</p>
       </div>
@@ -99,7 +97,7 @@
               <div class="jtm-newrun-picker-filter">
                 <label for="jtm-newrun-type-filter">Show</label>
                 <div class="jenkins-select">
-                <select id="jtm-newrun-type-filter" class="jenkins-select__input jtm-newrun-type-filter" title="Filter by test case type">
+                <select id="jtm-newrun-type-filter" class="jenkins-select__input jtm-newrun-type-filter" tooltip="${%tooltip.typeFilter}">
                   <option value="all">All types</option>
                   <option value="manual">Manual only</option>
                   <option value="automated">Automated only</option>

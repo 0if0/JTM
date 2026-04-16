@@ -2,7 +2,6 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout"
          xmlns:f="/lib/hudson/form" xmlns:i="jelly:fmt" xmlns:h="/lib/hudson">
   <l:layout title="${it.testCase.title} — JTM">
-    <l:breadcrumb title="${it.testCase.id}" href="${rootURL}/jtm/testcases/${it.testCase.id}/"/>
     <l:side-panel>
       <l:tasks>
         <l:task icon="symbol-jtm plugin-jtm"
@@ -21,8 +20,7 @@
     </l:side-panel>
 
     <l:main-panel>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.common"/>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.dialog"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.JtmPlugin.common"/>
       <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestCaseDetailAction.case-detail"/>
 
 

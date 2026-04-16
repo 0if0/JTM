@@ -1,1 +1,21 @@
-/* Extracted from inline style in index.jelly for CSP compliance. */
+/* Test runs list — table and batch actions */
+.jtm-runs-table-wrap--borderless {
+  border: none;
+  background: transparent;
+  margin-bottom: 0;
+}
+
+.jtm-runs-table-wrap--borderless .jenkins-table {
+  border: none;
+}
+
+.jtm-runs-panel__export {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 14px;
+}
+
+.jtm-runs-panel__export .jenkins-select {
+  min-width: 8rem;
+}

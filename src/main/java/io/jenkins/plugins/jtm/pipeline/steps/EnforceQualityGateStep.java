@@ -8,6 +8,7 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.jtm.core.service.QualityGateService;
 import io.jenkins.plugins.jtm.pipeline.JtmPublishedRunAction;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.workflow.steps.*;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -95,7 +96,7 @@ public final class EnforceQualityGateStep extends Step implements Serializable {
             assert listener != null && build != null;
             String logPrefix = "[JTM] enforceQualityGate";
 
-            // Determine run ID: explicit > same-build publishResults > env > global fallback
+            // Determine run ID: explicit > same-build publishResults > env
             String runId = step.runId;
             if (runId == null || runId.isBlank()) {
                 JtmPublishedRunAction published = build.getAction(JtmPublishedRunAction.class);
@@ -108,16 +109,9 @@ public final class EnforceQualityGateStep extends Step implements Serializable {
                 runId = build.getEnvironment(listener).get("JTM_RUN_ID");
             }
             if (runId == null || runId.isBlank()) {
-                listener.getLogger().println(
-                    logPrefix + " ⚠ No run id on this build and no JTM_RUN_ID — using latest run in store (unsafe if jobs run in parallel)");
-                java.util.List<io.jenkins.plugins.jtm.core.domain.TestRun> recentRuns =
-                    io.jenkins.plugins.jtm.persistence.JtmStore.get().findRecentRuns(1);
-                if (recentRuns.isEmpty()) {
-                    listener.getLogger().println(
-                        logPrefix + " ⚠ No test run found — skipping quality gate");
-                    return true;
-                }
-                runId = recentRuns.get(0).getId();
+                throw new IllegalArgumentException(
+                    "No JTM run id found for this build. Provide enforceQualityGate(runId: ...), " +
+                    "run publishResults in the same build, or set JTM_RUN_ID.");
             }
 
             listener.getLogger().println(logPrefix + " Evaluating run: " + runId);
@@ -155,10 +149,13 @@ public final class EnforceQualityGateStep extends Step implements Serializable {
             // Fail build if configured
             if (!result.isPassed() && step.blockOnFailure) {
                 build.setResult(Result.FAILURE);
+                String runUrl = String.valueOf(build.getUrl()) + "jtm/runs/" + runId;
+                String rootUrl = Jenkins.get().getRootUrl();
+                String dashboardUrl = (rootUrl != null) ? rootUrl + runUrl : runUrl;
                 throw new RuntimeException(
                     "Quality Gate FAILED: " + result.getSummary() + "\n" +
                     "See JTM dashboard for details: " +
-                    build.getAbsoluteUrl() + "jtm/runs/" + runId);
+                    dashboardUrl);
             }
 
             return result.isPassed();

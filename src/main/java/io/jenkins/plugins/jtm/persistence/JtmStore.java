@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -187,7 +188,11 @@ public final class JtmStore {
 
     private void saveRegisteredProjectScopes() {
         File f = getProjectRegistryFile();
-        f.getParentFile().mkdirs();
+        File parent = f.getParentFile();
+        if (parent != null && !parent.exists() && !parent.mkdirs()) {
+            LOG.log(Level.WARNING, "[JTM] Failed to create project registry directory: {0}", parent.getAbsolutePath());
+            return;
+        }
         try {
             objectMapper.writeValue(f, new ArrayList<>(registeredProjectScopes));
         } catch (IOException e) {
@@ -574,7 +579,7 @@ public final class JtmStore {
         try {
             return runIndex.values().stream()
                 .filter(r -> jobFilter == null || jobFilter.isEmpty()
-                    || r.getJobName().equalsIgnoreCase(jobFilter))
+                    || (r.getJobName() != null && r.getJobName().equalsIgnoreCase(jobFilter)))
                 .sorted(Comparator.comparing(
                     TestRun::getStartedAt,
                     Comparator.nullsLast(Comparator.naturalOrder())).reversed())
@@ -670,10 +675,13 @@ public final class JtmStore {
                 File auditDir = new File(getAuditDir(), month);
                 String day = entry.getTimestamp().toString().substring(0, 10);
                 File auditFile = new File(auditDir, "audit-" + day + ".jsonl");
-                auditDir.mkdirs();
+                if (!auditDir.exists() && !auditDir.mkdirs()) {
+                    LOG.log(Level.WARNING, "[JTM] Failed to create audit directory: {0}", auditDir.getAbsolutePath());
+                    return;
+                }
 
                 String line = objectMapper.writeValueAsString(entry) + "\n";
-                Files.write(auditFile.toPath(), line.getBytes(),
+                Files.write(auditFile.toPath(), line.getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE, StandardOpenOption.APPEND);
             } catch (IOException e) {
                 LOG.log(Level.WARNING, "[JTM] Failed to write audit entry", e);
@@ -957,7 +965,10 @@ public final class JtmStore {
 
     private void writeSync(File dir, String filename, Object data) {
         try {
-            dir.mkdirs();
+            if (!dir.exists() && !dir.mkdirs()) {
+                LOG.log(Level.SEVERE, "[JTM] Failed to create persistence directory: {0}", dir.getAbsolutePath());
+                return;
+            }
             File target = new File(dir, filename);
             File temp = new File(dir, filename + ".tmp");
             objectMapper.writeValue(temp, data);

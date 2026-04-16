@@ -37,14 +37,14 @@
   <properties>
     <revision>1</revision>
     <changelist>999999-SNAPSHOT</changelist>
-    <gitHubRepo>jenkinsci/jtm-plugin</gitHubRepo>
+    <gitHubRepo>0if0/JTM</gitHubRepo>
     <jenkins.baseline>2.528</jenkins.baseline>
     <jenkins.version>${jenkins.baseline}.3</jenkins.version>
     <hpi.strictBundledArtifacts>true</hpi.strictBundledArtifacts>
     <hpi.bundledArtifacts>openpdf</hpi.bundledArtifacts>
     <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
-    <!-- `mvn verify` runs SpotBugs from the Jenkins plugin parent; fail the build once findings are cleared. -->
-    <spotbugs.failOnError>false</spotbugs.failOnError>
+    <!-- `mvn verify` runs SpotBugs from the Jenkins plugin parent; keep release builds strict. -->
+    <spotbugs.failOnError>true</spotbugs.failOnError>
   </properties>
 
   <dependencyManagement>
@@ -86,6 +86,11 @@
     <dependency>
       <groupId>io.jenkins.plugins</groupId>
       <artifactId>commons-lang3-api</artifactId>
+    </dependency>
+    <!-- Ionicon symbols used in Jelly (e.g. symbol-checkbox-outline plugin-ionicons-api) -->
+    <dependency>
+      <groupId>io.jenkins.plugins</groupId>
+      <artifactId>ionicons-api</artifactId>
     </dependency>
     <!-- PDF export for test run reports -->
     <dependency>

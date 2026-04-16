@@ -1,10 +1,9 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:h="/lib/hudson" xmlns:f="/lib/form">
   <l:layout title="${%layout.titleExportBranding}">
-    <l:breadcrumb title="${%breadcrumb.exportBranding}" href="${rootURL}/jtm/exportBranding"/>
     <l:side-panel>
       <l:tasks>
-        <l:task icon="symbol-bar-chart-outline plugin-ionicons-api" href="${rootURL}/jtm${it.projectUrlQuery}" title="${%task.dashboard}"/>
+        <l:task icon="symbol-jtm plugin-jtm" href="${rootURL}/jtm${it.projectUrlQuery}" title="${%task.dashboard}"/>
         <l:task icon="symbol-checkbox-outline plugin-ionicons-api" href="${rootURL}/jtm/testcases${it.projectUrlQuery}" title="${%task.testCases}"/>
         <l:task icon="symbol-play-circle-outline plugin-ionicons-api" href="${rootURL}/jtm/runs${it.projectUrlQuery}" title="${%task.testRuns}"/>
       </l:tasks>
@@ -21,16 +20,16 @@
       <j:if test="${it.exportBrandingMessage != ''}">
         <j:choose>
           <j:when test="${it.exportBrandingMessage == 'saved'}">
-            <div class="jenkins-alert jenkins-alert--success jenkins-!-margin-bottom-2">Logo saved.</div>
+            <div class="jenkins-alert jenkins-alert-success jenkins-!-margin-bottom-2">Logo saved.</div>
           </j:when>
           <j:when test="${it.exportBrandingMessage == 'cleared'}">
-            <div class="jenkins-alert jenkins-alert--success jenkins-!-margin-bottom-2">Logo removed.</div>
+            <div class="jenkins-alert jenkins-alert-success jenkins-!-margin-bottom-2">Logo removed.</div>
           </j:when>
           <j:when test="${it.exportBrandingMessage == 'empty'}">
-            <div class="jenkins-alert jenkins-alert--warning jenkins-!-margin-bottom-2">No file selected.</div>
+            <div class="jenkins-alert jenkins-alert-warning jenkins-!-margin-bottom-2">No file selected.</div>
           </j:when>
           <j:when test="${it.exportBrandingMessage == 'error'}">
-            <div class="jenkins-alert jenkins-alert--danger jenkins-!-margin-bottom-2">Could not save logo (size or format).</div>
+            <div class="jenkins-alert jenkins-alert-danger jenkins-!-margin-bottom-2">Could not save logo (size or format).</div>
           </j:when>
         </j:choose>
       </j:if>

@@ -1,4 +1,4 @@
-/* global crumb, jtmConfirm, jtmNotify */
+/* global crumb, dialog, notificationBar */
 (function () {
   "use strict";
 
@@ -131,7 +131,7 @@
               }
             }).catch(() => {
               form.dataset.saving = "0";
-              window.jtmNotify("Step status could not be saved. Please retry.", "error");
+              notificationBar.show("Step status could not be saved. Please retry.", notificationBar.ERROR);
             });
           }, 0);
           return;
@@ -236,7 +236,7 @@
             }
           }).catch(() => {
             form.dataset.saving = "0";
-            window.jtmNotify("Step comment could not be saved. Please retry.", "error");
+            notificationBar.show("Step comment could not be saved. Please retry.", notificationBar.ERROR);
           });
         }, 0);
       });
@@ -288,10 +288,13 @@
     }
     const message = form.getAttribute("data-confirm-message") || "Are you sure?";
     event.preventDefault();
-    window.jtmConfirm(message, { okText: "OK", cancelText: "Cancel" }).then((ok) => {
-      if (ok) {
+    dialog
+      .confirm(message, {
+        okText: "OK",
+      })
+      .then(() => {
         form.submit();
-      }
-    });
+      })
+      .catch(() => {});
   });
 })();

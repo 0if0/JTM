@@ -114,10 +114,19 @@ public final class JtmApiAction implements Action {
             return null;
         }
 
-        @GET
+        @RequirePOST
         public void doIndex(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
-            JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
+            JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
             root.serveApiTestruns(req, rsp);
+        }
+
+        /**
+         * Backward-compatible alias for clients that prefer explicit create semantics.
+         * URL: /jtm/api/testruns/create
+         */
+        @RequirePOST
+        public void doCreate(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
+            doIndex(req, rsp);
         }
     }
 
@@ -245,6 +254,7 @@ public final class JtmApiAction implements Action {
          */
         @RequirePOST
         public void doUpdate(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
+            JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
             root.serveApiTestcaseUpdate(id, req, rsp);
         }
 
@@ -253,7 +263,17 @@ public final class JtmApiAction implements Action {
          */
         @RequirePOST
         public void doDelete(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
+            JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
             root.serveApiTestcaseDelete(id, req, rsp);
+        }
+
+        /**
+         * Explicit POST route for /jtm/api/testcase/{id}/status to avoid dispatch ambiguity.
+         */
+        @RequirePOST
+        public void doStatus(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
+            JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
+            root.serveApiUpdateStatus(req, rsp);
         }
 
         public JtmApiTestcaseStatus getStatus() {
@@ -285,6 +305,7 @@ public final class JtmApiAction implements Action {
 
         @RequirePOST
         public void doIndex(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
+            JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
             root.serveApiUpdateStatus(req, rsp);
         }
     }

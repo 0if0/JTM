@@ -199,8 +199,9 @@ public final class TestCaseDetailAction implements Action {
     public void doUpdateStatus(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
         String statusStr = req.getParameter("status");
-        String user = hudson.model.User.current() != null
-            ? hudson.model.User.current().getId() : "anonymous";
+        hudson.model.User currentUser = hudson.model.User.current();
+        String user = currentUser != null && currentUser.getId() != null
+            ? currentUser.getId() : "anonymous";
         try {
             TestCase.TestCaseStatus s = TestCase.TestCaseStatus.valueOf(statusStr.toUpperCase());
             TestCaseService.get().updateStatus(testCase.getId(), s, user, 0, 3);

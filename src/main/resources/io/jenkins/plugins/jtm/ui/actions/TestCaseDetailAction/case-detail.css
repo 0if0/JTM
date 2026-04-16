@@ -18,9 +18,9 @@
         .jtm-btn-lg { padding: 0.5rem 1rem; font-weight: 600; border-radius: 8px; text-decoration: none; }
         .jtm-btn-sm { padding: 0.25rem 0.6rem; font-size: 12px; border-radius: 8px; }
         .jtm-meta-label { font-size: 12px; color: var(--text-color-secondary); margin-right: 4px; }
-        .jtm-flaky-inline { font-size: 11px; font-weight: 700; color: #b45309; }
+        .jtm-flaky-inline { font-size: 11px; font-weight: 700; color: var(--orange, #b45309); }
         .jtm-callout--info {
-          background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.35);
+          background: color-mix(in srgb, var(--blue, #3b82f6) 8%, transparent); border: 1px solid color-mix(in srgb, var(--blue, #3b82f6) 35%, transparent);
           border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px;
         }
         .jtm-section-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
@@ -58,33 +58,33 @@
         .jtm-form-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
         .jtm-tags { display: flex; gap: 6px; flex-wrap: wrap; }
         .jtm-tag {
-          background: rgba(59,130,246,0.12); color: #2563eb;
+          background: color-mix(in srgb, var(--blue, #3b82f6) 12%, transparent); color: var(--blue, #2563eb);
           padding: 2px 8px; border-radius: 12px; font-size: 12px;
         }
-        .jtm-badge--step--NOT_RUN { background: rgba(107,114,128,0.12); color: #6b7280; font-size:11px; }
-        .jtm-badge--step--PASSED  { background: rgba(34,197,94,0.15);   color: #16a34a; font-size:11px; }
-        .jtm-badge--step--FAILED  { background: rgba(239,68,68,0.15);   color: #dc2626; font-size:11px; }
-        .jtm-badge--step--BLOCKED { background: rgba(245,158,11,0.15); color: #d97706; font-size:11px; }
+        .jtm-badge--step--NOT_RUN { background: color-mix(in srgb, var(--text-color-secondary, #6b7280) 12%, transparent); color: var(--text-color-secondary, #6b7280); font-size:11px; }
+        .jtm-badge--step--PASSED  { background: color-mix(in srgb, var(--green, #22c55e) 15%, transparent);   color: var(--green, #16a34a); font-size:11px; }
+        .jtm-badge--step--FAILED  { background: color-mix(in srgb, var(--red, #ef4444) 15%, transparent);   color: var(--red, #dc2626); font-size:11px; }
+        .jtm-badge--step--BLOCKED { background: color-mix(in srgb, var(--orange, #f59e0b) 15%, transparent); color: var(--orange, #d97706); font-size:11px; }
         .jtm-muted { color: var(--text-color-secondary); font-size: 13px; }
         .jtm-markdown { font-size: 14px; line-height: 1.6; }
         .jtm-mono  { font-family: var(--font-family-mono); }
         .jtm-small { font-size: 12px; }
         .jtm-center { text-align: center; }
         .jtm-badge { display:inline-block; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:600; }
-        .jtm-badge--PASSED  { background: rgba(34,197,94,0.15);  color: #16a34a; }
-        .jtm-badge--FAILED  { background: rgba(239,68,68,0.15);  color: #dc2626; }
-        .jtm-badge--BLOCKED { background: rgba(245,158,11,0.15); color: #d97706; }
-        .jtm-badge--SKIPPED { background: rgba(107,114,128,0.12);color: #6b7280; }
-        .jtm-badge--PENDING { background: rgba(107,114,128,0.12);color: #6b7280; }
-        .jtm-badge--type    { background: rgba(59,130,246,0.12);  color: #2563eb; }
-        .jtm-badge--flaky   { background: rgba(245,158,11,0.15);  color: #b45309; font-size:10px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
-        .jtm-prio--CRITICAL { color:#dc2626; font-weight:700; font-size:12px; }
-        .jtm-prio--HIGH     { color:#d97706; font-weight:600; font-size:12px; }
-        .jtm-prio--MEDIUM   { color:#6b7280; font-size:12px; }
-        .jtm-prio--LOW      { color:#9ca3af; font-size:12px; }
-        .jtm-lifecycle--READY { color:#16a34a; font-size:12px; font-weight:600; }
-        .jtm-lifecycle--DRAFT { color:#6b7280; font-size:12px; }
-        .jtm-lifecycle--BLOCKED    { color:#d97706; font-size:12px; }
-        .jtm-lifecycle--DEPRECATED { color:#9ca3af; font-size:12px; text-decoration:line-through; }
-        .jtm-flaky-score { background:rgba(245,158,11,0.15);color:#d97706;padding:2px 7px;border-radius:12px;font-size:11px; }
+        .jtm-badge--PASSED  { background: color-mix(in srgb, var(--green, #22c55e) 15%, transparent);  color: var(--green, #16a34a); }
+        .jtm-badge--FAILED  { background: color-mix(in srgb, var(--red, #ef4444) 15%, transparent);  color: var(--red, #dc2626); }
+        .jtm-badge--BLOCKED { background: color-mix(in srgb, var(--orange, #f59e0b) 15%, transparent); color: var(--orange, #d97706); }
+        .jtm-badge--SKIPPED { background: color-mix(in srgb, var(--text-color-secondary, #6b7280) 12%, transparent);color: var(--text-color-secondary, #6b7280); }
+        .jtm-badge--PENDING { background: color-mix(in srgb, var(--text-color-secondary, #6b7280) 12%, transparent);color: var(--text-color-secondary, #6b7280); }
+        .jtm-badge--type    { background: color-mix(in srgb, var(--blue, #3b82f6) 12%, transparent);  color: var(--blue, #2563eb); }
+        .jtm-badge--flaky   { background: color-mix(in srgb, var(--orange, #f59e0b) 15%, transparent);  color: var(--orange, #b45309); font-size:10px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
+        .jtm-prio--CRITICAL { color: var(--red, #dc2626); font-weight:700; font-size:12px; }
+        .jtm-prio--HIGH     { color: var(--orange, #d97706); font-weight:600; font-size:12px; }
+        .jtm-prio--MEDIUM   { color: var(--text-color-secondary, #6b7280); font-size:12px; }
+        .jtm-prio--LOW      { color: var(--text-color-secondary, #9ca3af); font-size:12px; }
+        .jtm-lifecycle--READY { color: var(--green, #16a34a); font-size:12px; font-weight:600; }
+        .jtm-lifecycle--DRAFT { color: var(--text-color-secondary, #6b7280); font-size:12px; }
+        .jtm-lifecycle--BLOCKED    { color: var(--orange, #d97706); font-size:12px; }
+        .jtm-lifecycle--DEPRECATED { color: var(--text-color-secondary, #9ca3af); font-size:12px; text-decoration:line-through; }
+        .jtm-flaky-score { background:color-mix(in srgb, var(--orange, #f59e0b) 15%, transparent);color: var(--orange, #d97706);padding:2px 7px;border-radius:12px;font-size:11px; }
         @media(max-width:900px) { .jtm-two-col { grid-template-columns: 1fr; } }

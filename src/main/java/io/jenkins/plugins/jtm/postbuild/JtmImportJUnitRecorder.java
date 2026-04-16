@@ -26,6 +26,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import jenkins.tasks.SimpleBuildStep;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.Instant;
@@ -77,11 +78,13 @@ public final class JtmImportJUnitRecorder extends Notifier implements SimpleBuil
     public boolean isCreateMissingTestCases() { return createMissingTestCases; }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean perform(@NonNull AbstractBuild<?, ?> build, @NonNull Launcher launcher, @NonNull BuildListener listener) {
         return performOnRun(build, build.getWorkspace(), listener);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull Launcher launcher, @NonNull TaskListener listener) {
         performOnRun(run, workspace, listener);
     }
@@ -174,8 +177,9 @@ public final class JtmImportJUnitRecorder extends Notifier implements SimpleBuil
                     );
                     existingByTitleAndProject.put(compositeTitleKey(c.getDisplayTitle(), c.getProjectScope()), r.getTestCaseId());
                     createdCases++;
-                } catch (Exception ignored) {
-                    // keep going
+                } catch (Exception e) {
+                    listener.getLogger().println(
+                        logPrefix + " Could not auto-create testcase " + r.getTestCaseId() + ": " + e.getMessage());
                 }
             }
         }
@@ -225,7 +229,10 @@ public final class JtmImportJUnitRecorder extends Notifier implements SimpleBuil
                 return matches[0];
             }
             return workspace.child(resolvedJunitFile);
-        } catch (Exception e) {
+        } catch (IOException e) {
+            return null;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             return null;
         }
     }

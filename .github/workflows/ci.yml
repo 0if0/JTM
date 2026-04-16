@@ -13,6 +13,10 @@ concurrency:
 
 jobs:
   verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [21, 25]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,7 +26,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: ${{ matrix.jdk }}
           cache: maven
 
       - name: Maven verify
@@ -31,6 +35,33 @@ jobs:
       - name: Upload HPI (artifact)
         uses: actions/upload-artifact@v4
         with:
-          name: jtm-hpi
+          name: jtm-hpi-jdk${{ matrix.jdk }}
           path: target/*.hpi
           if-no-files-found: error
+
+  e2e-smoke:
+    needs: verify
+    if: ${{ secrets.JENKINS_BASE_URL != '' && secrets.JENKINS_USER != '' && secrets.JENKINS_PASSWORD != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: e2e/package-lock.json
+
+      - name: Install e2e dependencies
+        working-directory: e2e
+        run: npm ci
+
+      - name: Run Playwright smoke
+        working-directory: e2e
+        env:
+          JENKINS_BASE_URL: ${{ secrets.JENKINS_BASE_URL }}
+          JENKINS_USER: ${{ secrets.JENKINS_USER }}
+          JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
+        run: npx playwright test --grep "dashboard: project apply keeps scope in navigation"

@@ -1,4 +1,4 @@
-/* global jtmConfirm */
+/* global dialog, notificationBar */
 (function () {
   "use strict";
 
@@ -28,17 +28,17 @@
   if (deleteBtn && deleteForm && deleteKey) {
     deleteBtn.addEventListener("click", () => {
       if (!deleteKey.value) {
-        window.jtmNotify("Please select a project first.", "warning");
+        notificationBar.show("Please select a project first.", notificationBar.WARNING);
         return;
       }
-      window.jtmConfirm(
-        "Delete selected project? This works only when no test cases or runs still reference it.",
-        { okText: "Delete", cancelText: "Cancel" }
-      ).then((ok) => {
-        if (ok) {
+      dialog
+        .confirm("Delete selected project? This works only when no test cases or runs still reference it.", {
+          okText: "Delete",
+        })
+        .then(() => {
           deleteForm.submit();
-        }
-      });
+        })
+        .catch(() => {});
     });
   }
 
@@ -76,9 +76,11 @@
       const passed = parseInt(opt.dataset.passed || "0", 10) || 0;
       const failed = parseInt(opt.dataset.failed || "0", 10) || 0;
       const blocked = parseInt(opt.dataset.blocked || "0", 10) || 0;
+      const falsePositive = parseInt(opt.dataset.falsePositive || "0", 10) || 0;
+      const skipped = parseInt(opt.dataset.skipped || "0", 10) || 0;
       const total = parseInt(opt.dataset.total || "0", 10) || 0;
       const linked = parseInt(opt.dataset.linked || "0", 10) || 0;
-      const pending = Math.max(0, total - passed - failed - blocked);
+      const pending = Math.max(0, total - passed - failed - blocked - falsePositive - skipped);
       const passPct = total > 0 ? passed / total : 0;
       const failPct = total > 0 ? failed / total : 0;
       const blockedPct = total > 0 ? blocked / total : 0;

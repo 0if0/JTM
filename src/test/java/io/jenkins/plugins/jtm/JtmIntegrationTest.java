@@ -16,6 +16,7 @@ import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.apache.commons.io.IOUtils;
 import org.htmlunit.FormEncodingType;
 import org.htmlunit.HttpMethod;
+import org.htmlunit.WebResponse;
 import org.htmlunit.WebRequest;
 import org.htmlunit.html.HtmlPage;
 import org.htmlunit.util.NameValuePair;
@@ -167,6 +168,52 @@ public class JtmIntegrationTest {
             new URL(j.getURL() + "jtm/api/dashboard/summary"), StandardCharsets.UTF_8);
         assertThat(json).contains("\"statusCounts\"");
         assertThat(json).contains("\"passRate\"");
+    }
+
+    @Test
+    public void api_testrunsCreateAlias_createsRun() throws Exception {
+        CrumbIssuer issuer = j.jenkins.getCrumbIssuer();
+        assertThat(issuer).isNotNull();
+        JenkinsRule.WebClient wc = j.createWebClient();
+        wc.getOptions().setThrowExceptionOnFailingStatusCode(false);
+
+        String payload = "{"
+            + "\"id\":\"RUN-API-0001\","
+            + "\"name\":\"Alias API Run\","
+            + "\"jobName\":\"api-job\","
+            + "\"buildNumber\":42,"
+            + "\"results\":[]"
+            + "}";
+
+        WebRequest req = new WebRequest(new URL(j.getURL() + "jtm/api/testruns/create"), HttpMethod.POST);
+        req.setAdditionalHeader("Content-Type", "application/json");
+        req.setAdditionalHeader(issuer.getCrumbRequestField(), issuer.getCrumb());
+        req.setRequestBody(payload);
+
+        WebResponse rsp = wc.loadWebResponse(req);
+        assertThat(rsp.getStatusCode()).isEqualTo(201);
+        assertThat(store.findRunById("RUN-API-0001")).isPresent();
+    }
+
+    @Test
+    public void api_updateStatus_missingRequiredField_returns400() throws Exception {
+        CrumbIssuer issuer = j.jenkins.getCrumbIssuer();
+        assertThat(issuer).isNotNull();
+        JenkinsRule.WebClient wc = j.createWebClient();
+        wc.getOptions().setThrowExceptionOnFailingStatusCode(false);
+
+        String payloadMissingStatus = "{"
+            + "\"id\":\"TC-1234\""
+            + "}";
+
+        WebRequest req = new WebRequest(new URL(j.getURL() + "jtm/api/testcase/TC-1234/status"), HttpMethod.POST);
+        req.setAdditionalHeader("Content-Type", "application/json");
+        req.setAdditionalHeader(issuer.getCrumbRequestField(), issuer.getCrumb());
+        req.setRequestBody(payloadMissingStatus);
+
+        WebResponse rsp = wc.loadWebResponse(req);
+        assertThat(rsp.getStatusCode()).isEqualTo(400);
+        assertThat(rsp.getContentAsString()).contains("status");
     }
 
     @Test

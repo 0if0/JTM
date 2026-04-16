@@ -25,6 +25,11 @@
 
 ### Bug Fixes
 
+- **API hardening and compatibility**
+  - `POST /jtm/api/testruns` remains the canonical mutation endpoint (now permission-gated for execute rights).
+  - Added compatibility alias `POST /jtm/api/testruns/create` for clients that prefer explicit create semantics.
+  - `POST /jtm/api/testcase/{id}/status` now validates required fields (`id`, `status`) and malformed payloads return `400` instead of generic server errors.
+
 - **JUnit post-build import: reduce duplicate test case creation**
   - Improved existing-case matching for imports without explicit `TC-...` IDs by matching normalized `title + projectKey`.
   - Reuses existing test case IDs when a matching case is found, instead of always creating new ones.
@@ -62,7 +67,7 @@
 ### Requirements
 
 - Jenkins **2.528.3** or compatible (see `pom.xml`)
-- Java **11** to build the plugin
+- Java **17+** to build the plugin
 
 ### Highlights
 

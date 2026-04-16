@@ -2,7 +2,6 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:h="/lib/hudson">
   <j:set var="tc" value="${it.testCase}"/>
   <l:layout title="Edit ${tc.id} — JTM">
-    <l:breadcrumb title="${%breadcrumb.editTestCase}" href="${rootURL}/jtm/testcases/${tc.id}/edit"/>
     <l:side-panel>
       <l:tasks>
         <l:task icon="symbol-jtm plugin-jtm" href="${rootURL}/jtm${it.projectUrlQuery}" title="${%task.dashboard}"/>
@@ -13,8 +12,7 @@
       </l:tasks>
     </l:side-panel>
     <l:main-panel>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.common"/>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.dialog"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.JtmPlugin.common"/>
       <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestCaseDetailAction.case-edit"/>
 
 

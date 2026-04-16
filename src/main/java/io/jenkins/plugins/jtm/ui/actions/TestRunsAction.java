@@ -148,7 +148,7 @@ public class TestRunsAction implements Action {
                 rsp.setContentType("application/pdf");
                 rsp.addHeader("Content-Disposition", "attachment; filename=\"" + fname + ".pdf\"");
                 rsp.getOutputStream().write(pdf);
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 rsp.sendError(500, "PDF export failed");
             }
         } else {

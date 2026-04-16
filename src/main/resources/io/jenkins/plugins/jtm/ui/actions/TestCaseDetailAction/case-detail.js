@@ -1,4 +1,4 @@
-/* global jtmConfirm */
+/* global dialog */
 (function () {
   "use strict";
 
@@ -9,10 +9,13 @@
     }
     const message = form.getAttribute("data-confirm-message") || "Are you sure?";
     event.preventDefault();
-    window.jtmConfirm(message, { okText: "Delete", cancelText: "Cancel" }).then((ok) => {
-      if (ok) {
+    dialog
+      .confirm(message, {
+        okText: "Delete",
+      })
+      .then(() => {
         form.submit();
-      }
-    });
+      })
+      .catch(() => {});
   });
 })();

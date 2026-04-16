@@ -127,28 +127,28 @@ public final class JtmRootAction implements UnprotectedRootAction {
     }
 
     public String getProjectDeleteStatus() {
-        return StringUtils.defaultString(Stapler.getCurrentRequest() != null
-            ? Stapler.getCurrentRequest().getParameter("projectDeleteStatus")
-            : null);
+        StaplerRequest2 req = Stapler.getCurrentRequest2();
+        return StringUtils.defaultString(req != null ? req.getParameter("projectDeleteStatus") : null);
     }
 
     public String getProjectDeleteKey() {
-        return StringUtils.defaultString(Stapler.getCurrentRequest() != null
-            ? Stapler.getCurrentRequest().getParameter("projectDeleteKey")
-            : null);
+        StaplerRequest2 req = Stapler.getCurrentRequest2();
+        return StringUtils.defaultString(req != null ? req.getParameter("projectDeleteKey") : null);
     }
 
     public long getProjectDeleteCasesCount() {
-        if (Stapler.getCurrentRequest() == null) return 0L;
-        String raw = Stapler.getCurrentRequest().getParameter("projectDeleteCases");
+        StaplerRequest2 req = Stapler.getCurrentRequest2();
+        if (req == null) return 0L;
+        String raw = req.getParameter("projectDeleteCases");
         if (raw == null) return 0L;
         try { return Long.parseLong(raw); }
         catch (NumberFormatException e) { return 0L; }
     }
 
     public long getProjectDeleteRunsCount() {
-        if (Stapler.getCurrentRequest() == null) return 0L;
-        String raw = Stapler.getCurrentRequest().getParameter("projectDeleteRuns");
+        StaplerRequest2 req = Stapler.getCurrentRequest2();
+        if (req == null) return 0L;
+        String raw = req.getParameter("projectDeleteRuns");
         if (raw == null) return 0L;
         try { return Long.parseLong(raw); }
         catch (NumberFormatException e) { return 0L; }
@@ -331,6 +331,7 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * POST /jtm/exportBrandingSave — upload company logo for run exports (stored under {@code jtm/branding/}).
      */
     @POST
+    @SuppressWarnings("deprecation")
     public void doExportBrandingSave(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_ADMIN);
         String cp = req.getContextPath();
@@ -398,10 +399,11 @@ public final class JtmRootAction implements UnprotectedRootAction {
     }
 
     public String getExportBrandingMessage() {
-        if (Stapler.getCurrentRequest() == null) {
+        StaplerRequest2 req = Stapler.getCurrentRequest2();
+        if (req == null) {
             return "";
         }
-        return StringUtils.defaultString(Stapler.getCurrentRequest().getParameter("brandingMsg"));
+        return StringUtils.defaultString(req.getParameter("brandingMsg"));
     }
 
     /**
@@ -552,8 +554,8 @@ public final class JtmRootAction implements UnprotectedRootAction {
     /** GET /jtm/api/testcase/{id} */
     void serveApiTestcaseGet(String id, StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         TestCaseService.get().findById(id).ifPresentOrElse(
-            tc -> { try { sendJson(rsp, 200, tc); } catch (IOException e) { /* ignore */ } },
-            () -> { try { sendError(rsp, 404, "TestCase not found: " + id); } catch (IOException e) { /* ignore */ } }
+            tc -> sendJsonSafe(rsp, 200, tc, "Failed to write testcase response"),
+            () -> sendErrorSafe(rsp, 404, "TestCase not found: " + id, "Failed to write testcase-not-found response")
         );
     }
 
@@ -597,14 +599,18 @@ public final class JtmRootAction implements UnprotectedRootAction {
         try {
             @SuppressWarnings("unchecked") Map<String, Object> body =
                 (Map<String, Object>) JSON.readValue(req.getInputStream(), Map.class);
-            String id = (String) body.get("id");
-            String statusStr = (String) body.get("status");
-            String user = body.containsKey("updatedBy") ? (String) body.get("updatedBy") : getApiUser(req);
-            int buildNumber = body.containsKey("buildNumber")
-                ? (int) body.get("buildNumber") : 0;
+            if (body == null) {
+                throw new IllegalArgumentException("Request body is required");
+            }
+            String id = requireString(body, "id");
+            String statusStr = requireString(body, "status");
+            String user = body.containsKey("updatedBy")
+                ? optionalString(body.get("updatedBy"), "updatedBy")
+                : getApiUser(req);
+            int buildNumber = parseBuildNumber(body.get("buildNumber"));
 
             TestCase.TestCaseStatus newStatus = TestCase.TestCaseStatus.valueOf(
-                statusStr.toUpperCase());
+                statusStr.trim().toUpperCase(Locale.ROOT));
             TestCase updated = TestCaseService.get().updateStatus(
                 id, newStatus, user, buildNumber, 5);
 
@@ -701,6 +707,62 @@ public final class JtmRootAction implements UnprotectedRootAction {
         error.put("message", message);
         error.put("timestamp", System.currentTimeMillis());
         sendJson(rsp, status, error);
+    }
+
+    private int parseBuildNumber(Object raw) {
+        if (raw == null) {
+            return 0;
+        }
+        if (raw instanceof Number) {
+            return ((Number) raw).intValue();
+        }
+        if (raw instanceof String) {
+            try {
+                return Integer.parseInt(((String) raw).trim());
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("buildNumber must be a number");
+            }
+        }
+        throw new IllegalArgumentException("buildNumber must be a number");
+    }
+
+    private String requireString(Map<String, Object> body, String key) {
+        Object raw = body.get(key);
+        if (!(raw instanceof String)) {
+            throw new IllegalArgumentException(key + " must be a string");
+        }
+        String out = ((String) raw).trim();
+        if (out.isEmpty()) {
+            throw new IllegalArgumentException(key + " is required");
+        }
+        return out;
+    }
+
+    private String optionalString(Object raw, String key) {
+        if (raw == null) {
+            return getApiUser(null);
+        }
+        if (!(raw instanceof String)) {
+            throw new IllegalArgumentException(key + " must be a string");
+        }
+        String out = ((String) raw).trim();
+        return out.isEmpty() ? getApiUser(null) : out;
+    }
+
+    private void sendJsonSafe(StaplerResponse2 rsp, int status, Object data, String logMessage) {
+        try {
+            sendJson(rsp, status, data);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "[JTM API] " + logMessage, e);
+        }
+    }
+
+    private void sendErrorSafe(StaplerResponse2 rsp, int status, String message, String logMessage) {
+        try {
+            sendError(rsp, status, message);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "[JTM API] " + logMessage, e);
+        }
     }
 
     private String getApiUser(StaplerRequest2 req) {

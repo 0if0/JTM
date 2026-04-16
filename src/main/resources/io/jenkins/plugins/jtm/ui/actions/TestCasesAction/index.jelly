@@ -1,8 +1,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/hudson/form" xmlns:i="jelly:fmt" xmlns:h="/lib/hudson">
-  <l:layout title="Test Cases — JTM">
-    <l:breadcrumb title="${%breadcrumb.testCases}" href="${rootURL}/jtm/testcases/"/>
+  <l:layout title="${%layout.titleTestCases}">
     <l:side-panel>
       <l:tasks>
         <l:task icon="symbol-jtm plugin-jtm"
@@ -19,8 +18,7 @@
     </l:side-panel>
 
     <l:main-panel>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.common"/>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.dialog"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.JtmPlugin.common"/>
       <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestCasesAction.cases-index"/>
 
       <j:set var="fq" value="${request.getParameter('q')}"/>
@@ -158,14 +156,9 @@
 
       <j:choose>
         <j:when test="${it.testCasesEmpty}">
-          <div class="jtm-tc-empty">
-            <div class="jtm-tc-empty__icon" aria-hidden="true">
-              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h4"/><path d="M15 7V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v14"/><path d="M15 11h4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-4"/></svg>
-            </div>
-            <p class="jtm-tc-empty__title">No test cases match</p>
-            <p class="jtm-tc-empty__text">Adjust filters or add your first case.</p>
-            <a href="${rootURL}/jtm/testcases/newcase${it.projectUrlQuery}" class="jenkins-button jenkins-button--primary">Create test case</a>
-          </div>
+          <l:notice title="${%empty.noMatch}" icon="symbol-testcase plugin-jtm">
+            <a href="${rootURL}/jtm/testcases/newcase${it.projectUrlQuery}" class="jenkins-button jenkins-button--primary">${%empty.createCase}</a>
+          </l:notice>
         </j:when>
         <j:otherwise>
           <section class="jtm-tc-panel" aria-labelledby="jtm-tc-table-h">

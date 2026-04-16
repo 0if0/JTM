@@ -90,7 +90,8 @@ public final class JtmDelimitedImportParser {
     private static String get(List<String> cols, List<String> header, String key) {
         int idx = -1;
         for (int i = 0; i < header.size(); i++) {
-            if (StringUtils.equalsIgnoreCase(header.get(i), key)) {
+            String column = header.get(i);
+            if (column != null && column.equalsIgnoreCase(key)) {
                 idx = i;
                 break;
             }

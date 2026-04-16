@@ -1,4 +1,4 @@
-/* global jtmConfirm, jtmNotify */
+/* global dialog, notificationBar */
 (function () {
   "use strict";
 
@@ -25,11 +25,11 @@
           payload.value = decoded;
           name.value = file.name || "";
         } catch (e) {
-          window.jtmNotify("Could not decode file for import.", "error");
+          notificationBar.show("Could not decode file for import.", notificationBar.ERROR);
         }
       };
       r.onerror = () => {
-        window.jtmNotify("Could not read file for import.", "error");
+        notificationBar.show("Could not read file for import.", notificationBar.ERROR);
       };
       r.readAsArrayBuffer(file);
     });
@@ -57,11 +57,11 @@
           name.value = file.name || "";
           form.submit();
         } catch (err) {
-          window.jtmNotify("Could not decode file for import.", "error");
+          notificationBar.show("Could not decode file for import.", notificationBar.ERROR);
         }
       };
       r.onerror = () => {
-        window.jtmNotify("Could not read file for import.", "error");
+        notificationBar.show("Could not read file for import.", notificationBar.ERROR);
       };
       r.readAsArrayBuffer(file);
     });
@@ -91,18 +91,18 @@
       const checked = Array.from(document.querySelectorAll(".jtm-tc-row-check")).filter((cb) => cb.checked).length;
       if (checked === 0) {
         ev.preventDefault();
-        window.jtmNotify("Select at least one test case.", "warning");
+        notificationBar.show("Select at least one test case.", notificationBar.WARNING);
         return;
       }
       ev.preventDefault();
-      window.jtmConfirm("Delete selected test cases permanently?", {
-        okText: "Delete",
-        cancelText: "Cancel",
-      }).then((ok) => {
-        if (ok) {
+      dialog
+        .confirm("Delete selected test cases permanently?", {
+          okText: "Delete",
+        })
+        .then(() => {
           bulkForm.submit();
-        }
-      });
+        })
+        .catch(() => {});
     });
   }
 })();

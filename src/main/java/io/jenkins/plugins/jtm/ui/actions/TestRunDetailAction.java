@@ -12,8 +12,8 @@ import io.jenkins.plugins.jtm.export.JtmExportBrandingStore;
 import io.jenkins.plugins.jtm.export.TestRunExportService;
 import io.jenkins.plugins.jtm.security.JtmPermissions;
 import org.apache.commons.lang3.StringUtils;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 import org.kohsuke.stapler.verb.POST;
 
@@ -143,7 +143,7 @@ public final class TestRunDetailAction implements Action {
      * (optional company logo from {@link JtmExportBrandingStore}, configured once under {@code /jtm/exportBranding}).
      */
     @RequirePOST
-    public void doExport(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doExport(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
         String format = StringUtils.defaultString(req.getParameter("format")).toLowerCase(Locale.ROOT);
         if (!"html".equals(format) && !"pdf".equals(format)) {
@@ -161,7 +161,7 @@ public final class TestRunDetailAction implements Action {
                 rsp.setContentType("application/pdf");
                 rsp.addHeader("Content-Disposition", "attachment; filename=\"" + safe + "-report.pdf\"");
                 rsp.getOutputStream().write(pdf);
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 rsp.sendError(500, "PDF export failed");
             }
         } else {
@@ -174,7 +174,7 @@ public final class TestRunDetailAction implements Action {
 
     /** POST …/runs/{id}/removeLinked — remove a test case from this run’s scope. */
     @POST
-    public void doRemoveLinked(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doRemoveLinked(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
         String caseId = trimToNull(req.getParameter("testCaseId"));
         if (caseId != null) {
@@ -185,7 +185,7 @@ public final class TestRunDetailAction implements Action {
 
     /** POST …/runs/{id}/deleteRun — delete this test run. */
     @POST
-    public void doDeleteRun(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doDeleteRun(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
         String id = runId;
         TestRunService.get().deleteRun(id, runDetailCurrentUser());
@@ -194,7 +194,7 @@ public final class TestRunDetailAction implements Action {
 
     /** POST …/runs/{id}/addLinked — add more test cases to this run’s scope. */
     @POST
-    public void doAddLinked(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doAddLinked(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
         List<String> ids = new ArrayList<>();
         String[] raw = req.getParameterValues("linkedTestCaseId");
@@ -211,7 +211,7 @@ public final class TestRunDetailAction implements Action {
 
     /** POST …/runs/{id}/addResult — attach a test case result to this run. */
     @POST
-    public void doAddResult(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doAddResult(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
         TestRun latestRun = TestRunService.get().getByIdOrThrow(runId);
         String caseId = trimToNull(req.getParameter("testCaseId"));
@@ -255,7 +255,7 @@ public final class TestRunDetailAction implements Action {
 
     /** POST …/runs/{id}/addStepResult — set all step statuses for one linked test case. */
     @POST
-    public void doAddStepResult(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doAddStepResult(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
         TestRun latestRun = TestRunService.get().getByIdOrThrow(runId);
         String caseId = trimToNull(req.getParameter("testCaseId"));
@@ -343,7 +343,7 @@ public final class TestRunDetailAction implements Action {
 
     /** POST …/runs/{id}/setStepStatus — autosave one step status in-place (no redirect). */
     @POST
-    public void doSetStepStatus(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doSetStepStatus(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
         TestRun latestRun = TestRunService.get().getByIdOrThrow(runId);
         String caseId = trimToNull(req.getParameter("testCaseId"));
@@ -460,7 +460,7 @@ public final class TestRunDetailAction implements Action {
     }
 
     private static List<String> mergeStepCommentsFromRequest(
-        StaplerRequest req, int size, Optional<TestCaseResult> prev) {
+        StaplerRequest2 req, int size, Optional<TestCaseResult> prev) {
         List<String> old = prev.map(TestCaseResult::getStepComments).orElse(List.of());
         List<String> out = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {

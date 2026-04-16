@@ -7,8 +7,8 @@
         .jtm-nc-hero__lead { margin: 8px 0 0; max-width: 42rem; font-size: 14px; line-height: 1.45; color: var(--text-color-secondary); }
         .jtm-nc-alert {
           display: flex; gap: 12px; align-items: flex-start; max-width: 720px; margin-bottom: 16px;
-          padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(220, 38, 38, 0.45);
-          background: rgba(220, 38, 38, 0.08); color: #b91c1c; font-size: 13px; font-weight: 600;
+          padding: 12px 14px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--red, #dc2626) 45%, transparent);
+          background: color-mix(in srgb, var(--red, #dc2626) 8%, transparent); color: var(--red, #b91c1c); font-size: 13px; font-weight: 600;
         }
         .jtm-nc-alert p { margin: 0; }
         .jtm-nc-alert__icon { flex-shrink: 0; margin-top: 1px; }
@@ -19,7 +19,7 @@
         .jtm-nc-form { padding: 22px 24px 24px; }
         .jtm-nc-field { margin-bottom: 18px; }
         .jtm-nc-field label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; color: var(--text-color); }
-        .jtm-nc-req { color: #dc2626; font-weight: 700; }
+        .jtm-nc-req { color: var(--red, #dc2626); font-weight: 700; }
         .jtm-nc-hint { display: block; font-size: 12px; color: var(--text-color-secondary); margin-top: 6px; line-height: 1.35; }
         .jtm-nc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         @media (max-width: 560px) { .jtm-nc-row { grid-template-columns: 1fr; } }

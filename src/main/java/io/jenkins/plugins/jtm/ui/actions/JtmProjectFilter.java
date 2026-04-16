@@ -3,6 +3,7 @@ package io.jenkins.plugins.jtm.ui.actions;
 import hudson.model.User;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.Stapler;
+import org.kohsuke.stapler.StaplerRequest2;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -24,11 +25,12 @@ public final class JtmProjectFilter {
 
     /** Trimmed project key, or {@code null} when “all projects”. */
     public static String current() {
-        if (Stapler.getCurrentRequest() == null) {
+        StaplerRequest2 req = Stapler.getCurrentRequest2();
+        if (req == null) {
             return preferredProjectFromUser();
         }
-        if (Stapler.getCurrentRequest().getParameterMap().containsKey("project")) {
-            String p = StringUtils.trimToNull(Stapler.getCurrentRequest().getParameter("project"));
+        if (req.getParameterMap().containsKey("project")) {
+            String p = StringUtils.trimToNull(req.getParameter("project"));
             savePreferredProject(p);
             return p;
         }

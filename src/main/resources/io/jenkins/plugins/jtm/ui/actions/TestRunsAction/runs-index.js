@@ -1,4 +1,4 @@
-/* global jtmConfirm, jtmNotify */
+/* global dialog, notificationBar */
 (function () {
   "use strict";
 
@@ -29,7 +29,7 @@
       });
       if (!any) {
         ev.preventDefault();
-        window.jtmNotify("Select at least one test run to export.", "warning");
+        notificationBar.show("Select at least one test run to export.", notificationBar.WARNING);
       }
     });
   }
@@ -42,32 +42,31 @@
         }
       });
       if (!any) {
-        window.jtmNotify("Select at least one test run to delete.", "warning");
+        notificationBar.show("Select at least one test run to delete.", notificationBar.WARNING);
         return;
       }
-      window.jtmConfirm("Delete selected test runs permanently?", {
-        okText: "Delete",
-        cancelText: "Cancel",
-      }).then((ok) => {
-        if (!ok) {
-          return;
-        }
-        const oldAction = batchForm.action;
-        const oldMethod = batchForm.method;
-        const oldFormat = document.getElementById("jtm-runs-export-format");
-        const oldDisabled = oldFormat ? oldFormat.disabled : false;
-        batchForm.action = oldAction.replace("/exportBatch", "/deleteBatch");
-        batchForm.method = "post";
-        if (oldFormat) {
-          oldFormat.disabled = true;
-        }
-        batchForm.submit();
-        batchForm.action = oldAction;
-        batchForm.method = oldMethod;
-        if (oldFormat) {
-          oldFormat.disabled = oldDisabled;
-        }
-      });
+      dialog
+        .confirm("Delete selected test runs permanently?", {
+          okText: "Delete",
+        })
+        .then(() => {
+          const oldAction = batchForm.action;
+          const oldMethod = batchForm.method;
+          const oldFormat = document.getElementById("jtm-runs-export-format");
+          const oldDisabled = oldFormat ? oldFormat.disabled : false;
+          batchForm.action = oldAction.replace("/exportBatch", "/deleteBatch");
+          batchForm.method = "post";
+          if (oldFormat) {
+            oldFormat.disabled = true;
+          }
+          batchForm.submit();
+          batchForm.action = oldAction;
+          batchForm.method = oldMethod;
+          if (oldFormat) {
+            oldFormat.disabled = oldDisabled;
+          }
+        })
+        .catch(() => {});
     });
   }
 })();

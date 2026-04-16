@@ -1,8 +1,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout"
          xmlns:i="jelly:fmt" xmlns:h="/lib/hudson">
-  <l:layout title="Test Runs — JTM">
-    <l:breadcrumb title="${%breadcrumb.testRuns}" href="${rootURL}/jtm/runs/"/>
+  <l:layout title="${%layout.titleTestRuns}">
     <l:side-panel>
       <l:tasks>
         <l:task icon="symbol-jtm plugin-jtm" href="${rootURL}/jtm${it.projectUrlQuery}" title="${%task.dashboard}"/>
@@ -13,8 +12,7 @@
       </l:tasks>
     </l:side-panel>
     <l:main-panel>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.common"/>
-      <st:adjunct includes="io.jenkins.plugins.jtm.ui.JtmUi.dialog"/>
+      <st:adjunct includes="io.jenkins.plugins.jtm.JtmPlugin.common"/>
       <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestRunsAction.runs-index"/>
 
       <header class="jtm-runs-hero">
@@ -35,7 +33,7 @@
           </div>
           <a href="${rootURL}/jtm/runs/newrun${it.projectUrlQuery}"
              class="jenkins-button jenkins-button--primary jtm-runs-hero__cta"
-             title="Create new test run">New run</a>
+             tooltip="${%tooltip.newRun}">New run</a>
         </div>
       </header>
 
@@ -46,7 +44,7 @@
             <label for="jtm-runs-project">Project</label>
             <div class="jenkins-select">
             <select name="project" id="jtm-runs-project" class="jenkins-select__input jtm-runs-select"
-                    title="Changing project reloads the list" aria-describedby="jtm-runs-project-hint">
+                    tooltip="${%tooltip.projectReload}" aria-describedby="jtm-runs-project-hint">
               <j:choose>
                 <j:when test="${it.selectedProject == ''}">
                   <option value="" selected="selected">All projects</option>
@@ -75,7 +73,7 @@
       <j:if test="${it.selectedProject != ''}">
         <div class="jtm-runs-scope-note" role="note">
           <span class="jtm-runs-scope-note__icon" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <span class="symbol-information-circle-outline plugin-ionicons-api"></span>
           </span>
           <p>Only runs tagged with this project are shown. Use &quot;All projects&quot; to include runs without a project.</p>
         </div>
@@ -90,7 +88,7 @@
         <j:when test="${it.recentRunsCount == 0}">
           <div class="jtm-runs-empty">
             <div class="jtm-runs-empty__icon" aria-hidden="true">
-              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
+              <span class="symbol-radio-outline plugin-ionicons-api"></span>
             </div>
             <p class="jtm-runs-empty__title">No test runs yet</p>
             <p class="jtm-runs-empty__text">Create a run manually or publish results from a pipeline.</p>
@@ -109,24 +107,13 @@
                 <h2 id="jtm-runs-table-h" class="jtm-runs-panel__title">All runs</h2>
                 <p class="jtm-runs-panel__desc">Sorted by recency · up to 20 rows · select runs for a combined flat export</p>
               </div>
-              <div class="jtm-runs-panel__export" role="group" aria-label="Multi-run export">
-                <label class="jtm-runs-export-label" for="jtm-runs-export-format">Format</label>
-                <div class="jenkins-select">
-                <select name="format" id="jtm-runs-export-format" class="jenkins-select__input jtm-runs-export-select">
-                  <option value="html" selected="selected">HTML</option>
-                  <option value="pdf">PDF</option>
-                </select>
-                </div>
-                <button type="submit" class="jenkins-button jenkins-button--primary">Export selected</button>
-                <button type="button" class="jenkins-button jenkins-!-destructive-color" id="jtm-runs-delete-selected">Delete selected</button>
-              </div>
             </div>
-            <div class="jtm-runs-table-wrap">
+            <div class="jtm-runs-table-wrap jtm-runs-table-wrap--borderless">
               <table class="jenkins-table sortable jtm-runs-table">
                 <thead>
                   <tr>
                     <th scope="col" class="jtm-runs-check-col">
-                      <input type="checkbox" id="jtm-runs-select-all" class="jtm-runs-select-all" title="Select all runs" aria-label="Select all runs for export"/>
+                      <input type="checkbox" id="jtm-runs-select-all" class="jtm-runs-select-all" tooltip="Select all runs" aria-label="Select all runs for export"/>
                     </th>
                     <th scope="col">Run ID</th>
                     <th scope="col">Name</th>
@@ -167,10 +154,10 @@
                         <j:if test="${run.qualityGatePassed != null}">
                           <j:choose>
                             <j:when test="${run.qualityGatePassed}">
-                              <span class="jtm-runs-gate jtm-runs-gate--pass" title="Quality gate passed">Pass</span>
+                              <span class="jtm-runs-gate jtm-runs-gate--pass" tooltip="Quality gate passed">Pass</span>
                             </j:when>
                             <j:otherwise>
-                              <span class="jtm-runs-gate jtm-runs-gate--fail" title="Quality gate failed">Fail</span>
+                              <span class="jtm-runs-gate jtm-runs-gate--fail" tooltip="Quality gate failed">Fail</span>
                             </j:otherwise>
                           </j:choose>
                         </j:if>
@@ -183,6 +170,17 @@
                   </j:forEach>
                 </tbody>
               </table>
+            </div>
+            <div class="jtm-runs-panel__export jenkins-!-margin-top-2" role="group" aria-label="Multi-run export">
+              <label class="jtm-runs-export-label" for="jtm-runs-export-format">Format</label>
+              <div class="jenkins-select">
+              <select name="format" id="jtm-runs-export-format" class="jenkins-select__input jtm-runs-export-select">
+                <option value="html" selected="selected">HTML</option>
+                <option value="pdf">PDF</option>
+              </select>
+              </div>
+              <button type="submit" class="jenkins-button jenkins-button--primary">Export selected</button>
+              <button type="button" class="jenkins-button jenkins-!-destructive-color" id="jtm-runs-delete-selected">Delete selected</button>
             </div>
             </form>
           </section>

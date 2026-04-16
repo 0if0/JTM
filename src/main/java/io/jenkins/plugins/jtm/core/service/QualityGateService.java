@@ -143,7 +143,7 @@ public final class QualityGateService {
                                  double passRate, TestRun run) {
         StringBuilder sb = new StringBuilder();
         sb.append(passed ? "✓ QUALITY GATE PASSED" : "✗ QUALITY GATE FAILED").append("\n");
-        sb.append(String.format("Pass Rate: %.1f%% | Passed: %d | Failed: %d | Blocked: %d | Total: %d\n",
+        sb.append(String.format("Pass Rate: %.1f%% | Passed: %d | Failed: %d | Blocked: %d | Total: %d%n",
             passRate, run.getPassedCount(), run.getFailedCount(),
             run.getBlockedCount(), run.getTotalCount()));
         if (!violations.isEmpty()) {

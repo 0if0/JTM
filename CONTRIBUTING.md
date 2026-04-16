@@ -6,7 +6,7 @@ Thanks for your interest in Jenkins Test Management (JTM).
 
 The POM uses Jenkins **incrementals** versioning: `${revision}.${changelist}` (see `pom.xml`). Local builds resolve to **`1.999999-SNAPSHOT`** until you set a release changelist (see [CD of plugins](https://www.jenkins.io/doc/developer/publishing/releasing-cd/)).
 
-1. JDK **11+** (17 recommended as runtime for Maven), **Maven 3.8+**
+1. JDK **17+**, **Maven 3.8+**
 2. Clone the repository and build:
 
    ```bash
@@ -24,7 +24,7 @@ The POM uses Jenkins **incrementals** versioning: `${revision}.${changelist}` (s
 - Open a PR against the default branch (`main`).
 - Keep changes focused; match existing code style and naming.
 - Ensure `mvn clean verify` passes (unit tests, integration tests, and SpotBugs).  
-  SpotBugs is configured with `spotbugs.failOnError=false` until remaining findings are fixed; please avoid adding new ones.
+  SpotBugs is configured with `spotbugs.failOnError=true`, so new findings fail the build.
 
 ## Project metadata
 
