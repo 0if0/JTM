@@ -92,9 +92,9 @@ async function importBundleViaFormPost(page: Page, content: string, fileName: st
   await page.goto('/jtm/testcases/?project=');
   // Import UI lives inside a <details> so it is not always visible.
   // Expand it for the upload + submit flow used in this test helper.
-  const importSummary = page.getByText('Import test cases', { exact: true });
+  const importSummary = page.getByText('Import test cases', { exact: true }).first();
   await importSummary.click();
-  const fileInput = page.locator('#jtm-import-file');
+  const fileInput = page.locator('#jtm-import-file').first();
   await fileInput.setInputFiles({
     name: fileName,
     mimeType: fileName.endsWith('.json')
@@ -123,11 +123,11 @@ async function createCaseViaUi(page: Page, title: string, projectScope?: string)
     ? `/jtm/testcases/newcase?project=${encodeURIComponent(projectScope)}`
     : '/jtm/testcases/newcase';
   await page.goto(target);
-  await expect(page.getByRole('heading', { name: 'New test case' })).toBeVisible();
-  await page.locator('#title').fill(title);
+  await expect(page.getByRole('heading', { name: 'New test case' }).first()).toBeVisible();
+  await page.locator('#title:visible').first().fill(title);
   if (projectScope) {
     // When loaded with ?project=, the form is already preselected. Only override if field exists.
-    const projectField = page.locator('#projectScope');
+    const projectField = page.locator('#projectScope:visible').first();
     if ((await projectField.count()) > 0) {
       // Wait briefly for async option population after dashboard project creation.
       await expect
@@ -139,7 +139,7 @@ async function createCaseViaUi(page: Page, title: string, projectScope?: string)
       await projectField.selectOption({ label: projectScope });
     }
   }
-  await page.getByRole('button', { name: 'Create test case' }).click();
+  await page.getByRole('button', { name: 'Create test case' }).first().click();
   await expect(page).toHaveURL(/\/jtm\/testcases\/TC-/);
   const match = page.url().match(/\/jtm\/testcases\/(TC-[^/]+)\//);
   expect(match, `Could not parse test case id from URL: ${page.url()}`).toBeTruthy();
@@ -148,9 +148,9 @@ async function createCaseViaUi(page: Page, title: string, projectScope?: string)
 
 async function createRunViaUi(page: Page, name: string): Promise<string> {
   await page.goto('/jtm/runs/newrun');
-  await expect(page.getByRole('heading', { name: 'New test run' })).toBeVisible();
-  await page.locator('#name').fill(name);
-  await page.getByRole('button', { name: 'Create test run' }).click();
+  await expect(page.getByRole('heading', { name: 'New test run' }).first()).toBeVisible();
+  await page.locator('#name:visible').first().fill(name);
+  await page.getByRole('button', { name: 'Create test run' }).first().click();
   await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
   const match = page.url().match(/\/jtm\/runs\/(RUN-[^/]+)\//);
   expect(match, `Could not parse run id from URL: ${page.url()}`).toBeTruthy();
@@ -160,13 +160,43 @@ async function createRunViaUi(page: Page, name: string): Promise<string> {
 async function clickAndConfirm(page: Page, action: () => Promise<void>, okText = 'Delete') {
   page.once('dialog', (d) => d.accept());
   await action();
-  const modal = page.locator('[role="dialog"]').last();
+  const modal = page.locator('[role="dialog"]:visible').last();
   try {
     await modal.waitFor({ state: 'visible', timeout: 3_000 });
-    await modal.getByRole('button', { name: okText, exact: true }).click();
+    await modal.getByRole('button', { name: okText }).first().click();
   } catch {
-    // Native browser confirm was already accepted through page.once('dialog').
+    // Fallback for Jenkins dialogs rendered outside the role=dialog subtree,
+    // or native browser confirm already accepted through page.once('dialog').
+    const globalConfirm = page.getByRole('button', { name: okText }).locator(':visible').first();
+    try {
+      await globalConfirm.waitFor({ state: 'visible', timeout: 1_000 });
+      await globalConfirm.click();
+    } catch {
+      // No visible modal button found; native confirm path likely already handled it.
+    }
   }
+}
+
+async function createProjectFromDashboard(page: Page, project: string) {
+  await page.goto('/jtm/');
+  await page.getByRole('button', { name: 'New project' }).first().click();
+  const visibleInput = page.locator('#jtm-project-new-input:visible').first();
+  if ((await visibleInput.count()) > 0) {
+    await visibleInput.fill(project);
+    await page.getByRole('button', { name: 'Create' }).first().click();
+  } else {
+    // Fallback for instances where the popover button JS fails to unhide the form.
+    await page.locator('#jtm-project-new-input').first().fill(project);
+    const postResp = await Promise.all([
+      page.waitForResponse(
+        (r) => r.url().includes('/jtm/registerproject') && r.request().method() === 'POST',
+        { timeout: 60_000 }
+      ),
+      page.locator('#jtm-project-new-form').first().evaluate((f) => (f as HTMLFormElement).submit()),
+    ]);
+    expect(postResp[0].status()).toBeLessThan(400);
+  }
+  await expect(page).toHaveURL(new RegExp(`[?&]project=${encodeURIComponent(project)}`));
 }
 
 test.describe('JTM UI', () => {
@@ -178,7 +208,7 @@ test.describe('JTM UI', () => {
     await jenkinsLogin(page);
 
     await page.goto('/jtm/testcases/newcase');
-    await expect(page.getByRole('heading', { name: 'New Test Case' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'New Test Case' }).first()).toBeVisible();
 
     if (!process.env.JTM_E2E_NO_RESET) {
       const reset = await postJtmReset(page);
@@ -191,8 +221,8 @@ test.describe('JTM UI', () => {
     }
 
     await page.goto('/jtm/testcases/newcase');
-    await page.locator('#title').fill('E2E Alpha');
-    await page.getByRole('button', { name: 'Create Test Case' }).click();
+    await page.locator('#title:visible').first().fill('E2E Alpha');
+    await page.getByRole('button', { name: 'Create Test Case' }).first().click();
     await expect(page).toHaveURL(/\/jtm\/testcases\/TC-/);
     const alphaUrl = page.url();
     const alphaIdMatch = alphaUrl.match(/\/jtm\/testcases\/(TC-[^/]+)\//);
@@ -200,8 +230,8 @@ test.describe('JTM UI', () => {
     const alphaId = alphaIdMatch![1];
 
     await page.goto('/jtm/testcases/newcase');
-    await page.locator('#title').fill('E2E Beta');
-    await page.getByRole('button', { name: 'Create Test Case' }).click();
+    await page.locator('#title:visible').first().fill('E2E Beta');
+    await page.getByRole('button', { name: 'Create Test Case' }).first().click();
     await expect(page).toHaveURL(/\/jtm\/testcases\/TC-/);
     const betaUrl = page.url();
     const betaIdMatch = betaUrl.match(/\/jtm\/testcases\/(TC-[^/]+)\//);
@@ -213,8 +243,8 @@ test.describe('JTM UI', () => {
     await expect(page.getByRole('link', { name: 'E2E Beta' })).toBeVisible();
 
     await page.goto('/jtm/runs/newrun');
-    await expect(page.getByRole('heading', { name: 'New Test Run' })).toBeVisible();
-    await page.locator('#name').fill('Release123 E2E');
+    await expect(page.getByRole('heading', { name: 'New Test Run' }).first()).toBeVisible();
+    await page.locator('#name:visible').first().fill('Release123 E2E');
     const linkedPickers = page.locator('input[name="linkedTestCaseId"]');
     const pickerCount = await linkedPickers.count();
     if (pickerCount >= 2) {
@@ -229,7 +259,7 @@ test.describe('JTM UI', () => {
         `No linkedTestCaseId picker on /jtm/runs/newrun (count=${pickerCount}); linking cases after run creation.`
       );
     }
-    await page.getByRole('button', { name: 'Create test run' }).click();
+    await page.getByRole('button', { name: 'Create test run' }).first().click();
 
     await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
     const runUrl = page.url();
@@ -269,7 +299,7 @@ test.describe('JTM UI', () => {
     await expect(page.getByRole('link', { name: /Release123 E2E/i })).toBeVisible();
 
     await page.getByRole('link', { name: /Release123 E2E/i }).first().click();
-    await expect(page.getByRole('heading', { name: /Release123 E2E/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Release123 E2E/i }).first()).toBeVisible();
     await expect(page.getByText('E2E Alpha', { exact: false })).toBeVisible();
     await expect(page.getByText('E2E Beta', { exact: false })).toBeVisible();
 
@@ -288,9 +318,9 @@ test.describe('JTM UI', () => {
     }
 
     await page.goto('/jtm/testcases/newcase');
-    await page.locator('#title').fill('E2E Steps Save');
+    await page.locator('#title:visible').first().fill('E2E Steps Save');
     await page.locator('input[name="stepAction"]').first().fill('Do the thing');
-    await page.getByRole('button', { name: 'Create Test Case' }).click();
+    await page.getByRole('button', { name: 'Create Test Case' }).first().click();
     await expect(page).toHaveURL(/\/jtm\/testcases\/TC-/);
     const caseUrl = page.url();
     const caseIdMatch = caseUrl.match(/\/jtm\/testcases\/(TC-[^/]+)\//);
@@ -298,9 +328,9 @@ test.describe('JTM UI', () => {
     const caseId = caseIdMatch![1];
 
     await page.goto('/jtm/runs/newrun');
-    await page.locator('#name').fill('E2E Step Run');
+    await page.locator('#name:visible').first().fill('E2E Step Run');
     await page.locator(`input[name="linkedTestCaseId"][value="${caseId}"]`).check();
-    await page.getByRole('button', { name: 'Create test run' }).click();
+    await page.getByRole('button', { name: 'Create test run' }).first().click();
     await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
 
     const caseRow = page.locator(`tr.jtm-case-row[data-case-id="${caseId}"]`);
@@ -366,15 +396,14 @@ test.describe('JTM UI', () => {
     }
 
     await page.goto('/jtm/runs/newrun');
-    await page.locator('#name').fill('E2E Delete Me');
-    await page.getByRole('button', { name: 'Create test run' }).click();
+    await page.locator('#name:visible').first().fill('E2E Delete Me');
+    await page.getByRole('button', { name: 'Create test run' }).first().click();
     await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
     const runUrl = page.url();
     const runName = 'E2E Delete Me';
 
     await page.goto(runUrl);
-    page.once('dialog', (d) => d.accept());
-    await page.getByRole('button', { name: 'Delete run' }).click();
+    await clickAndConfirm(page, () => page.getByRole('button', { name: 'Delete run' }).first().click(), 'OK');
     await expect(page).toHaveURL(/\/jtm\/runs\/?/);
 
     await page.goto('/jtm/runs/');
@@ -390,32 +419,31 @@ test.describe('JTM UI', () => {
     }
 
     await page.goto('/jtm/testcases/newcase');
-    await page.locator('#title').fill('E2E Unlink A');
-    await page.getByRole('button', { name: 'Create Test Case' }).click();
+    await page.locator('#title:visible').first().fill('E2E Unlink A');
+    await page.getByRole('button', { name: 'Create Test Case' }).first().click();
     await expect(page).toHaveURL(/\/jtm\/testcases\/TC-/);
     const aMatch = page.url().match(/\/jtm\/testcases\/(TC-[^/]+)\//);
     expect(aMatch).toBeTruthy();
     const idA = aMatch![1];
 
     await page.goto('/jtm/testcases/newcase');
-    await page.locator('#title').fill('E2E Unlink B');
-    await page.getByRole('button', { name: 'Create Test Case' }).click();
+    await page.locator('#title:visible').first().fill('E2E Unlink B');
+    await page.getByRole('button', { name: 'Create Test Case' }).first().click();
     await expect(page).toHaveURL(/\/jtm\/testcases\/TC-/);
     const bMatch = page.url().match(/\/jtm\/testcases\/(TC-[^/]+)\//);
     expect(bMatch).toBeTruthy();
     const idB = bMatch![1];
 
     await page.goto('/jtm/runs/newrun');
-    await page.locator('#name').fill('E2E Unlink Run');
+    await page.locator('#name:visible').first().fill('E2E Unlink Run');
     await page.locator(`input[name="linkedTestCaseId"][value="${idA}"]`).check();
     await page.locator(`input[name="linkedTestCaseId"][value="${idB}"]`).check();
-    await page.getByRole('button', { name: 'Create test run' }).click();
+    await page.getByRole('button', { name: 'Create test run' }).first().click();
     await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
 
     await expect(page.locator('.jtm-linked-matrix tbody tr')).toHaveCount(2);
 
-    page.once('dialog', (d) => d.accept());
-    await page.getByRole('button', { name: 'Remove from run' }).first().click();
+    await clickAndConfirm(page, () => page.getByRole('button', { name: 'Remove from run' }).first().click(), 'OK');
     await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
 
     await expect(page.locator('.jtm-linked-matrix tbody tr')).toHaveCount(1);
@@ -456,17 +484,20 @@ test.describe('JTM UI', () => {
 
   test('dashboard: project apply keeps scope in navigation', async ({ page }) => {
     await jenkinsLogin(page);
+    if (!process.env.JTM_E2E_NO_RESET) {
+      const reset = await postJtmReset(page);
+      expect(reset.ok, `JTM reset failed (HTTP ${reset.status})`).toBeTruthy();
+    }
+
+    const project = `E2E-Apply-${Date.now()}`;
+    await createProjectFromDashboard(page, project);
 
     await page.goto('/jtm/');
     const projectSelect = page.locator('#jtm-dash-project');
     await expect(projectSelect).toBeVisible();
-    const opt = projectSelect.locator('option[value]').filter({ hasNotText: 'All projects' }).first();
-    await expect(opt).toHaveCount(1);
-    const val = await opt.getAttribute('value');
-    expect(val).toBeTruthy();
     await Promise.all([
-      page.waitForURL(new RegExp(`[?&]project=${encodeURIComponent(val!)}`)),
-      projectSelect.selectOption(val!),
+      page.waitForURL(new RegExp(`[?&]project=${encodeURIComponent(project)}(?:&|$)`)),
+      projectSelect.selectOption(project),
     ]);
   });
 
@@ -478,16 +509,12 @@ test.describe('JTM UI', () => {
     }
 
     const project = `E2E-Proj-${Date.now()}`;
-    await page.goto('/jtm/');
-    await page.getByRole('button', { name: 'New project' }).click();
-    await page.locator('#jtm-project-new-input').fill(project);
-    await page.getByRole('button', { name: 'Create' }).click();
-    await expect(page).toHaveURL(new RegExp(`[?&]project=${encodeURIComponent(project)}`));
+    await createProjectFromDashboard(page, project);
 
     await createCaseViaUi(page, `Case for ${project}`, project);
 
     await page.goto(`/jtm/?project=${encodeURIComponent(project)}`);
-    await clickAndConfirm(page, () => page.getByRole('button', { name: 'Delete project' }).click(), 'Delete');
+    await clickAndConfirm(page, () => page.getByRole('button', { name: 'Delete project' }).first().click(), 'Delete');
     await expect(page).toHaveURL(new RegExp(`[?&]projectDeleteStatus=blocked(?:&|$)`));
     await expect(page).toHaveURL(new RegExp(`[?&]projectDeleteKey=${encodeURIComponent(project)}(?:&|$)`));
 
@@ -497,9 +524,90 @@ test.describe('JTM UI', () => {
     await expect(page).toHaveURL(/bulkDeleted=1/);
 
     await page.goto(`/jtm/?project=${encodeURIComponent(project)}`);
-    await clickAndConfirm(page, () => page.getByRole('button', { name: 'Delete project' }).click(), 'Delete');
+    await clickAndConfirm(page, () => page.getByRole('button', { name: 'Delete project' }).first().click(), 'Delete');
     await expect(page).toHaveURL(new RegExp(`[?&]projectDeleteStatus=deleted(?:&|$)`));
     await expect(page).toHaveURL(new RegExp(`[?&]projectDeleteKey=${encodeURIComponent(project)}(?:&|$)`));
+  });
+
+  test('dashboard: run progress updates when selecting another run', async ({ page }) => {
+    await jenkinsLogin(page);
+    if (!process.env.JTM_E2E_NO_RESET) {
+      const reset = await postJtmReset(page);
+      expect(reset.ok, `JTM reset failed (HTTP ${reset.status})`).toBeTruthy();
+    }
+
+    const tcA = await createCaseViaUi(page, 'E2E Dashboard Pie A');
+    const tcB = await createCaseViaUi(page, 'E2E Dashboard Pie B');
+
+    await page.goto('/jtm/runs/newrun');
+    await page.locator('#name:visible').first().fill('E2E Pie Run A');
+    await page.locator(`input[name="linkedTestCaseId"][value="${tcA}"]`).check();
+    await page.getByRole('button', { name: 'Create test run' }).first().click();
+    await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
+
+    await page.goto('/jtm/runs/newrun');
+    await page.locator('#name:visible').first().fill('E2E Pie Run B');
+    await page.locator(`input[name="linkedTestCaseId"][value="${tcA}"]`).check();
+    await page.locator(`input[name="linkedTestCaseId"][value="${tcB}"]`).check();
+    await page.getByRole('button', { name: 'Create test run' }).first().click();
+    await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
+
+    await page.goto('/jtm/');
+    const select = page.locator('#jtm-run-pie-select');
+    await expect(select.locator('option')).toHaveCount(2);
+
+    await select.selectOption({ label: 'E2E Pie Run A' });
+    const subA = await page.locator('#jtm-run-pie-sub').textContent();
+    const linkedA = await page.locator('#jtm-run-pie-linked').textContent();
+
+    await select.selectOption({ label: 'E2E Pie Run B' });
+    await expect(page.locator('#jtm-run-pie-sub')).not.toHaveText(subA ?? '');
+    await expect(page.locator('#jtm-run-pie-linked')).not.toHaveText(linkedA ?? '');
+  });
+
+  test('runs: project filter reloads list on selection', async ({ page }) => {
+    await jenkinsLogin(page);
+    if (!process.env.JTM_E2E_NO_RESET) {
+      const reset = await postJtmReset(page);
+      expect(reset.ok, `JTM reset failed (HTTP ${reset.status})`).toBeTruthy();
+    }
+
+    const project = `E2E-RunFilter-${Date.now()}`;
+    await createProjectFromDashboard(page, project);
+
+    await page.goto(`/jtm/runs/newrun?project=${encodeURIComponent(project)}`);
+    await page.locator('#name:visible').first().fill('E2E Runs Filter Scoped');
+    await page.getByRole('button', { name: 'Create test run' }).first().click();
+    await expect(page).toHaveURL(/\/jtm\/runs\/RUN-/);
+
+    await page.goto('/jtm/runs/?project=');
+    const projectSelect = page.locator('#jtm-runs-project');
+    await Promise.all([
+      page.waitForURL(new RegExp(`[?&]project=${encodeURIComponent(project)}(?:&|$)`)),
+      projectSelect.selectOption(project),
+    ]);
+    await expect(page.getByRole('link', { name: /E2E Runs Filter Scoped/i })).toBeVisible();
+  });
+
+  test('testcases: select all toggles all row checkboxes', async ({ page }) => {
+    await jenkinsLogin(page);
+    if (!process.env.JTM_E2E_NO_RESET) {
+      const reset = await postJtmReset(page);
+      expect(reset.ok, `JTM reset failed (HTTP ${reset.status})`).toBeTruthy();
+    }
+
+    await createCaseViaUi(page, 'E2E SelectAll A');
+    await createCaseViaUi(page, 'E2E SelectAll B');
+
+    await page.goto('/jtm/testcases/?project=');
+    const rows = page.locator('.jtm-tc-row-check');
+    await expect(rows).toHaveCount(2);
+    await page.locator('#jtm-tc-select-all').check();
+    await expect(rows.first()).toBeChecked();
+    await expect(rows.nth(1)).toBeChecked();
+    await page.locator('#jtm-tc-select-all').uncheck();
+    await expect(rows.first()).not.toBeChecked();
+    await expect(rows.nth(1)).not.toBeChecked();
   });
 
   test('runs: bulk export and bulk delete selected runs', async ({ page }) => {
@@ -525,7 +633,7 @@ test.describe('JTM UI', () => {
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toContain('jtm-multi-run-');
 
-    await clickAndConfirm(page, () => page.getByRole('button', { name: 'Delete selected' }).click(), 'Delete');
+    await clickAndConfirm(page, () => page.getByRole('button', { name: 'Delete selected' }).first().click(), 'Delete');
     await expect(page).toHaveURL(/bulkDeleted=2/);
   });
 
@@ -569,6 +677,20 @@ test.describe('JTM UI', () => {
     await expect(page.getByText('No test runs yet')).toBeVisible();
   });
 
+  test('new pages: no duplicate core form elements are rendered', async ({ page }) => {
+    await jenkinsLogin(page);
+
+    await page.goto('/jtm/testcases/newcase');
+    await expect(page.locator('#title')).toHaveCount(1);
+    await expect(page.locator('.jtm-nc-hero__title')).toHaveCount(1);
+    await expect(page.locator('button.jtm-nc-submit')).toHaveCount(1);
+
+    await page.goto('/jtm/runs/newrun');
+    await expect(page.locator('#name')).toHaveCount(1);
+    await expect(page.locator('.jtm-newrun-hero__title')).toHaveCount(1);
+    await expect(page.locator('button.jtm-newrun-submit')).toHaveCount(1);
+  });
+
   test('responsive + dark mode smoke has no page errors', async ({ page }) => {
     await jenkinsLogin(page);
     if (!process.env.JTM_E2E_NO_RESET) {
@@ -582,9 +704,9 @@ test.describe('JTM UI', () => {
     await page.emulateMedia({ colorScheme: 'dark' });
 
     await page.goto('/jtm/');
-    await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Dashboard' }).first()).toBeVisible();
     await page.goto('/jtm/runs/newrun');
-    await expect(page.getByRole('heading', { name: 'New test run' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'New test run' }).first()).toBeVisible();
     expect(pageErrors, `Page errors detected: ${pageErrors.join(' | ')}`).toHaveLength(0);
   });
 

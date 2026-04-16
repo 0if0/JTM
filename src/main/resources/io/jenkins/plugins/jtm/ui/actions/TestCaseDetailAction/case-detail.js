@@ -9,13 +9,8 @@
     }
     const message = form.getAttribute("data-confirm-message") || "Are you sure?";
     event.preventDefault();
-    dialog
-      .confirm(message, {
-        okText: "Delete",
-      })
-      .then(() => {
-        form.submit();
-      })
-      .catch(() => {});
+    if (window.confirm(message)) {
+      form.submit();
+    }
   });
 })();

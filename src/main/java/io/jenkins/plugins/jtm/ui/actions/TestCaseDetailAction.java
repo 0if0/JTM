@@ -7,6 +7,8 @@ import io.jenkins.plugins.jtm.core.service.TestCaseService;
 import io.jenkins.plugins.jtm.persistence.JtmStore;
 import io.jenkins.plugins.jtm.security.JtmPermissions;
 import org.apache.commons.lang3.StringUtils;
+import org.kohsuke.stapler.HttpResponse;
+import org.kohsuke.stapler.HttpResponses;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.verb.GET;
@@ -69,10 +71,10 @@ public final class TestCaseDetailAction implements Action {
      * GET …/testcases/{id}/edit — forward explicitly (nested Stapler dispatch is fragile).
      */
     @GET
-    public void doEdit(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
+    public HttpResponse doEdit(StaplerRequest2 req, StaplerResponse2 rsp) {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         JtmPermissions.checkEditTestCase(testCase);
-        req.getView(this, "edit").forward(req, rsp);
+        return HttpResponses.forwardToView(this, "editPage.jelly");
     }
 
     /**
@@ -125,7 +127,7 @@ public final class TestCaseDetailAction implements Action {
     }
 
     public List<String> getProjectScopeSelectOptions() {
-        JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
+        JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         return JtmStore.get().findDistinctProjectScopesIncluding(getProjectScopeSelection());
     }
 

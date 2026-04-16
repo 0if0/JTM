@@ -44,6 +44,7 @@
             <label for="jtm-runs-project">Project</label>
             <div class="jenkins-select">
             <select name="project" id="jtm-runs-project" class="jenkins-select__input jtm-runs-select"
+                    onchange="this.form.submit()"
                     tooltip="${%tooltip.projectReload}" aria-describedby="jtm-runs-project-hint">
               <j:choose>
                 <j:when test="${it.selectedProject == ''}">

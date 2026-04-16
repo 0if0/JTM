@@ -7,6 +7,8 @@ import io.jenkins.plugins.jtm.core.service.TestCaseService;
 import io.jenkins.plugins.jtm.persistence.JtmStore;
 import io.jenkins.plugins.jtm.security.JtmPermissions;
 import org.apache.commons.lang3.StringUtils;
+import org.kohsuke.stapler.HttpResponse;
+import org.kohsuke.stapler.HttpResponses;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.StaplerResponse2;
@@ -120,7 +122,7 @@ public final class TestCasesAction implements Action {
 
     /** Options for project dropdown (registry + cases/runs + current selection). */
     public List<String> getProjectScopeSelectOptions() {
-        JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
+        JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         return JtmStore.get().findDistinctProjectScopesIncluding(getProjectScopeSelection());
     }
 
@@ -132,14 +134,14 @@ public final class TestCasesAction implements Action {
         return JtmPermissions.canEditTestCase(tc);
     }
 
-    // ── GET /jtm/testcases/newcase → newcase.jelly ────────────────────────────
+    // ── GET /jtm/testcases/newcase → newcasePage.jelly ────────────────────────
     // Use doNewcase (explicit view forward). A getNewcase()+return-this pattern does not
-    // reliably select newcase.jelly under nested Stapler dispatch (404).
+    // reliably select the dedicated page view under nested Stapler dispatch (404).
 
     @GET
-    public void doNewcase(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
+    public HttpResponse doNewcase(StaplerRequest2 req, StaplerResponse2 rsp) {
         JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
-        req.getView(this, "newcase").forward(req, rsp);
+        return HttpResponses.forwardToView(this, "newcasePage.jelly");
     }
 
     // ── POST /jtm/savecase (via JtmRootAction) → save and redirect ─────────────
@@ -197,8 +199,10 @@ public final class TestCasesAction implements Action {
                 failed.add(id);
             }
         }
-        String redirect = req.getContextPath() + "/jtm/testcases/" + JtmProjectFilter.urlQueryParam()
-            + "&bulkDeleted=" + deleted + "&bulkFailed=" + failed.size();
+        String projectQuery = JtmProjectFilter.urlQueryParam();
+        String sep = projectQuery.isEmpty() ? "?" : "&";
+        String redirect = req.getContextPath() + "/jtm/testcases/" + projectQuery
+            + sep + "bulkDeleted=" + deleted + "&bulkFailed=" + failed.size();
         rsp.sendRedirect2(redirect);
     }
 

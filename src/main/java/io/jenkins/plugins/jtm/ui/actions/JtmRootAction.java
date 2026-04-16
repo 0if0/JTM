@@ -22,6 +22,8 @@ import jenkins.model.Jenkins;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Part;
 import org.apache.commons.lang3.StringUtils;
+import org.kohsuke.stapler.HttpResponse;
+import org.kohsuke.stapler.HttpResponses;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.StaplerResponse2;
@@ -322,9 +324,9 @@ public final class JtmRootAction implements UnprotectedRootAction {
      * GET /jtm/exportBranding — view export branding configuration.
      */
     @GET
-    public void doExportBranding(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
+    public HttpResponse doExportBranding(StaplerRequest2 req, StaplerResponse2 rsp) {
         JtmPermissions.checkPermission(JtmPermissions.TEST_ADMIN);
-        req.getView(this, "exportBranding").forward(req, rsp);
+        return HttpResponses.forwardToView(this, "exportBrandingPage.jelly");
     }
 
     /**

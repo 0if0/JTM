@@ -2,6 +2,7 @@
 (function () {
   "use strict";
 
+  const initRunDetail = () => {
   const cfg = document.getElementById("jtm-run-detail-config");
   const jtmCurrentUserId = cfg && cfg.getAttribute("data-current-user-id") ? cfg.getAttribute("data-current-user-id") : "";
 
@@ -276,6 +277,13 @@
     sync();
     assigneeSel.addEventListener("change", sync);
   });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initRunDetail, { once: true });
+  } else {
+    window.setTimeout(initRunDetail, 0);
+  }
 })();
 
 (function () {
@@ -288,13 +296,8 @@
     }
     const message = form.getAttribute("data-confirm-message") || "Are you sure?";
     event.preventDefault();
-    dialog
-      .confirm(message, {
-        okText: "OK",
-      })
-      .then(() => {
-        form.submit();
-      })
-      .catch(() => {});
+    if (window.confirm(message)) {
+      form.submit();
+    }
   });
 })();

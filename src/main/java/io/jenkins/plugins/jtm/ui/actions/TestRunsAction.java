@@ -12,6 +12,8 @@ import io.jenkins.plugins.jtm.persistence.JtmStore;
 import io.jenkins.plugins.jtm.security.JtmPermissions;
 import jakarta.servlet.ServletException;
 import org.apache.commons.lang3.StringUtils;
+import org.kohsuke.stapler.HttpResponse;
+import org.kohsuke.stapler.HttpResponses;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.verb.GET;
@@ -60,7 +62,7 @@ public class TestRunsAction implements Action {
      * Always lists all cases (findAll(null)); do not apply the UI project filter here.
      */
     public List<TestCase> getTestCasesForPicker() {
-        JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
+        JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         return TestCaseService.get().findAll(null);
     }
 
@@ -91,7 +93,7 @@ public class TestRunsAction implements Action {
     }
 
     public List<String> getProjectScopeSelectOptions() {
-        JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
+        JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
         return JtmStore.get().findDistinctProjectScopesIncluding(getProjectScopeSelection());
     }
 
@@ -190,9 +192,9 @@ public class TestRunsAction implements Action {
     }
 
     @GET
-    public void doNewrun(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException, ServletException {
-        JtmPermissions.checkPermission(JtmPermissions.TEST_EXECUTE);
-        req.getView(this, "newrun").forward(req, rsp);
+    public HttpResponse doNewrun(StaplerRequest2 req, StaplerResponse2 rsp) {
+        JtmPermissions.checkPermission(JtmPermissions.TEST_EDIT);
+        return HttpResponses.forwardToView(this, "newrunPage.jelly");
     }
 
     /** POST /jtm/saverun (via JtmRootAction#doSaverun) — ad-hoc run from UI. */

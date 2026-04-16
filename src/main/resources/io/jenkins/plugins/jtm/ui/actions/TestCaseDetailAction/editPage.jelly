@@ -209,37 +209,6 @@
         </form>
       </div>
 
-      <j:comment><![CDATA[
-(function () {
-  var tb = document.getElementById('jtm-step-rows');
-  if (!tb) return;
-  function renumber() {
-    var rows = tb.querySelectorAll('.jtm-step-row');
-    for (var i = 0; i < rows.length; i++) {
-      var num = rows[i].querySelector('.jtm-step-num');
-      if (num) num.textContent = String(i + 1);
-    }
-  }
-  tb.addEventListener('click', function (e) {
-    var btn = e.target && e.target.closest && e.target.closest('.jtm-step-del');
-    if (!btn) return;
-    var tr = btn.closest('.jtm-step-row');
-    if (!tr || tb.querySelectorAll('.jtm-step-row').length <= 1) return;
-    tr.remove();
-    renumber();
-  });
-  tb.addEventListener('click', function (e) {
-    var addBtn = e.target && e.target.closest && e.target.closest('.jtm-step-add-btn');
-    if (!addBtn) return;
-    var first = tb.querySelector('.jtm-step-row');
-    if (!first) return;
-    var clone = first.cloneNode(true);
-    clone.querySelectorAll('input').forEach(function (inp) { inp.value = ''; });
-    tb.appendChild(clone);
-    renumber();
-  });
-})();
-      ]]></j:comment>
     </l:main-panel>
   </l:layout>
 </j:jelly>

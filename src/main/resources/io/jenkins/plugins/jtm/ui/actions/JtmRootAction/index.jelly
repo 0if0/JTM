@@ -65,6 +65,7 @@
               <label for="jtm-dash-project">Project</label>
               <div class="jenkins-select">
               <select name="project" id="jtm-dash-project" class="jenkins-select__input jtm-dash-select"
+                      onchange="this.form.submit()"
                       tooltip="${%tooltip.projectReload}" aria-describedby="jtm-dash-project-hint">
                 <j:choose>
                   <j:when test="${it.selectedProject == ''}">
@@ -89,6 +90,7 @@
               <p class="jtm-dash-project-filter__hint" id="jtm-dash-project-hint">Choosing a value reloads the dashboard.</p>
             </div>
             <div class="jtm-dash-project-filter__actions" role="group" aria-label="Project actions">
+              <button type="submit" class="jenkins-button jenkins-button--primary">Apply</button>
               <button type="button" id="jtm-project-new-btn" class="jenkins-button">New project</button>
               <button type="button" id="jtm-project-delete-btn" class="jenkins-button jenkins-!-destructive-color">Delete project</button>
             </div>
