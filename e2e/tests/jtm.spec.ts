@@ -602,10 +602,10 @@ test.describe('JTM UI', () => {
     await page.goto('/jtm/testcases/?project=');
     const rows = page.locator('.jtm-tc-row-check');
     await expect(rows).toHaveCount(2);
-    await page.locator('#jtm-tc-select-all').check();
+    await page.locator('#jtm-tc-select-all').click();
     await expect(rows.first()).toBeChecked();
     await expect(rows.nth(1)).toBeChecked();
-    await page.locator('#jtm-tc-select-all').uncheck();
+    await page.locator('#jtm-tc-select-all').click();
     await expect(rows.first()).not.toBeChecked();
     await expect(rows.nth(1)).not.toBeChecked();
   });
@@ -623,8 +623,7 @@ test.describe('JTM UI', () => {
     await page.goto('/jtm/runs/?project=');
     const runChecks = page.locator('.jtm-runs-row-check');
     await expect(runChecks).toHaveCount(2);
-    await runChecks.first().check();
-    await runChecks.nth(1).check();
+    await page.locator('#jtm-runs-select-all').click();
     await expect(runChecks.first()).toBeChecked();
     await expect(runChecks.nth(1)).toBeChecked();
 

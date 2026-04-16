@@ -165,23 +165,19 @@
             <form method="POST" action="${rootURL}/jtm/testcases/deleteSelected" id="jtm-bulk-delete-form">
               <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
             <div class="jtm-tc-panel__head">
-              <div>
+              <div class="jtm-tc-panel__head-text">
                 <h2 id="jtm-tc-table-h" class="jtm-tc-panel__title">Catalog</h2>
                 <p class="jtm-tc-panel__desc">Lifecycle and links — execution outcomes in test runs</p>
               </div>
-              <div class="jtm-tc-panel__bulk-actions">
-                <label class="jtm-tc-select-all">
-                  <input type="checkbox" id="jtm-tc-select-all"/>
-                  <span>Select all</span>
-                </label>
-                <button type="submit" class="jenkins-button jenkins-!-destructive-color" id="jtm-tc-delete-selected">Delete selected</button>
-              </div>
             </div>
             <div class="jtm-tc-table-wrap">
-              <table class="jenkins-table sortable jtm-tc-table">
+              <table class="jenkins-table jtm-tc-table">
                 <thead>
                   <tr>
-                    <th scope="col"></th>
+                    <th scope="col" class="jtm-tc-check-cell jtm-tc-th-check">
+                      <input type="checkbox" id="jtm-tc-select-all" class="jtm-tc-select-all jtm-tc-header-select"
+                             tooltip="${%tooltip.selectAllCases}" aria-label="${%tooltip.selectAllCases}"/>
+                    </th>
                     <th scope="col">ID</th>
                     <th scope="col">Title</th>
                     <th scope="col">Project</th>
@@ -234,6 +230,9 @@
                   </j:forEach>
                 </tbody>
               </table>
+            </div>
+            <div class="jtm-tc-panel__footer jenkins-!-margin-top-2" role="group" aria-label="${%bulk.footerAria}">
+              <button type="submit" class="jenkins-button jenkins-!-destructive-color" id="jtm-tc-delete-selected">${%bulk.deleteSelected}</button>
             </div>
             </form>
           </section>

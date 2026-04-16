@@ -15,13 +15,40 @@
       <st:adjunct includes="io.jenkins.plugins.jtm.JtmPlugin.common"/>
       <st:adjunct includes="io.jenkins.plugins.jtm.ui.actions.TestRunsAction.runs-index"/>
 
-      <header class="jtm-runs-hero">
+      <header class="jtm-runs-hero" aria-labelledby="jtm-runs-h1">
         <div class="jtm-runs-hero__text">
           <p class="jtm-runs-hero__eyebrow">Executions</p>
-          <h1 class="jtm-runs-hero__title">Test runs</h1>
+          <h1 id="jtm-runs-h1" class="jtm-runs-hero__title">Test runs</h1>
           <p class="jtm-runs-hero__lead">Browse pipeline and manual runs, pass rates, and quality gates.</p>
         </div>
-        <div class="jtm-runs-hero__aside">
+        <div class="jtm-runs-hero__toolbar">
+          <form method="GET" class="jtm-runs-project-form" action="${rootURL}/jtm/runs/">
+            <label class="jtm-runs-project-label" for="jtm-runs-project">${%label.project}</label>
+            <div class="jenkins-select">
+              <select name="project" id="jtm-runs-project" class="jenkins-select__input jtm-runs-select"
+                      onchange="this.form.submit()"
+                      tooltip="${%tooltip.projectReload}">
+                <j:choose>
+                  <j:when test="${it.selectedProject == ''}">
+                    <option value="" selected="selected">All projects</option>
+                  </j:when>
+                  <j:otherwise>
+                    <option value="">All projects</option>
+                  </j:otherwise>
+                </j:choose>
+                <j:forEach var="pk" items="${it.projectOptions}">
+                  <j:choose>
+                    <j:when test="${it.selectedProject == pk}">
+                      <option value="${pk}" selected="selected">${pk}</option>
+                    </j:when>
+                    <j:otherwise>
+                      <option value="${pk}">${pk}</option>
+                    </j:otherwise>
+                  </j:choose>
+                </j:forEach>
+              </select>
+            </div>
+          </form>
           <div class="jtm-runs-hero__pill">
             <span class="jtm-runs-hero__pill-label">Listed</span>
             <span class="jtm-runs-hero__pill-value">
@@ -36,40 +63,6 @@
              tooltip="${%tooltip.newRun}">New run</a>
         </div>
       </header>
-
-      <section class="jtm-runs-section" aria-labelledby="jtm-runs-filter-h">
-        <h2 id="jtm-runs-filter-h" class="jtm-runs-section__title">Filter</h2>
-        <form method="GET" class="jtm-runs-filter" action="${rootURL}/jtm/runs/">
-          <div class="jtm-runs-filter__field">
-            <label for="jtm-runs-project">Project</label>
-            <div class="jenkins-select">
-            <select name="project" id="jtm-runs-project" class="jenkins-select__input jtm-runs-select"
-                    onchange="this.form.submit()"
-                    tooltip="${%tooltip.projectReload}" aria-describedby="jtm-runs-project-hint">
-              <j:choose>
-                <j:when test="${it.selectedProject == ''}">
-                  <option value="" selected="selected">All projects</option>
-                </j:when>
-                <j:otherwise>
-                  <option value="">All projects</option>
-                </j:otherwise>
-              </j:choose>
-              <j:forEach var="pk" items="${it.projectOptions}">
-                <j:choose>
-                  <j:when test="${it.selectedProject == pk}">
-                    <option value="${pk}" selected="selected">${pk}</option>
-                  </j:when>
-                  <j:otherwise>
-                    <option value="${pk}">${pk}</option>
-                  </j:otherwise>
-                </j:choose>
-              </j:forEach>
-            </select>
-            </div>
-            <p class="jtm-runs-filter__hint" id="jtm-runs-project-hint">Selection reloads this page.</p>
-          </div>
-        </form>
-      </section>
 
       <j:if test="${it.selectedProject != ''}">
         <div class="jtm-runs-scope-note" role="note">
@@ -104,17 +97,18 @@
             <form method="post" action="${rootURL}/jtm/runs/exportBatch" id="jtm-runs-batch-export" class="jtm-runs-batch-form">
               <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
             <div class="jtm-runs-panel__head">
-              <div>
+              <div class="jtm-runs-panel__head-text">
                 <h2 id="jtm-runs-table-h" class="jtm-runs-panel__title">All runs</h2>
-                <p class="jtm-runs-panel__desc">Sorted by recency · up to 20 rows · select runs for a combined flat export</p>
+                <p class="jtm-runs-panel__desc">${%panel.runsSubtitle}</p>
               </div>
             </div>
             <div class="jtm-runs-table-wrap jtm-runs-table-wrap--borderless">
-              <table class="jenkins-table sortable jtm-runs-table">
+              <table class="jenkins-table jtm-runs-table">
                 <thead>
                   <tr>
-                    <th scope="col" class="jtm-runs-check-col">
-                      <input type="checkbox" id="jtm-runs-select-all" class="jtm-runs-select-all" tooltip="Select all runs" aria-label="Select all runs for export"/>
+                    <th scope="col" class="jtm-runs-check-col jtm-runs-th-check">
+                      <input type="checkbox" id="jtm-runs-select-all" class="jtm-runs-select-all jtm-runs-header-select"
+                             tooltip="${%tooltip.selectAllRuns}" aria-label="${%tooltip.selectAllRuns}"/>
                     </th>
                     <th scope="col">Run ID</th>
                     <th scope="col">Name</th>
