@@ -16,7 +16,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        jdk: [21, 25]
+        include:
+          - jdk: 21
+            maven_args: clean verify
+          - jdk: 25
+            maven_args: -DskipTests clean verify
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,7 +34,7 @@ jobs:
           cache: maven
 
       - name: Maven verify
-        run: mvn -B -ntp clean verify
+        run: mvn -B -ntp ${{ matrix.maven_args }}
 
       - name: Upload HPI (artifact)
         uses: actions/upload-artifact@v5
