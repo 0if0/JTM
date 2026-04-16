@@ -41,8 +41,11 @@ jobs:
 
   e2e-smoke:
     needs: verify
-    if: ${{ secrets.JENKINS_BASE_URL != '' && secrets.JENKINS_USER != '' && secrets.JENKINS_PASSWORD != '' }}
     runs-on: ubuntu-latest
+    env:
+      JENKINS_BASE_URL: ${{ secrets.JENKINS_BASE_URL }}
+      JENKINS_USER: ${{ secrets.JENKINS_USER }}
+      JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -59,9 +62,6 @@ jobs:
         run: npm ci
 
       - name: Run Playwright smoke
+        if: ${{ env.JENKINS_BASE_URL != '' && env.JENKINS_USER != '' && env.JENKINS_PASSWORD != '' }}
         working-directory: e2e
-        env:
-          JENKINS_BASE_URL: ${{ secrets.JENKINS_BASE_URL }}
-          JENKINS_USER: ${{ secrets.JENKINS_USER }}
-          JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
         run: 'npx playwright test --grep "dashboard: project apply keeps scope in navigation"'
