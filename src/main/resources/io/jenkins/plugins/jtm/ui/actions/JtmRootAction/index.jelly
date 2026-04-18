@@ -87,14 +87,13 @@
                 </j:forEach>
               </select>
               </div>
-              <p class="jtm-dash-project-filter__hint" id="jtm-dash-project-hint">Choosing a value reloads the dashboard.</p>
             </div>
             <div class="jtm-dash-project-filter__actions" role="group" aria-label="Project actions">
-              <button type="submit" class="jenkins-button jenkins-button--primary">Apply</button>
               <button type="button" id="jtm-project-new-btn" class="jenkins-button">New project</button>
               <button type="button" id="jtm-project-delete-btn" class="jenkins-button jenkins-!-destructive-color">Delete project</button>
             </div>
           </div>
+          <p class="jtm-dash-project-filter__hint" id="jtm-dash-project-hint">Choosing a value reloads the dashboard.</p>
         </form>
       </section>
 
@@ -404,7 +403,14 @@
                           data-skipped="${run.skippedCount}"
                           data-linked="${run.linkedTestCaseCount}"
                           data-total="${run.totalCount}">
-                          ${run.name}
+                          <j:choose>
+                            <j:when test="${run.jobName != null and run.jobName != ''}">
+                              ${run.name} (${run.jobName})
+                            </j:when>
+                            <j:otherwise>
+                              ${run.name}
+                            </j:otherwise>
+                          </j:choose>
                         </option>
                       </j:forEach>
                     </select>

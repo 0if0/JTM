@@ -275,6 +275,17 @@ public final class JtmRootAction implements UnprotectedRootAction {
     }
 
     /**
+     * POST /jtm/clearprojectscope — clear the signed-in user’s saved JTM project filter (see {@link JtmProjectFilter}).
+     * Redirects to {@code /jtm/} with no query string so E2E can load the dashboard without {@code ?project=}.
+     */
+    @POST
+    public void doClearprojectscope(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
+        JtmPermissions.checkPermission(JtmPermissions.TEST_VIEW);
+        JtmProjectFilter.clearPreferredProjectForCurrentUser();
+        rsp.sendRedirect2(req.getContextPath() + "/jtm/");
+    }
+
+    /**
      * POST /jtm/registerproject — persist a new project key for dropdowns and open the dashboard scoped to it.
      */
     @POST

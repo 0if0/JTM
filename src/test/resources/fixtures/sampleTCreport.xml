@@ -1,17 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="sample WebAPP" tests="6"  failures="0" errors="0" time="1894" >
-  <testsuite name="sample WebAPP" tests="6" failures="0" errors="0" hostname="SRV-TC04" time="1893" timestamp="2026-04-01T19:06:20.706+02:00">
-    <testcase name="Passwort Ändern" time="151" classname="sample WebAPP">
+<testsuites name="JTM Demo Portfolio" tests="22" failures="5" errors="4" time="413.62">
+  <!-- Run 1: project Web Shop -->
+  <testsuite name="Web Shop" tests="6" failures="1" errors="1" skipped="1" hostname="jenkins-agent-a" time="121.20" timestamp="2026-04-01T08:12:10.000+02:00">
+    <testcase name="TC-WS-LOGIN-001" classname="webshop.auth" time="8.23"/>
+    <testcase name="TC-WS-CHECKOUT-014" classname="webshop.checkout" time="22.40">
+      <failure message="Payment gateway returned HTTP 500">Checkout should complete for VISA test card.</failure>
     </testcase>
-    <testcase name="Passwort Ändern Datadriven" time="508" classname="sample WebAPP">
+    <testcase name="TC-WS-ACCOUNT-007" classname="webshop.account" time="11.61"/>
+    <testcase name="TC-WS-CATALOG-003" classname="webshop.catalog" time="17.19"/>
+    <testcase name="TC-WS-SEARCH-002" classname="webshop.search" time="10.02">
+      <skipped message="Feature toggle disabled in smoke profile"/>
     </testcase>
-    <testcase name="neuen Benutzer anlegen" time="325" classname="sample WebAPP">
+    <testcase name="TC-WS-ORDER-021" classname="webshop.order" time="51.75">
+      <error message="Environment unstable">Order service unavailable in staging.</error>
     </testcase>
-    <testcase name="Login" time="543" classname="sample WebAPP">
+  </testsuite>
+
+  <!-- Run 2: same project Web Shop, later build -->
+  <testsuite name="Web Shop" tests="5" failures="1" errors="0" skipped="1" hostname="jenkins-agent-b" time="99.30" timestamp="2026-04-02T08:18:45.000+02:00">
+    <testcase name="TC-WS-LOGIN-001" classname="webshop.auth" time="7.80"/>
+    <testcase name="TC-WS-CHECKOUT-014" classname="webshop.checkout" time="19.25"/>
+    <testcase name="TC-WS-ACCOUNT-007" classname="webshop.account" time="13.14">
+      <failure message="Validation mismatch">Expected profile update success toast.</failure>
     </testcase>
-    <testcase name="aktive User Dialog" time="273" classname="sample WebAPP">
+    <testcase name="TC-WS-SEARCH-002" classname="webshop.search" time="8.77"/>
+    <testcase name="TC-WS-ORDER-021" classname="webshop.order" time="50.34">
+      <skipped message="Dependency deployment in progress"/>
     </testcase>
-    <testcase name="AGILA Login function" time="92" classname="sample WebAPP">
+  </testsuite>
+
+  <!-- Run 3: project Mobile App -->
+  <testsuite name="Mobile App" tests="6" failures="2" errors="1" skipped="1" hostname="android-lab-01" time="143.64" timestamp="2026-04-03T18:40:21.000+02:00">
+    <testcase name="TC-MOB-LOGIN-001" classname="mobile.auth" time="12.51"/>
+    <testcase name="TC-MOB-PUSH-011" classname="mobile.notifications" time="21.02">
+      <failure message="Push token not registered">Expected token registration after first app start.</failure>
+    </testcase>
+    <testcase name="TC-MOB-SYNC-008" classname="mobile.sync" time="30.90"/>
+    <testcase name="TC-MOB-OFFLINE-004" classname="mobile.offline" time="28.77">
+      <error message="Device farm timeout">UI automation agent disconnected.</error>
+    </testcase>
+    <testcase name="TC-MOB-PROFILE-006" classname="mobile.profile" time="16.23">
+      <skipped message="Blocked by upstream auth migration"/>
+    </testcase>
+    <testcase name="TC-MOB-CHECKOUT-015" classname="mobile.checkout" time="34.21">
+      <failure message="UI assertion mismatch">Total amount label not visible.</failure>
+    </testcase>
+  </testsuite>
+
+  <!-- Run 4: project Billing API -->
+  <testsuite name="Billing API" tests="5" failures="1" errors="2" skipped="0" hostname="api-ci-02" time="49.48" timestamp="2026-04-04T11:05:03.000+02:00">
+    <testcase name="TC-BILL-INVOICE-001" classname="billing.invoice" time="8.10"/>
+    <testcase name="TC-BILL-REFUND-007" classname="billing.refund" time="12.62">
+      <error message="Database lock">Could not acquire lock for refund ledger table.</error>
+    </testcase>
+    <testcase name="TC-BILL-TAX-004" classname="billing.tax" time="9.40">
+      <failure message="Tax rounding">Expected 2 decimals for VAT total.</failure>
+    </testcase>
+    <testcase name="TC-BILL-RETRY-010" classname="billing.retry" time="7.11"/>
+    <testcase name="TC-BILL-WEBHOOK-013" classname="billing.webhook" time="12.25">
+      <error message="Third-party timeout">Webhook delivery endpoint timed out.</error>
     </testcase>
   </testsuite>
 </testsuites>

@@ -16,6 +16,9 @@ import java.util.logging.Logger;
  * Reads optional {@code ?project=} query parameter for scoping test cases and runs in the UI.
  * When the request has no {@code project} parameter, falls back to the signed-in user’s
  * saved preference ({@link JtmUserPreferredProjectProperty}).
+ *
+ * <p>Also supports {@code ?jtmAllProjects=1}: clears the saved preference and returns “all projects”.
+ * Some proxies strip empty {@code ?project=}, so this explicit flag is reliable for automation.
  */
 public final class JtmProjectFilter {
 
@@ -23,11 +26,23 @@ public final class JtmProjectFilter {
 
     private JtmProjectFilter() {}
 
+    /**
+     * Clears the signed-in user’s saved project scope without using a query string (for automation
+     * when {@code ?project=} / {@code ?jtmAllProjects=} is unreliable behind proxies).
+     */
+    public static void clearPreferredProjectForCurrentUser() {
+        savePreferredProject(null);
+    }
+
     /** Trimmed project key, or {@code null} when “all projects”. */
     public static String current() {
         StaplerRequest2 req = Stapler.getCurrentRequest2();
         if (req == null) {
             return preferredProjectFromUser();
+        }
+        if ("1".equals(StringUtils.trimToEmpty(req.getParameter("jtmAllProjects")))) {
+            savePreferredProject(null);
+            return null;
         }
         if (req.getParameterMap().containsKey("project")) {
             String p = StringUtils.trimToNull(req.getParameter("project"));
@@ -64,6 +79,9 @@ public final class JtmProjectFilter {
             u.save();
         } catch (IOException e) {
             LOG.log(Level.FINE, "[JTM] Could not persist preferred project for user", e);
+        } catch (RuntimeException e) {
+            // User.save / addProperty can throw (e.g. ACL, disk); do not break page render for filter reads.
+            LOG.log(Level.WARNING, "[JTM] Could not persist preferred project for user", e);
         }
     }
 
