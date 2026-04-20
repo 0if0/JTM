@@ -15,6 +15,20 @@ Lightweight **test management inside Jenkins**: test cases, suites, test runs, q
 - **Permissions** — View / Execute / Edit / Admin (matrix-friendly)
 - **REST-style API** for automation (see plugin UI and `JtmApiAction`)
 
+## Screenshots
+
+**Dashboard** — project scope, quality overview KPIs, and insights.
+
+![JTM dashboard — quality overview](docs/images/dashboard-quality-overview.png)
+
+**Charts and recent activity** — status mix, failure trend over time, recent test runs, and run progress.
+
+![JTM dashboard — status mix, trends, and runs](docs/images/dashboard-panels.png)
+
+**Run progress** — pick a run, see outcome counts and pass-rate donut for that build.
+
+![JTM run progress panel](docs/images/run-progress.png)
+
 ## Requirements
 
 - Jenkins **2.528.3** or compatible (see `pom.xml`)
@@ -49,6 +63,7 @@ More detail: **[BUILD.md](BUILD.md)** (permissions, pipeline example, data layou
 | Path | Purpose |
 |------|---------|
 | `pom.xml`, `src/` | Jenkins plugin (Maven project at repository root, `.hpi` in `target/`) |
+| `docs/images/` | README screenshots |
 | `e2e/` | Playwright tests against a running Jenkins (optional CI) |
 | `scripts/` | Helper scripts used by GitLab deploy jobs (optional) |
 

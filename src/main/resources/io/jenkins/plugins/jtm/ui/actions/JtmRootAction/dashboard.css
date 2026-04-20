@@ -168,15 +168,18 @@
         /* KPI grid */
         .jtm-kpi-grid {
           display: grid;
+          min-width: 0;
           grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
           gap: 12px;
         }
         @media (min-width: 1200px) {
-          /* min width avoids columns collapsing to 0 with minmax(0,1fr), which hid KPI values */
-          .jtm-kpi-grid { grid-template-columns: repeat(8, minmax(9rem, 1fr)); }
+          /* Equal 8-up row; minmax(0,1fr) + min-width:0 on cards lets tracks shrink so the row
+             stays within the main panel (min 9rem per column overflowed narrow viewports). */
+          .jtm-kpi-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
         }
         .jtm-kpi-card {
           position: relative;
+          min-width: 0;
           padding: 14px 14px 12px;
           border-radius: 10px;
           border: 1px solid var(--medium-grey);
