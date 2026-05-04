@@ -37,7 +37,7 @@ jobs:
         run: mvn -B -ntp ${{ matrix.maven_args }}
 
       - name: Upload HPI (artifact)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: jtm-hpi-jdk${{ matrix.jdk }}
           path: target/*.hpi
