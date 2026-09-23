@@ -3,22 +3,19 @@ package io.jenkins.plugins.jtm;
 import io.jenkins.plugins.jtm.core.domain.TestCase;
 import io.jenkins.plugins.jtm.core.service.TestCaseService;
 import io.jenkins.plugins.jtm.importer.JtmTestCaseImportParser;
-import org.junit.Rule;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.util.Optional;
 
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(JtmJenkinsExtension.class)
 public class JtmTestCaseImportServiceTest {
 
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
-
     @Test
-    public void import_createsCasesAndSkipsDuplicateIds() throws Exception {
+    public void import_createsCasesAndSkipsDuplicateIds(JenkinsRule j) throws Exception {
         String json = "{ \"version\": 1, \"testCases\": ["
             + "{ \"id\": \"TC-IMPORT-X1\", \"title\": \"First\", \"projectKey\": \"Demo\", \"type\": \"MANUAL\","
             + " \"steps\": [ { \"action\": \"Click\", \"expectedResult\": \"OK\" } ] },"

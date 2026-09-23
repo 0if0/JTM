@@ -9,9 +9,9 @@ import org.htmlunit.WebRequest;
 import org.htmlunit.FormEncodingType;
 import org.htmlunit.html.HtmlPage;
 import org.htmlunit.util.NameValuePair;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.net.URL;
@@ -24,20 +24,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Delete POST uses {@code jtmCaseId} — Jenkins strips a plain {@code id} form field from POST bodies.
  */
+@ExtendWith(JtmJenkinsExtension.class)
 public class JtmDeleteUiTest {
-
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
 
     private TestCaseService service;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    public void setUp(JenkinsRule j) {
         service = TestCaseService.get();
     }
 
     @Test
-    public void delete_viaUrlEncodedPost_removesCase() throws Exception {
+    public void delete_viaUrlEncodedPost_removesCase(JenkinsRule j) throws Exception {
         TestCase tc = service.createTestCase(
             "Raw delete", TestCase.TestCaseType.MANUAL, TestCase.Priority.LOW, "u");
         CrumbIssuer issuer = j.jenkins.getCrumbIssuer();
@@ -57,7 +55,7 @@ public class JtmDeleteUiTest {
     }
 
     @Test
-    public void delete_viaTestCaseDetailPost_removesCase() throws Exception {
+    public void delete_viaTestCaseDetailPost_removesCase(JenkinsRule j) throws Exception {
         TestCase tc = service.createTestCase(
             "Detail delete", TestCase.TestCaseType.MANUAL, TestCase.Priority.LOW, "u");
         CrumbIssuer issuer = j.jenkins.getCrumbIssuer();
@@ -77,7 +75,7 @@ public class JtmDeleteUiTest {
     }
 
     @Test
-    public void detailPage_html_includesDeleteFormOnDetailUrl() throws Exception {
+    public void detailPage_html_includesDeleteFormOnDetailUrl(JenkinsRule j) throws Exception {
         TestCase tc = service.createTestCase(
             "Detail HTML", TestCase.TestCaseType.MANUAL, TestCase.Priority.LOW, "u");
         String html = IOUtils.toString(

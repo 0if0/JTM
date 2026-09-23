@@ -20,9 +20,9 @@ import org.htmlunit.WebResponse;
 import org.htmlunit.WebRequest;
 import org.htmlunit.html.HtmlPage;
 import org.htmlunit.util.NameValuePair;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.net.URL;
@@ -40,17 +40,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * (e.g. TestCase.TestCaseStatus.PASSED, TestCaseResult.TestResultStatus.PASSED)
  * to avoid javac ambiguity — both enums share the same constant names.
  */
+@ExtendWith(JtmJenkinsExtension.class)
 public class JtmIntegrationTest {
-
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
 
     private TestCaseService service;
     private TestRunService runService;
     private JtmStore store;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    public void setUp(JenkinsRule j) {
         service = TestCaseService.get();
         runService = TestRunService.get();
         store   = JtmStore.get();
@@ -126,7 +124,7 @@ public class JtmIntegrationTest {
     }
 
     @Test
-    public void ui_newCasePage_renders() throws Exception {
+    public void ui_newCasePage_renders(JenkinsRule j) throws Exception {
         String html = IOUtils.toString(
             new URL(j.getURL() + "jtm/testcases/newcase"), StandardCharsets.UTF_8);
         assertThat(html).contains("New Test Case");
@@ -134,7 +132,7 @@ public class JtmIntegrationTest {
     }
 
     @Test
-    public void ui_editTestCasePage_renders() throws Exception {
+    public void ui_editTestCasePage_renders(JenkinsRule j) throws Exception {
         TestCase tc = service.createTestCase(
             "Edit Page TC", TestCase.TestCaseType.MANUAL, TestCase.Priority.MEDIUM, "user");
         String html = IOUtils.toString(
@@ -147,7 +145,7 @@ public class JtmIntegrationTest {
      * IDs must not be limited to {@code TC-\\d+}; otherwise detail/edit URLs 404 for API or imported cases.
      */
     @Test
-    public void ui_testCaseIdWithSuffix_detailAndEdit_reachable() throws Exception {
+    public void ui_testCaseIdWithSuffix_detailAndEdit_reachable(JenkinsRule j) throws Exception {
         service.createTestCaseWithFixedId(
             "TC-BETA-1",
             "Non-numeric id",
@@ -163,7 +161,7 @@ public class JtmIntegrationTest {
     }
 
     @Test
-    public void ui_apiDashboardSummary_returnsJson() throws Exception {
+    public void ui_apiDashboardSummary_returnsJson(JenkinsRule j) throws Exception {
         String json = IOUtils.toString(
             new URL(j.getURL() + "jtm/api/dashboard/summary"), StandardCharsets.UTF_8);
         assertThat(json).contains("\"statusCounts\"");
@@ -171,7 +169,7 @@ public class JtmIntegrationTest {
     }
 
     @Test
-    public void api_testrunsCreateAlias_createsRun() throws Exception {
+    public void api_testrunsCreateAlias_createsRun(JenkinsRule j) throws Exception {
         CrumbIssuer issuer = j.jenkins.getCrumbIssuer();
         assertThat(issuer).isNotNull();
         JenkinsRule.WebClient wc = j.createWebClient();
@@ -196,7 +194,7 @@ public class JtmIntegrationTest {
     }
 
     @Test
-    public void api_updateStatus_missingRequiredField_returns400() throws Exception {
+    public void api_updateStatus_missingRequiredField_returns400(JenkinsRule j) throws Exception {
         CrumbIssuer issuer = j.jenkins.getCrumbIssuer();
         assertThat(issuer).isNotNull();
         JenkinsRule.WebClient wc = j.createWebClient();
@@ -217,7 +215,7 @@ public class JtmIntegrationTest {
     }
 
     @Test
-    public void ui_testCasesFilter_type_manual_onlyShowsManual() throws Exception {
+    public void ui_testCasesFilter_type_manual_onlyShowsManual(JenkinsRule j) throws Exception {
         service.createTestCase("Manual Only Case", TestCase.TestCaseType.MANUAL, TestCase.Priority.MEDIUM, "u");
         service.createTestCase("Automated Should Be Hidden", TestCase.TestCaseType.AUTOMATED, TestCase.Priority.MEDIUM, "u");
 
@@ -229,7 +227,7 @@ public class JtmIntegrationTest {
     }
 
     @Test
-    public void ui_newRunPage_renders() throws Exception {
+    public void ui_newRunPage_renders(JenkinsRule j) throws Exception {
         String html = IOUtils.toString(
             new URL(j.getURL() + "jtm/runs/newrun"), StandardCharsets.UTF_8);
         assertThat(html).contains("New Test Run");
@@ -237,7 +235,7 @@ public class JtmIntegrationTest {
     }
 
     @Test
-    public void ui_saverun_createsRunAndRedirects() throws Exception {
+    public void ui_saverun_createsRunAndRedirects(JenkinsRule j) throws Exception {
         CrumbIssuer issuer = j.jenkins.getCrumbIssuer();
         assertThat(issuer).isNotNull();
         JenkinsRule.WebClient wc = j.createWebClient();
@@ -261,7 +259,7 @@ public class JtmIntegrationTest {
     }
 
     @Test
-    public void ui_runsDeleteBatch_deletesSelectedRuns() throws Exception {
+    public void ui_runsDeleteBatch_deletesSelectedRuns(JenkinsRule j) throws Exception {
         TestRun run1 = runService.createAdHocRun("Delete batch 1", "manual", 1, "", "", List.of(), "u", "");
         TestRun run2 = runService.createAdHocRun("Delete batch 2", "manual", 2, "", "", List.of(), "u", "");
 
@@ -521,7 +519,7 @@ public class JtmIntegrationTest {
     // ── Pipeline Step Integration ─────────────────────────────────────────────
 
     @Test
-    public void pipelineStep_updateTestCase_passed() throws Exception {
+    public void pipelineStep_updateTestCase_passed(JenkinsRule j) throws Exception {
         TestCase tc = service.createTestCase(
             "Pipeline Test", TestCase.TestCaseType.AUTOMATED, TestCase.Priority.HIGH, "user");
 
@@ -539,7 +537,7 @@ public class JtmIntegrationTest {
     }
 
     @Test
-    public void pipelineStep_invalidStatus_fails() throws Exception {
+    public void pipelineStep_invalidStatus_fails(JenkinsRule j) throws Exception {
         TestCase tc = service.createTestCase(
             "Bad Status", TestCase.TestCaseType.AUTOMATED, TestCase.Priority.HIGH, "user");
 
@@ -551,7 +549,7 @@ public class JtmIntegrationTest {
     }
 
     @Test
-    public void pipelineStep_notFound_noFail_continues() throws Exception {
+    public void pipelineStep_notFound_noFail_continues(JenkinsRule j) throws Exception {
         WorkflowJob job = j.createProject(WorkflowJob.class, "jtm-notfound");
         job.setDefinition(new CpsFlowDefinition(
             "node { updateTestCase testCaseId: 'TC-9999', status: 'PASSED', failOnNotFound: false }", true));

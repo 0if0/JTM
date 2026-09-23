@@ -1,7 +1,7 @@
 package io.jenkins.plugins.jtm.export;
 
 import io.jenkins.plugins.jtm.core.domain.TestRun;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;

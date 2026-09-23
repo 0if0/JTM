@@ -64,8 +64,7 @@
             <div class="jtm-dash-project-filter__field">
               <label for="jtm-dash-project">Project</label>
               <div class="jenkins-select">
-              <select name="project" id="jtm-dash-project" class="jenkins-select__input jtm-dash-select"
-                      onchange="this.form.submit()"
+                    <select name="project" id="jtm-dash-project" class="jenkins-select__input jtm-dash-select"
                       tooltip="${%tooltip.projectReload}" aria-describedby="jtm-dash-project-hint">
                 <j:choose>
                   <j:when test="${it.selectedProject == ''}">

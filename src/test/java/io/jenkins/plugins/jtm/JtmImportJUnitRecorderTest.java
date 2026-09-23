@@ -17,9 +17,9 @@ import io.jenkins.plugins.jtm.core.service.TestCaseService;
 import io.jenkins.plugins.jtm.persistence.JtmStore;
 import io.jenkins.plugins.jtm.postbuild.JtmImportJUnitRecorder;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
@@ -33,16 +33,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * End-to-end for the freestyle post-build step: workspace file → imported results.
  */
+@ExtendWith(JtmJenkinsExtension.class)
 public class JtmImportJUnitRecorderTest {
-
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
 
     private TestCaseService service;
     private JtmStore store;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    public void setUp(JenkinsRule j) {
         service = TestCaseService.get();
         store = JtmStore.get();
     }
@@ -62,7 +60,7 @@ public class JtmImportJUnitRecorderTest {
     }
 
     @Test
-    public void postBuild_importsJUnitIntoNewRun() throws Exception {
+    public void postBuild_importsJUnitIntoNewRun(JenkinsRule j) throws Exception {
         service.createTestCaseWithFixedId(
             "TC-JUNIT-IMPORT-1", "JUnit one", TestCase.TestCaseType.AUTOMATED, TestCase.Priority.MEDIUM, "it");
         service.createTestCaseWithFixedId(
@@ -98,7 +96,7 @@ public class JtmImportJUnitRecorderTest {
     }
 
     @Test
-    public void postBuild_missingFile_marksUnstable() throws Exception {
+    public void postBuild_missingFile_marksUnstable(JenkinsRule j) throws Exception {
         FreeStyleProject p = j.createFreeStyleProject("jtm-import-missing");
         p.getPublishersList().add(new JtmImportJUnitRecorder(
             "target/surefire-reports/DOES-NOT-EXIST.xml",
@@ -111,7 +109,7 @@ public class JtmImportJUnitRecorderTest {
     }
 
     @Test
-    public void postBuild_expandsParameterizedRunName() throws Exception {
+    public void postBuild_expandsParameterizedRunName(JenkinsRule j) throws Exception {
         String xml;
         try (InputStream in = JtmImportJUnitRecorderTest.class.getResourceAsStream("/fixtures/sample-junit-jtm.xml")) {
             assertThat(in).isNotNull();

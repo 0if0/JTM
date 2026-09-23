@@ -17,9 +17,9 @@ import org.htmlunit.WebRequest;
 import org.htmlunit.WebResponse;
 import org.htmlunit.html.HtmlPage;
 import org.htmlunit.util.NameValuePair;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.net.URL;
@@ -32,17 +32,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * POST step results: {@code stepStatus} must be submitted (see {@code TestRunDetailAction#doAddStepResult}).
  */
+@ExtendWith(JtmJenkinsExtension.class)
 public class JtmStepResultPostTest {
-
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
 
     private TestCaseService service;
     private TestRunService runService;
     private JtmStore store;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    public void setUp(JenkinsRule j) {
         service = TestCaseService.get();
         runService = TestRunService.get();
         store = JtmStore.get();
@@ -61,7 +59,7 @@ public class JtmStepResultPostTest {
     }
 
     @Test
-    public void addStepResult_post_persistsStepStatuses() throws Exception {
+    public void addStepResult_post_persistsStepStatuses(JenkinsRule j) throws Exception {
         List<TestStep> steps = List.of(
             new TestStep(0, "First", "e1"),
             new TestStep(1, "Second", "e2"));
@@ -104,7 +102,7 @@ public class JtmStepResultPostTest {
 
     /** Same path as the run-detail JS: POST …/setStepStatus with stepIndex + stepStatus (XHR). */
     @Test
-    public void setStepStatus_post_persistsAndReturnsJson() throws Exception {
+    public void setStepStatus_post_persistsAndReturnsJson(JenkinsRule j) throws Exception {
         List<TestStep> steps = List.of(
             new TestStep(0, "First", "e1"),
             new TestStep(1, "Second", "e2"));
@@ -147,7 +145,7 @@ public class JtmStepResultPostTest {
     }
 
     @Test
-    public void runDetailPage_rendersEmbeddedStepFormControls() throws Exception {
+    public void runDetailPage_rendersEmbeddedStepFormControls(JenkinsRule j) throws Exception {
         List<TestStep> steps = List.of(new TestStep(0, "Only", "e"));
         TestCase tc = service.createTestCase(
             "One step",
@@ -168,7 +166,7 @@ public class JtmStepResultPostTest {
     }
 
     @Test
-    public void runDetailPage_stepSelectsHaveDistinctDataStepIndex() throws Exception {
+    public void runDetailPage_stepSelectsHaveDistinctDataStepIndex(JenkinsRule j) throws Exception {
         List<TestStep> steps = List.of(
             new TestStep(0, "A", "e1"),
             new TestStep(1, "B", "e2"));

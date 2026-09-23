@@ -13,6 +13,15 @@
   };
 
   const initRunsIndex = () => {
+    const projectSelect = visibleById("jtm-runs-project");
+    if (projectSelect) {
+      projectSelect.addEventListener("change", () => {
+        if (projectSelect.form) {
+          projectSelect.form.submit();
+        }
+      });
+    }
+
     const all = visibleById("jtm-runs-select-all");
     if (all) {
       all.addEventListener("change", () => {

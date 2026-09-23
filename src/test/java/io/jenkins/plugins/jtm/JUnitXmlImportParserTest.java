@@ -2,7 +2,7 @@ package io.jenkins.plugins.jtm;
 
 import io.jenkins.plugins.jtm.core.domain.TestCaseResult;
 import io.jenkins.plugins.jtm.postbuild.JUnitXmlImportParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.util.List;

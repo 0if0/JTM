@@ -1,6 +1,6 @@
 package io.jenkins.plugins.jtm.importer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 

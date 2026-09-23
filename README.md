@@ -31,7 +31,7 @@ Lightweight **test management inside Jenkins**: test cases, suites, test runs, q
 
 ## Requirements
 
-- Jenkins **2.528.3** or compatible (see `pom.xml`)
+- Jenkins **2.541.3** or compatible (see `pom.xml`)
 - **Java 17+** for building the plugin
 
 ## Quick start
