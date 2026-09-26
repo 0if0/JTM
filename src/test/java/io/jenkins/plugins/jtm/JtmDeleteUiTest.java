@@ -85,4 +85,27 @@ public class JtmDeleteUiTest {
         assertThat(issuer).isNotNull();
         assertThat(html).contains(issuer.getCrumbRequestField());
     }
+
+    @Test
+    public void createPages_renderJenkinsFormsWithCrumbs(JenkinsRule j) throws Exception {
+        CrumbIssuer issuer = j.jenkins.getCrumbIssuer();
+        assertThat(issuer).isNotNull();
+
+        TestCase tc = service.createTestCase(
+            "Edit form", TestCase.TestCaseType.MANUAL, TestCase.Priority.LOW, "u");
+        String editCaseHtml = IOUtils.toString(
+            new URL(j.getURL() + "jtm/testcases/" + tc.getId() + "/edit"), StandardCharsets.UTF_8);
+        assertThat(editCaseHtml).contains("class=\"jtm-step-action-buttons\"");
+
+        String newCaseHtml = IOUtils.toString(
+            new URL(j.getURL() + "jtm/testcases/newcase"), StandardCharsets.UTF_8);
+        assertThat(newCaseHtml).contains("name=\"createTestCase\"", "name=\"title\"", "id=\"title\"");
+        assertThat(newCaseHtml).contains("class=\"jtm-step-action-buttons\"");
+        assertThat(newCaseHtml).contains(issuer.getCrumbRequestField());
+
+        String newRunHtml = IOUtils.toString(
+            new URL(j.getURL() + "jtm/runs/newrun"), StandardCharsets.UTF_8);
+        assertThat(newRunHtml).contains("name=\"createTestRun\"", "name=\"jobName\"", "id=\"name\"");
+        assertThat(newRunHtml).contains(issuer.getCrumbRequestField());
+    }
 }

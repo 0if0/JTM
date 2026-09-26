@@ -1,0 +1,21 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+  <f:entry title="Run ID" field="runId" description="Optional. Defaults to this build's JTM run, then JTM_RUN_ID.">
+    <f:textbox/>
+  </f:entry>
+  <f:entry title="Minimum pass rate (%)" field="minPassRate" description="Required pass rate from 0 to 100.">
+    <f:number min="0" max="100" clazz="number-required"/>
+  </f:entry>
+  <f:entry title="Maximum failures" field="maxFailures" description="Maximum failed cases; -1 disables this limit.">
+    <f:number min="-1" clazz="number-required"/>
+  </f:entry>
+  <f:entry title="Block on blocked cases" field="blockOnBlocked">
+    <f:checkbox/>
+  </f:entry>
+  <f:entry title="Block on critical cases" field="blockOnCritical">
+    <f:checkbox/>
+  </f:entry>
+  <f:entry title="Fail the build when the gate fails" field="blockOnFailure">
+    <f:checkbox/>
+  </f:entry>
+</j:jelly>

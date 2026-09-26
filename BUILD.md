@@ -57,7 +57,7 @@ pipeline {
       post {
         always {
           script {
-            env.JTM_RUN_ID = publishResults(
+            env.JTM_RUN_ID = publishJTMResults(
               resultsFile: 'build/jtm-results.json',
               updateTestCases: true
             )

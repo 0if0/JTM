@@ -96,7 +96,7 @@ public final class EnforceQualityGateStep extends Step implements Serializable {
             assert listener != null && build != null;
             String logPrefix = "[JTM] enforceQualityGate";
 
-            // Determine run ID: explicit > same-build publishResults > env
+            // Determine run ID: explicit > same-build publishJTMResults > env
             String runId = step.runId;
             if (runId == null || runId.isBlank()) {
                 JtmPublishedRunAction published = build.getAction(JtmPublishedRunAction.class);
@@ -111,7 +111,7 @@ public final class EnforceQualityGateStep extends Step implements Serializable {
             if (runId == null || runId.isBlank()) {
                 throw new IllegalArgumentException(
                     "No JTM run id found for this build. Provide enforceQualityGate(runId: ...), " +
-                    "run publishResults in the same build, or set JTM_RUN_ID.");
+                    "run publishJTMResults in the same build, or set JTM_RUN_ID.");
             }
 
             listener.getLogger().println(logPrefix + " Evaluating run: " + runId);

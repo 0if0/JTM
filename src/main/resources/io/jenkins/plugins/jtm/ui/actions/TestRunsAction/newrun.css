@@ -25,35 +25,6 @@
   background: var(--background); box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 40px;
 }
 .jtm-newrun-form { padding: 20px 22px 22px; }
-.jtm-newrun-field { margin-bottom: 18px; }
-.jtm-newrun-field--picker { margin-bottom: 0; padding-top: 4px; border-top: 1px solid var(--medium-grey); margin-top: 4px; padding-top: 18px; }
-.jtm-newrun-label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 6px; color: var(--text-color); }
-.jtm-newrun-form > .jtm-newrun-field:not(.jtm-newrun-field--picker) > label,
-.jtm-newrun-row .jtm-newrun-field > label {
-  display: block;
-  font-weight: 600;
-  font-size: 13px;
-  margin-bottom: 6px;
-  color: var(--text-color);
-}
-.jtm-newrun-field--picker label.jtm-newrun-pick__row {
-  display: flex;
-}
-.jtm-newrun-field--picker label.jtm-newrun-pick-all {
-  display: inline-flex;
-}
-.jtm-newrun-optional { font-weight: 400; color: var(--text-color-secondary); font-size: 12px; }
-.jtm-newrun-hint { display: block; font-size: 12px; color: var(--text-color-secondary); margin-top: 6px; line-height: 1.35; }
-.jtm-newrun-form .jenkins-input { width: 100%; box-sizing: border-box; border-radius: 8px; }
-textarea.jenkins-input { font-family: inherit; resize: vertical; min-height: 4.5rem; }
-.jtm-newrun-select { width: 100%; max-width: 100%; border-radius: 8px; }
-.jtm-newrun-row { display: grid; grid-template-columns: 1fr minmax(7rem, 9rem); gap: 16px; align-items: end; }
-@media (max-width: 520px) {
-  .jtm-newrun-row { grid-template-columns: 1fr; }
-}
-.jtm-newrun-field--narrow .jenkins-input { text-align: left; font-variant-numeric: tabular-nums; }
-
-.jtm-newrun-picker-intro { margin: 0 0 10px; font-size: 12px; color: var(--text-color-secondary); line-height: 1.4; }
 .jtm-newrun-picker-toolbar {
   display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 16px;
   margin-bottom: 10px;

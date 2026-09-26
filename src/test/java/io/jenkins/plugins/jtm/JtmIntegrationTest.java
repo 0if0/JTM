@@ -519,6 +519,24 @@ public class JtmIntegrationTest {
     // ── Pipeline Step Integration ─────────────────────────────────────────────
 
     @Test
+    public void pipelineStep_publishJTMResults_publishesRun(JenkinsRule j) throws Exception {
+        TestCase tc = service.createTestCase(
+            "Pipeline publish", TestCase.TestCaseType.AUTOMATED, TestCase.Priority.HIGH, "user");
+        WorkflowJob job = j.createProject(WorkflowJob.class, "jtm-publish-results");
+        String json = "{\"results\":[{\"testCaseId\":\"" + tc.getId()
+            + "\",\"status\":\"PASSED\"}]}";
+        job.setDefinition(new CpsFlowDefinition(
+            "node { writeFile file: 'results.json', text: '" + json
+                + "'; publishJTMResults resultsFile: 'results.json' }", true));
+
+        WorkflowRun run = j.assertBuildStatusSuccess(job.scheduleBuild2(0));
+        j.assertLogContains("[JTM] publishJTMResults", run);
+        j.assertLogContains("Published 1 results", run);
+        assertThat(service.getByIdOrThrow(tc.getId()).getLastStatus())
+            .isEqualTo(TestCase.TestCaseStatus.PASSED);
+    }
+
+    @Test
     public void pipelineStep_updateTestCase_passed(JenkinsRule j) throws Exception {
         TestCase tc = service.createTestCase(
             "Pipeline Test", TestCase.TestCaseType.AUTOMATED, TestCase.Priority.HIGH, "user");

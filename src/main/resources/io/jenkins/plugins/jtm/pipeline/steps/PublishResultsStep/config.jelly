@@ -1,0 +1,15 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+  <f:entry title="Results file" field="resultsFile" description="Workspace-relative path to the JTM JSON results file.">
+    <f:textbox clazz="required"/>
+  </f:entry>
+  <f:entry title="Update test cases" field="updateTestCases" description="Update matching test case statuses from each result.">
+    <f:checkbox/>
+  </f:entry>
+  <f:entry title="Fail on parse error" field="failOnParseError" description="Fail the build if the file is missing or contains invalid JSON.">
+    <f:checkbox/>
+  </f:entry>
+  <f:entry title="Create missing test cases" field="createMissingTestCases" description="Create a test case when a result references an unknown ID.">
+    <f:checkbox/>
+  </f:entry>
+</j:jelly>

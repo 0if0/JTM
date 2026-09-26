@@ -27,7 +27,6 @@
         }
         .jtm-tc-hero__pill-label { display: inline; font-size: 11px; font-weight: 600; color: var(--text-color-secondary); margin-bottom: 0; }
         .jtm-tc-hero__pill-value { display: inline; font-size: 14px; font-weight: 600; color: var(--text-color); }
-        .jtm-tc-hero__cta { border-radius: 8px; font-weight: 600; text-decoration: none; }
 
         .jtm-tc-section { margin-bottom: 16px; }
         .jtm-tc-section__title { margin: 0 0 10px; font-size: 13px; font-weight: 700; color: var(--text-color); }
@@ -86,6 +85,9 @@
           flex-wrap: wrap;
           align-items: center;
           gap: 10px 14px;
+          margin-top: 12px;
+          padding: 12px 16px 16px;
+          border-top: 1px solid var(--medium-grey);
         }
         .jtm-tc-table thead th.jtm-tc-th-check {
           vertical-align: middle;
@@ -106,7 +108,6 @@
         .jtm-tc-center { text-align: center; }
         .jtm-tc-table__primary { font-weight: 600; }
         .jtm-tc-row-actions { display: flex; justify-content: flex-end; min-width: 5rem; }
-        .jtm-tc-btn-edit { padding: 0.35rem 0.65rem; font-size: 12px; font-weight: 600; border-radius: 8px; text-decoration: none; }
         .jtm-tc-badge {
           display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 10px; font-weight: 700;
           letter-spacing: 0.03em; text-transform: uppercase;

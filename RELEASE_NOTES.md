@@ -73,7 +73,7 @@
 
 - **Web UI** at `/jtm/` — dashboard, test cases, test runs, run detail with linked-case matrix
 - **Project scope** — filter dashboard and lists by project key
-- **Pipeline steps** — `publishResults`, `enforceQualityGate`, `updateTestCase`
+- **Pipeline steps** — `publishJTMResults`, `enforceQualityGate`, `updateTestCase`
 - **Imports** — CSV / structured text importers; JUnit XML via post-build recorder
 - **Exports** — self-contained **HTML** and **PDF** reports for a single test run (optional branding); **multi-run flat export** from the test-run list (combined table with run context)
 - **Permissions** — JTM View / Execute / Edit / Admin

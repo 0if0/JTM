@@ -9,7 +9,7 @@ Lightweight **test management inside Jenkins**: test cases, suites, test runs, q
 ## Features
 
 - **Web UI** at `/jtm/` — dashboard, test cases, test runs, per-run detail and matrix
-- **Pipeline steps** — `publishResults`, `enforceQualityGate`, `updateTestCase`
+- **Pipeline steps** — `publishJTMResults`, `enforceQualityGate`, `updateTestCase`
 - **Imports** — CSV / structured text, JUnit XML (post-build recorder)
 - **Reports** — single-run and **multi-run flat export** (HTML + PDF) with optional branding
 - **Permissions** — View / Execute / Edit / Admin (matrix-friendly)
@@ -57,6 +57,16 @@ mvn hpi:run
 3. Grant **JTM** permissions under **Manage Jenkins → Security**
 
 More detail: **[BUILD.md](BUILD.md)** (permissions, pipeline example, data layout).
+
+## Pipeline steps
+
+All three steps are available from Jenkins' Pipeline Syntax / Snippet Generator. `publishJTMResults` reads a workspace-relative JSON file, stores a JTM test run, and returns its run ID.
+
+- `publishJTMResults`: required `resultsFile`; `updateTestCases` (default `true`), `failOnParseError` (default `false`), and `createMissingTestCases` (default `false`).
+- `enforceQualityGate`: optional `runId` (otherwise the build's published run or `JTM_RUN_ID`); `minPassRate` (default `95`), `maxFailures` (default `-1`, unlimited), `blockOnBlocked` (default `false`), `blockOnCritical` (default `true`), and `blockOnFailure` (default `true`).
+- `updateTestCase`: required `testCaseId` and `status` (`PENDING`, `PASSED`, `FAILED`, `BLOCKED`, `SKIPPED`, or `FALSE_POSITIVE`); optional `comment`, `durationMs` (default `-1`), and `failOnNotFound` (default `false`).
+
+The results JSON contains `runName`, `release`, `branch`, `commitId`, `environment`, and a `results` array. Each result has `testCaseId`, `status`, `durationMs`, and optional `comment`, `errorMessage`, and `stackTrace`.
 
 ## Repository layout
 

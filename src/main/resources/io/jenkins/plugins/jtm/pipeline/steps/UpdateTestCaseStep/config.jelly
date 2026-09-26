@@ -1,0 +1,18 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+  <f:entry title="Test case ID" field="testCaseId" description="ID of the existing JTM test case.">
+    <f:textbox clazz="required"/>
+  </f:entry>
+  <f:entry title="Status" field="status" description="One of PENDING, PASSED, FAILED, BLOCKED, SKIPPED, or FALSE_POSITIVE.">
+    <f:textbox clazz="required"/>
+  </f:entry>
+  <f:entry title="Comment" field="comment">
+    <f:textarea/>
+  </f:entry>
+  <f:entry title="Duration (ms)" field="durationMs" description="Optional execution time in milliseconds; -1 means unset.">
+    <f:number min="-1" clazz="number-required"/>
+  </f:entry>
+  <f:entry title="Fail if not found" field="failOnNotFound">
+    <f:checkbox/>
+  </f:entry>
+</j:jelly>

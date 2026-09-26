@@ -41,7 +41,7 @@
             </span>
           </div>
           <a href="${rootURL}/jtm/testcases/newcase${it.projectUrlQuery}"
-             class="jenkins-button jenkins-button--primary jtm-tc-hero__cta">New test case</a>
+             class="jenkins-button jenkins-button--primary">New test case</a>
         </div>
       </header>
 
@@ -144,7 +144,7 @@
               <input type="hidden" name="importFileName" id="jtm-import-file-name" value=""/>
               <label for="jtm-import-file">File (.json, .csv, .txt, .xml)</label>
               <div class="jtm-tc-import-form__row">
-                <input type="file" id="jtm-import-file" name="importFile" accept=".json,.csv,.txt,.xml,application/json,text/csv,text/plain,application/xml,text/xml"/>
+                <input type="file" id="jtm-import-file" name="importFile" class="jenkins-file-upload" accept=".json,.csv,.txt,.xml,application/json,text/csv,text/plain,application/xml,text/xml"/>
                 <button type="submit" class="jenkins-button jenkins-button--primary">Import</button>
               </div>
             </form>
@@ -224,7 +224,7 @@
                         </j:if>
                       </td>
                       <td class="jtm-tc-row-actions">
-                        <a href="${rootURL}/jtm/testcases/${tc.id}/edit" class="jenkins-button jenkins-button--primary jtm-tc-btn-edit">Edit</a>
+                        <a href="${rootURL}/jtm/testcases/${tc.id}/edit" class="jenkins-button jenkins-button--primary">Edit</a>
                       </td>
                     </tr>
                   </j:forEach>

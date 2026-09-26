@@ -27,18 +27,18 @@
           <form method="POST" action="${rootURL}/jtm/runs/${run.id}/export" class="jtm-run-action-form">
             <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
             <input type="hidden" name="format" value="html"/>
-            <button type="submit" class="jenkins-button jenkins-button--secondary jtm-run-action-btn">Export HTML</button>
+            <button type="submit" class="jenkins-button jenkins-button--secondary">Export HTML</button>
           </form>
           <form method="POST" action="${rootURL}/jtm/runs/${run.id}/export" class="jtm-run-action-form">
             <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
             <input type="hidden" name="format" value="pdf"/>
-            <button type="submit" class="jenkins-button jenkins-button--primary jtm-run-action-btn">Export PDF</button>
+            <button type="submit" class="jenkins-button jenkins-button--primary">Export PDF</button>
           </form>
-          <a href="${rootURL}/jtm/exportBranding" class="jenkins-button jenkins-button--tertiary jtm-run-action-btn">Branding…</a>
+          <a href="${rootURL}/jtm/exportBranding" class="jenkins-button jenkins-button--tertiary">Branding…</a>
           <form method="POST" action="${rootURL}/jtm/runs/${run.id}/deleteRun" class="jtm-run-delete-form jtm-confirm-submit"
                 data-confirm-message="Delete this test run permanently?">
             <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
-            <button type="submit" class="jenkins-button jenkins-!-destructive-color jtm-run-action-btn jtm-run-action-btn--danger">Delete run</button>
+            <button type="submit" class="jenkins-button jenkins-!-destructive-color">Delete run</button>
           </form>
         </div>
       </header>

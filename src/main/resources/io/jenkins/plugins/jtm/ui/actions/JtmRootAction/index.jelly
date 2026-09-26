@@ -322,7 +322,7 @@
                     <span class="symbol-radio-outline plugin-ionicons-api"></span>
                   </div>
                   <p class="jtm-empty-state__title">No test runs yet</p>
-                  <p class="jtm-empty-state__text">Run a pipeline with <code>publishResults</code> or start a run from JTM.</p>
+                  <p class="jtm-empty-state__text">Run a pipeline with <code>publishJTMResults</code> or start a run from JTM.</p>
                 </div>
               </j:when>
               <j:otherwise>

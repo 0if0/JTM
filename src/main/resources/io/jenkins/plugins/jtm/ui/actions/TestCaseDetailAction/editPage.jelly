@@ -192,8 +192,10 @@
                       <td><input type="text" name="stepAction" class="jenkins-input jtm-tce-step-inp" value="${sa}"/></td>
                       <td><input type="text" name="stepExpected" class="jenkins-input jtm-tce-step-inp" value="${se}"/></td>
                       <td class="jtm-step-actions-cell">
-                        <button type="button" class="jenkins-button jtm-tce-stepbtn jtm-step-del" title="Remove step">Delete</button>
-                        <button type="button" class="jenkins-button jtm-tce-stepbtn jtm-step-add-btn" title="Add step">+ Add</button>
+                        <div class="jtm-step-action-buttons">
+                          <button type="button" class="jenkins-button jtm-step-del" title="Remove step">Delete</button>
+                          <button type="button" class="jenkins-button jtm-step-add-btn" title="Add step">+ Add</button>
+                        </div>
                       </td>
                     </tr>
                   </j:forEach>
@@ -203,7 +205,7 @@
           </div>
 
           <div class="jtm-tce-actions">
-            <button type="submit" class="jenkins-button jenkins-button--primary jtm-tce-save">Save changes</button>
+            <button type="submit" class="jenkins-button jenkins-button--primary">Save changes</button>
             <a href="${rootURL}/jtm/testcases/${tc.id}/" class="jenkins-button">Cancel</a>
           </div>
         </form>

@@ -1,5 +1,5 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:h="/lib/hudson">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:f="/lib/form">
   <l:layout title="${%layout.titleNewTestRun}">
     <l:side-panel>
       <l:tasks>
@@ -29,44 +29,31 @@
       </div>
 
       <div class="jtm-newrun-panel">
-        <form method="POST" action="${rootURL}/jtm/saverun" class="jtm-newrun-form">
-          <input type="hidden" name="${h.getCrumbRequestField()}" value="${h.getCrumb(request)}"/>
+        <f:form method="post" action="${rootURL}/jtm/saverun" class="jtm-newrun-form" name="createTestRun">
 
-          <div class="jtm-newrun-field">
-            <label for="name">Display name <span class="jtm-newrun-optional">(optional)</span></label>
-            <input type="text" id="name" name="name" class="jenkins-input"
-                   placeholder="e.g. Smoke on staging — 2026-03-28"/>
-            <span class="jtm-newrun-hint">Defaults to “Job name #build” if left empty.</span>
-          </div>
+          <f:entry title="Display name (optional)" description="Defaults to Job name #build if left empty.">
+            <f:textbox name="name" id="name" placeholder="e.g. Smoke on staging — 2026-03-28"/>
+          </f:entry>
 
-          <div class="jtm-newrun-row">
-            <div class="jtm-newrun-field">
-              <label for="jobName">Job name</label>
-              <input type="text" id="jobName" name="jobName" class="jenkins-input"
-                     placeholder="manual" value="manual"/>
-              <span class="jtm-newrun-hint">Logical Jenkins job or team label.</span>
-            </div>
-            <div class="jtm-newrun-field jtm-newrun-field--narrow">
-              <label for="buildNumber">Build #</label>
-              <input type="number" id="buildNumber" name="buildNumber" class="jenkins-input" min="1" value="1"/>
-            </div>
-          </div>
+          <f:entry title="Job name" description="Logical Jenkins job or team label.">
+            <f:textbox name="jobName" value="manual" placeholder="manual"/>
+          </f:entry>
 
-          <div class="jtm-newrun-field">
-            <label for="branch">Branch / ref <span class="jtm-newrun-optional">(optional)</span></label>
-            <input type="text" id="branch" name="branch" class="jenkins-input" placeholder="e.g. main"/>
-          </div>
+          <f:entry title="Build #">
+            <f:number name="buildNumber" min="1" value="1" clazz="positive-number-required"/>
+          </f:entry>
 
-          <div class="jtm-newrun-field">
-            <label for="notes">Notes <span class="jtm-newrun-optional">(optional)</span></label>
-            <textarea id="notes" name="notes" rows="3" class="jenkins-input"
-                      placeholder="What was executed, environment, link to ticket…"></textarea>
-          </div>
+          <f:entry title="Branch / ref (optional)">
+            <f:textbox name="branch" placeholder="e.g. main"/>
+          </f:entry>
 
-          <div class="jtm-newrun-field">
-            <label for="projectScope">Project</label>
+          <f:entry title="Notes (optional)">
+            <f:textarea name="notes" rows="3" placeholder="What was executed, environment, link to ticket…"/>
+          </f:entry>
+
+          <f:entry title="Project" description="Create additional projects from the JTM dashboard.">
             <div class="jenkins-select">
-            <select id="projectScope" name="projectScope" class="jenkins-select__input jtm-newrun-select">
+            <select id="projectScope" name="projectScope" class="jenkins-select__input">
               <j:choose>
                 <j:when test="${it.projectScopeSelection == ''}">
                   <option value="" selected="selected">— None —</option>
@@ -87,12 +74,9 @@
               </j:forEach>
             </select>
             </div>
-            <span class="jtm-newrun-hint">Create additional projects from the <a href="${rootURL}/jtm/">dashboard</a>.</span>
-          </div>
+          </f:entry>
 
-          <div class="jtm-newrun-field jtm-newrun-field--picker">
-            <span class="jtm-newrun-label">Test cases in this run</span>
-            <p class="jtm-newrun-picker-intro">Select cases for this run (e.g. release regression). Testers set status on the run detail page.</p>
+          <f:entry title="Test cases in this run" description="Select cases for this run (e.g. release regression). Testers set status on the run detail page.">
             <div class="jtm-newrun-picker-toolbar">
               <div class="jtm-newrun-picker-filter">
                 <label for="jtm-newrun-type-filter">Show</label>
@@ -119,13 +103,15 @@
                 </label>
               </j:forEach>
             </div>
-          </div>
+          </f:entry>
 
-          <div class="jtm-newrun-actions">
-            <button type="submit" class="jenkins-button jenkins-button--primary jtm-newrun-submit">Create test run</button>
-            <a href="${rootURL}/jtm/runs${it.projectUrlQuery}" class="jenkins-button">Cancel</a>
-          </div>
-        </form>
+          <f:block>
+            <div class="jtm-newrun-actions">
+              <f:submit value="Create test run"/>
+              <a href="${rootURL}/jtm/runs${it.projectUrlQuery}" class="jenkins-button">Cancel</a>
+            </div>
+          </f:block>
+        </f:form>
       </div>
 
     </l:main-panel>

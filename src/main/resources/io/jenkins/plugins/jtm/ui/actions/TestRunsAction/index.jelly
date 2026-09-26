@@ -58,7 +58,7 @@
             </span>
           </div>
           <a href="${rootURL}/jtm/runs/newrun${it.projectUrlQuery}"
-             class="jenkins-button jenkins-button--primary jtm-runs-hero__cta"
+             class="jenkins-button jenkins-button--primary"
              tooltip="${%tooltip.newRun}">New run</a>
         </div>
       </header>
@@ -72,9 +72,9 @@
         </div>
       </j:if>
       <j:if test="${request.getParameter('bulkDeleted') != null}">
-        <div class="jtm-runs-scope-note" role="status">
-          <p>Deleted: <strong>${request.getParameter('bulkDeleted')}</strong>, failed: <strong>${request.getParameter('bulkFailed')}</strong>.</p>
-        </div>
+        <l:notice title="Bulk delete result" icon="symbol-trash-outline plugin-ionicons-api">
+          Deleted: <strong>${request.getParameter('bulkDeleted')}</strong>, failed: <strong>${request.getParameter('bulkFailed')}</strong>.
+        </l:notice>
       </j:if>
 
       <j:choose>
@@ -88,7 +88,7 @@
             <div class="jtm-runs-empty__actions">
               <a href="${rootURL}/jtm/runs/newrun${it.projectUrlQuery}" class="jenkins-button jenkins-button--primary">Create test run</a>
             </div>
-            <p class="jtm-runs-empty__code"><code>publishResults resultsFile: 'jtm-results.json'</code></p>
+            <p class="jtm-runs-empty__code"><code>publishJTMResults resultsFile: 'jtm-results.json'</code></p>
           </div>
         </j:when>
         <j:otherwise>

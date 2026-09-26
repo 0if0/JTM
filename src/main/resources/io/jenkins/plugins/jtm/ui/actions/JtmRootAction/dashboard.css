@@ -107,13 +107,6 @@
           align-items: flex-end;
           flex-shrink: 0;
         }
-        .jtm-dash-project-filter__actions .jenkins-button {
-          height: 38px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          box-sizing: border-box;
-        }
         .jtm-dash-callout {
           display: flex;
           gap: 12px;

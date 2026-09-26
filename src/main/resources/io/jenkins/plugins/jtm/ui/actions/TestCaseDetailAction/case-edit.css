@@ -30,8 +30,7 @@
         .jtm-tce-steps-num { width: 3rem; }
         .jtm-tce-step-inp { width: 100%; min-width: 8rem; }
         .jtm-step-actions-col { width: 11rem; white-space: nowrap; }
-        .jtm-step-actions-cell { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-        .jtm-tce-stepbtn { padding: 0.28rem 0.5rem; font-size: 12px; border-radius: 6px; }
+        .jtm-step-actions-cell { vertical-align: middle; }
+        .jtm-step-action-buttons { display: flex; flex-wrap: nowrap; gap: 8px; align-items: center; }
 
         .jtm-tce-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--medium-grey); }
-        .jtm-tce-save { border-radius: 8px; font-weight: 600; }

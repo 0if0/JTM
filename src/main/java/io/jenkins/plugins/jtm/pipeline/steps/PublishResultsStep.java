@@ -21,7 +21,7 @@ import java.time.Instant;
 import java.util.*;
 
 /**
- * Pipeline step: {@code publishResults}
+ * Pipeline step: {@code publishJTMResults}
  *
  * <p>Parses a JSON test results file and publishes results to JTM.
  * Creates a TestRun record and updates individual TestCase statuses.
@@ -49,10 +49,10 @@ import java.util.*;
  *
  * <h3>Pipeline DSL Usage:</h3>
  * <pre>{@code
- * publishResults resultsFile: 'test-results/jtm-results.json'
+ * publishJTMResults resultsFile: 'test-results/jtm-results.json'
  *
  * // With options
- * publishResults(
+ * publishJTMResults(
  *   resultsFile:       'build/jtm-results.json',
  *   updateTestCases:   true,
  *   failOnParseError:  true
@@ -123,7 +123,7 @@ public final class PublishResultsStep extends Step implements Serializable {
             FilePath workspace = getContext().get(FilePath.class);
 
             assert listener != null && build != null && workspace != null;
-            String logPrefix = "[JTM] publishResults";
+            String logPrefix = "[JTM] publishJTMResults";
 
             // ── Locate and read results file ────────────────────────────────────
             FilePath resultsFilePath = workspace.child(step.resultsFile);
@@ -291,7 +291,7 @@ public final class PublishResultsStep extends Step implements Serializable {
         }
 
         @Override
-        public String getFunctionName() { return "publishResults"; }
+        public String getFunctionName() { return "publishJTMResults"; }
 
         @Override
         @NonNull

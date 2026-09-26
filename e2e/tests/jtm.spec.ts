@@ -777,13 +777,13 @@ test.describe('JTM UI', () => {
 
     await page.goto('/jtm/testcases/newcase');
     await expect(page.locator('#title')).toHaveCount(1);
-    await expect(page.locator('.jtm-nc-hero__title')).toHaveCount(1);
-    await expect(page.locator('button.jtm-nc-submit')).toHaveCount(1);
+    await expect(page.getByRole('heading', { name: 'New test case' })).toHaveCount(1);
+    await expect(page.getByRole('button', { name: 'Create test case' })).toHaveCount(1);
 
     await page.goto('/jtm/runs/newrun');
     await expect(page.locator('#name')).toHaveCount(1);
-    await expect(page.locator('.jtm-newrun-hero__title')).toHaveCount(1);
-    await expect(page.locator('button.jtm-newrun-submit')).toHaveCount(1);
+    await expect(page.getByRole('heading', { name: 'New test run' })).toHaveCount(1);
+    await expect(page.getByRole('button', { name: 'Create test run' })).toHaveCount(1);
   });
 
   test('responsive + dark mode smoke has no page errors', async ({ page }) => {

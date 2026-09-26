@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="jtm-page-head__actions">
-          <a href="${rootURL}/jtm/testcases/${tc.id}/edit" class="jenkins-button jenkins-button--primary jtm-btn-lg">
+          <a href="${rootURL}/jtm/testcases/${tc.id}/edit" class="jenkins-button jenkins-button--primary">
             Edit test case
           </a>
           <j:if test="${it.canDelete()}">
@@ -82,7 +82,7 @@
           <div class="jtm-section jtm-section--steps">
             <div class="jtm-section-head">
               <h3 class="jtm-section-title">Test steps</h3>
-              <a href="${rootURL}/jtm/testcases/${tc.id}/edit#steps" class="jenkins-button jenkins-button--primary jtm-btn-sm">
+              <a href="${rootURL}/jtm/testcases/${tc.id}/edit#steps" class="jenkins-button jenkins-button--primary">
                 Manage steps
               </a>
             </div>
